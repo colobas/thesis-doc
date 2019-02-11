@@ -1,0 +1,34 @@
+\chapter{Approximate Inference}
+\label{chapter:approximateinference}
+
+For most interesting probabilistic models, the posterior distribution is
+intractable. This intractability arises from the integral in the denominator
+of the fraction obtained via Bayes' rule:
+
+\begin{align}
+    p(\theta|D) &= \frac{p(D|\theta)p(\theta)}{p(D)} \\
+                &= \frac{p(D|\theta)p(\theta)}{\int(D|\theta')p(\theta') d\theta'}
+\end{align}
+
+This problem requires the use of methods that enable an approximate computation
+of the posterior. Two of the most used families of such methods are MCMC methods
+and Variational methods.
+
+\section{MCMC Methods}
+Markov-chain Monte-Carlo methods work by devising a scheme that allows for
+sampling from a distribution close to the one of interest. They do so by
+defining a Markov-Chain with a transition function that will make it converge
+asymptotically to the distribution of interest, given some constraints
+(ergodicity...)
+
+\section{Variational Methods}
+Variational methods work by turning the problem of integration into one of
+optimization. They propose a family of parametric distributions, and then
+optimize the parameters so as to minimize the "distance" between the approximate
+(normally called "variational") distribution and the distribution of interest.
+The "distance" metric most commonly used for this is called Kullback-Leibler
+divergence, and is given by:
+
+\begin{align}
+    KL(p||q) = \sum p \log\frac{q}{p}
+\end{align}
