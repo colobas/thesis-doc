@@ -1,0 +1,77 @@
+\documentclass{article}
+
+\usepackage[final,nonatbib]{neurips_2018}
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{csquotes}
+\renewcommand{\mkbegdispquote}[2]{\itshape}
+
+\title{(Deep) Generative Models for Multi-variate Time-series: 
+An industrial application}
+
+\author{%
+  Guilherme Pires \\
+  Instituto Superior Técnico \\
+  Jungle \\
+  \texttt{mail@gpir.es} \\
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+  The abstract paragraph should be indented \nicefrac{1}{2}~inch (3~picas) on
+  both the left- and right-hand margins. Use 10~point type, with a vertical
+  spacing (leading) of 11~points.  The word \textbf{Abstract} must be centered,
+  bold, and in point size 12. Two line spaces precede the abstract. The abstract
+  must be limited to one paragraph.
+\end{abstract}
+
+\section{Prelude}
+\begin{displayquote}
+Of all obstacles to a thoroughly penetrating account of existence, none looms
+up more dismayingly than "time" (...). Explain time? Not without explaining 
+existence. Explain existence? Not without explaining time.
+\end{displayquote}
+
+\section{Introduction}
+
+\subsection{Dynamical Systems}
+The study of dynamical systems is ubiquitous to a large number of areas of
+interest: biological systems, the weather, planetary systems, industrial
+systems, social systems, etc. In the era of data, these systems are more
+sensorized than ever, creating the opportunity to explore said data and
+discover patterns and insights, which can change the way we interact with
+these systems, and even enable us to control them.
+
+There are \{multiple,many,some,two\} different types of insights one can try to
+extract from data about dynamical systems:
+\begin{itemize}
+    \item \textbf{Predictions} about the most likely future states of the system,
+        given its history.
+    \item \textbf{Explanations} about the system's behaviour.
+\end{itemize}
+
+Both find their application in different scenarios.
+
+\subsection{Interpretability/Explainability and the Manifold Hypothesis}
+Some systems - like industrial systems - are characterized by such a large
+number of variables, that even if the system's behaviour were simple, a human
+wouldn't be able to identify nor leverage that fact. At the same time, the
+type of strategies usually put in place to deal with this type of data are
+either heavily-based on domain knowledge (which isn't always available), or
+so complex themselves that they become uninterpretable
+
+
+
+\bibliographystyle{plain}
+\bibliography{../Thesis_bib_DB}
+
+\end{document}
