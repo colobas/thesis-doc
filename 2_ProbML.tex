@@ -1,0 +1,163 @@
+\chapter{Probabilistic Modelling}
+\label{chapter:probmodel}
+
+\section{Introduction}
+\label{section:probmodelintro}
+Probabilistic modelling can be described as the task of finding the probability
+distribution that best describes a given dataset $\mathcal{D}$, i.e. a
+distribution $p(\mathcal{D})$ such that $\mathcal{D} \sim p(\mathcal{D})$
+is as plausible as possible. Not only that, we normally want the distribution
+to be representative of the real process that generated $\mathcal{D}$. That is
+to say we want $p(\mathcal{D})$ to generalize to data we haven't yet observed.
+
+There are effectively infinite possible distributions that could have
+generated the data we observe, but won't generalize to unobserved data.
+Commonly, the first way in which we restrict the set of possible distributions is
+to assume that the distribution of interest has a parametric form, and hence is
+defined by a set of parameters $\theta$ \footnote{For the type of models and problems
+dealt with in this work, I will assume $\theta$ is finite, but it's worth noting
+that there are models which have $\theta$ \emph{grow} with the dataset size.
+These are called non-parametric models. They come with their own advantages and
+disadvantages, which are out of the scope of this work.} .
+
+Intuitively, the size of $\theta$ is deeply connected with the expressiveness
+of the model. In practice, this translates to the observation that if we make
+the model expressive enough, it can fit the observed data arbitrarily well. Naïvely,
+this would be a desirable characteristic. However, it normally comes at the cost
+of sacrificing generalization capability (TODO: Explain why). One way to counter
+this is to give preference to more parsimonious models - models that use less
+parameters and are less complex. There are strategies to make this mathematically
+objective and prevent the modeller from both having too complex and too simple
+models. Some of those methods are he Bayesian Information Criterion, the Akaike
+Information Criterion and the Minimum Description Length.
+
+\section{Structure and Latent Variables}
+\label{section:probmodellatvar}
+In some cases, one might want to leverage some available domain knowledge. This
+often translates into assuming that there is some latent structure in the data.
+This structure is encoded into latent variables and their influence over the
+observable variables.
+
+In this scenario, we become interested in the distribution given by
+$p(x, z, \theta_x, \theta_z)$, where $z$ is the latent variable, $\theta_x$ is
+the parameter vector for the distribution over $\mathcal{X}$, and $\theta_z$ is
+the parameter vector for the distribution over $\mathcal{Z}$.
+
+For structure and latent variables to be useful we normally make the additional
+assumption that we have the ability of factoring that distribution in ways that
+make it tractable. One common factorization is:
+\begin{align}
+    p(x, z, \theta) = p(x| z, \theta_x) p(z | \theta_z) p(\theta_x) p(\theta_z)
+\end{align},
+
+\section{Approximate Inference}
+\label{section:probmodelinf}
+For simplicity, let us consider $\theta$ as part of the latent variables $z$.
+This means that the model is simply written as the joint distribution: $p(x, z)$.
+\emph{Inference}\footnote{If we hadn't collapsed $\theta$ into $z$ and were instead handling
+separately, we would call \textbf{inference} to the task of finding $z$ and
+\textbf{learning} to the task of finding $\theta$} is the task of finding the 
+most probable $z$ after having observed $x$ . Specifically, the goal is
+to find the posterior distribution of $z$, given $x$, i.e.: $p(z|x)$.
+
+Recall Bayes' Law:
+
+\begin{align}
+    p(z|x) &= \frac{p(x|z)p(z)}{p(x)} \\
+           &= \frac{p(x|z)p(z)}{\int p(x|z')p(z') dz'}
+\end{align}
+
+For the vast majory of cases, the integral on the denominator will be
+intractable. To overcome this difficulty we normal resort to two families
+of methods: Monte-Carlo methods, and Variational methods.
+
+\subsection{Monte-Carlo Methods}
+\label{subsection:mcmc}
+
+Monte-Carlo methods work by using sampling techniques to approximate the
+intractable integral. The most powerful subclass of these methods is called
+Markov-chain Monte-Carlo. Its approach consists of devising a scheme that
+allows for sampling from a distribution close to the one of interest. It
+accomplishes this by defining a Markov-Chain whose transition function 
+is guaranteed to make it converge asymptotically to the distribution of interest,
+given some constraints (ergodicity...) (TODO: explain more)
+
+\subsection{Variational Methods}
+\label{subsection:variational}
+Variational methods work by turning the problem of integration into one of
+optimization. They propose a family of parametric distributions, and then
+optimize the parameters so as to minimize the "distance" between the approximate
+(normally called "variational") distribution and the distribution of interest.
+
+There are two ways to derive the most commonly used objective function for
+this problem.
+
+\subsubsection{Kullback-Leibler Divergence}
+\label{subsubsection:kldiv}
+
+The Kullback-Leibler divergence is a measure\footnote{Note that the KL divergence
+isn't symmetric and as such I haven't called it a \emph{metric}} of the distance
+between two probability distributions $p$, and $q$. It is given by:
+
+\begin{align}
+    KL(q||p) = \int q \log\frac{q}{p}
+\end{align}
+
+In the setting of inference, $p$ is the posterior $p(z|x)$ and $q$ is a distribution
+in some parametric family, with parameters $\phi$, i.e., $q(z; \phi)$. However,
+it's clear that we can't compute the Kullback-Leibler directly, because it
+requires the knowledge of both the distributions, and finding $p(z|x)$ is precisely
+the task at hand. Let us expand the KL divergence expression:
+
+\begin{align}
+    KL(q||p) &= \int q(z) (\log q(x) - \log p(z|x)) dz \\
+             &= \int q(z) (\log q(z) - (\log p(x, z) - \log p(x))) dz \\
+             &= \mathbb{E}_q [\log q(z)] - \mathbb{E}_q [\log p(x, z)] + \mathbb{E}_q [\log p(x)] \\
+             &= \mathbb{E}_q [\log q(z)] - \mathbb{E}_q [\log p(x, z)] + \log p(x)
+\end{align}
+
+The last term is constant w.r.t $q(z)$. In that sense, for a fixed $p(x)$,
+minimizing the KL divergence is equivalent to minimizing
+$\mathbb{E}_q [\log q(z)] - \mathbb{E}_q [\log p(x, z)]$, which is equivalent
+to maximizing $\mathbb{E}_q [\log p(x, z)] - \mathbb{E}_q [\log q(z)]$. This
+quantity is commonly refered to as ELBO - Expectation Lower BOund. It can be
+rewritten as:
+
+\begin{align}
+    ELBO(q) &= \mathbb{E}_q [\log p(x, z)] - \mathbb{E}_q [\log q(z)] \\
+            &= \mathbb{E}_q [\log p(x|z)] + \mathbb{E}_q [\log p(x|z)] - \mathbb{E}_q [\log q(z)]
+\end{align}
+
+In this form, each term of the ELBO has an easily interpretable role:
+\begin{itemize}
+    \item $\mathbb{E}_q [\log p(x|z)]$ tries to maximize the conditional likelihood of $x$. That
+        can be seen as assigning high probability mass to values of $z$ that \emph{explain} $x$
+        well.
+    \item $\mathbb{E}_q [\log p(x|z)]$ is the symmetric of the crossentropy between
+        $q(z)$ and $p(x|z)$. Maximizing this quantity is equivalent of maximizing
+        that crossentropy. This can be regarded as a regularizer that discourages
+        $q(z)$ of being too different from the prior $p(z)$.
+    \item $ - \mathbb{E}_q [\log q(z)]$ is the entropy of $q(z)$. Maximizing
+        this term incentivizes the probability mass of $q(z)$ to be spread out:
+        another form of regularization.
+\end{itemize}
+
+\subsubsection{A lower bound on $\log p(x)$}
+\label{subsubsection:elbo}
+
+Another way of approaching the intractable posterior is to start by stating
+that our inherent goal is to maximize $p(x)$, or equivalently $\log p(x)$. Given
+that, consider the following:
+
+\begin{align}
+    \log p(x) &= \log \int p(x, z) dz \Leftrightarrow \\
+    \Leftrightarrow \log p(x) &= \log \int q(z) \frac{p(x, z)}{q(z)} dz \Leftrightarrow \\
+    \Leftrightarrow \log p(x) &= \log \mathbb{E}_q[\frac{p(x, z)}{q(z)}] \Leftrightarrow \\
+    \Leftrightarrow \log p(x) &\geq \mathbb{E}_q[\log \frac{p(x, z)}{q(z)}] \Leftrightarrow \\
+    \Leftrightarrow \log p(x) &\geq \mathbb{E}_q[\log p(x, z)] - \mathbb{E}_q[q(z)] \Leftrightarrow
+\end{align}
+
+We see that the right-hand side of the last inequality is the same quantity
+we arrived at in the previous approach, and that it is a lower-bound on the
+quantity we want to maximize, and so we want to maximize it. It's worth noting
+that when $q(z) = p(z|x)$, the bound is tight.
