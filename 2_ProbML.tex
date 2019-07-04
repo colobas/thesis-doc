@@ -118,10 +118,13 @@ the task at hand. Let us expand the KL divergence expression:
 
 The last term is constant w.r.t $q(z)$. In that sense, for a fixed $p(x)$,
 minimizing the KL divergence is equivalent to minimizing
-$\mathbb{E}_q [\log q(z)] - \mathbb{E}_q [\log p(x, z)]$, which is equivalent
-to maximizing $\mathbb{E}_q [\log p(x, z)] - \mathbb{E}_q [\log q(z)]$. This
-quantity is commonly refered to as ELBO - Expectation Lower BOund. It can be
-rewritten as:
+\begin{align}
+    \mathbb{E}_q [\log q(z)] - \mathbb{E}_q [\log p(x, z)]
+\end{align}, which is equivalent to maximizing
+\begin{align}
+    \mathbb{E}_q [\log p(x, z)] - \mathbb{E}_q [\log q(z)] \label{eq:elbokldiv}
+\end{align}. This quantity is commonly refered to as ELBO - Expectation Lower BOund.
+It can be rewritten as:
 
 \begin{align}
     ELBO(q) &= \mathbb{E}_q [\log p(x, z)] - \mathbb{E}_q [\log q(z)] \\
@@ -148,16 +151,33 @@ In this form, each term of the ELBO has an easily interpretable role:
 Another way of approaching the intractable posterior is to start by stating
 that our inherent goal is to maximize $p(x)$, or equivalently $\log p(x)$. Given
 that, consider the following:
-
 \begin{align}
-    \log p(x) &= \log \int p(x, z) dz \Leftrightarrow \\
-    \Leftrightarrow \log p(x) &= \log \int q(z) \frac{p(x, z)}{q(z)} dz \Leftrightarrow \\
-    \Leftrightarrow \log p(x) &= \log \mathbb{E}_q[\frac{p(x, z)}{q(z)}] \Leftrightarrow \\
-    \Leftrightarrow \log p(x) &\geq \mathbb{E}_q[\log \frac{p(x, z)}{q(z)}] \Leftrightarrow \\
-    \Leftrightarrow \log p(x) &\geq \mathbb{E}_q[\log p(x, z)] - \mathbb{E}_q[q(z)] \Leftrightarrow
+    \log p(x) &= \log \int p(x, z) dz\\
+    &= \log \int q(z) \frac{p(x, z)}{q(z)} dz \\
+    &= \log \mathbb{E}_q[\frac{p(x, z)}{q(z)}] \label{eq:elbojensen1} \\
+    &\geq \mathbb{E}_q[\log \frac{p(x, z)}{q(z)}] \label{eq:elbojensen2} \\
+    &\geq \mathbb{E}_q[\log p(x, z)] - \mathbb{E}_q[q(z)] \label{eq:elbojensen3}
 \end{align}
 
-We see that the right-hand side of the last inequality is the same quantity
-we arrived at in the previous approach, and that it is a lower-bound on the
+To understand this derivation, consider Jensen's inequality, given (in one of
+its forms) by:
+\begin{align}
+    \phi(\mathbb{E}[X]) \leq \mathbb{E}[\phi(X)], \label{eq:jensen}
+\end{align} where $\phi(.)$ is a convex function.
+
+If $\xi(.)$ is a concave function, then $- \xi(.)$ is a convex function, and we
+obtain the reverse inequality (substituting $\phi(.)$ with $-\xi(.)$ in the
+inequality in \ref{eq:jensen}):
+\begin{align}
+    -\xi(\mathbb{E}[X]) &\leq \mathbb{E}[-\xi(X)] \\
+    \xi(\mathbb{E}[X]) &\geq \mathbb{E}[\xi(X)]
+\end{align}
+
+This form is the most useful for us, since $\log$ is a concave function. Using
+this, the step between \ref{eq:elbojensen1} and \ref{eq:elbojensen2} is made
+obvious.
+
+Note that the right-hand side of \ref{eq:elbojensen3} is the same quantity
+we arrived at in \ref{eq:elbokldiv}, and that it is a lower-bound on the
 quantity we want to maximize, and so we want to maximize it. It's worth noting
 that when $q(z) = p(z|x)$, the bound is tight.
