@@ -4,32 +4,67 @@
 \section{Introduction}
 \label{section:probmodelintro}
 Probabilistic modelling can be described as the task of finding the probability
-distribution that best describes a given dataset $\mathcal{D}$, i.e. a
-distribution $p(\mathcal{D})$ such that $\mathcal{D} \sim p(\mathcal{D})$
-is as plausible as possible. Not only that, we normally want the distribution
-to be representative of the real process that generated $\mathcal{D}$. That is
-to say we want $p(\mathcal{D})$ to generalize to data we haven't yet observed.
+distribution that best explains the generative process by which a given dataset
+$\mathcal{D}$ was created. I.e., a distribution $p(\mathcal{D})$ such that
+$\mathcal{D} \sim p(\mathcal{D})$ is as plausible as possible. Not only that,
+we normally want the distribution to be representative of the real process that
+generated $\mathcal{D}$. That is to say we want $p(\mathcal{D})$ to generalize
+to data we haven't yet observed.
 
-There are effectively infinite possible distributions that could have
-generated the data we observe, but won't generalize to unobserved data.
-Commonly, the first way in which we restrict the set of possible distributions is
-to assume that the distribution of interest has a parametric form, and hence is
-defined by a set of parameters $\theta$ \footnote{For the type of models and problems
-dealt with in this work, I will assume $\theta$ is finite, but it's worth noting
-that there are models which have $\theta$ \emph{grow} with the dataset size.
-These are called non-parametric models. They come with their own advantages and
-disadvantages, which are out of the scope of this work.} .
+\section{Model Complexity}
+\label{section:modelcomplexity}
+There are effectively infinite possible distributions that could have generated
+the data we observe, but won't generalize to unobserved data. Commonly, the first
+way in which we restrict the set of possible distributions is to assume that the
+distribution of interest has a parametric form, and hence is defined by a set of
+parameters $\theta$\footnote{For the type of models and problems dealt with in
+this work, I will assume $\theta$ is finite, but it's worth noting that there are
+models for which the size of $\theta$ \emph{grows} with the dataset size. These
+are called non-parametric models. They come with their own advantages and
+disadvantages, which are out of the scope of this work.}.
 
 Intuitively, the size of $\theta$ is deeply connected with the expressiveness
 of the model. In practice, this translates to the observation that if we make
 the model expressive enough, it can fit the observed data arbitrarily well. Naïvely,
 this would be a desirable characteristic. However, it normally comes at the cost
-of sacrificing generalization capability (TODO: Explain why). One way to counter
-this is to give preference to more parsimonious models - models that use less
-parameters and are less complex. There are strategies to make this mathematically
-objective and prevent the modeller from both having too complex and too simple
-models. Some of those methods are he Bayesian Information Criterion, the Akaike
-Information Criterion and the Minimum Description Length.
+of sacrificing generalization capability. This phenomenon is commonly referred
+to as \emph{overfitting}, and there are several angles from which to explain it
+and interpret it, for example:
+\begin{itemize}
+    \item The classical perspective is that of the bias-variance tradeoff:
+        models with a high number of parameters will easily achieve a low
+        error on observed data (low bias), but will tend to be extremely
+        sensible to small variations in their input (high variance). Conversely,
+        models with a small number of parameters will be more robust to
+        variations in their input (low variance), but won't have the same
+        modelling capacity and will produce larger errors (high bias).
+    \item Andrey Kolmogorov's and Gregory Chaitin's ideas on Algorithmic Information
+        Theory \cite{chaitin-leibniz}, and Kolmogorov complexity  are another
+        useful lens through which to regard this question. Consider that data are
+        measurements of phenomena. Modelling is concerned with finding the
+        laws that explain/govern these phenomena. Intuitively, if the laws are
+        as complex as the data they are to explain, they aren't explaining anything.
+        AIT formalizes this notion by borrowing the concept of \emph{program} to
+        define the generative process by which observed data comes to existence.
+        The complexity of a dataset is then easy to define: it is the size of
+        the \textbf{smallest}\footnote{Note the emphasis on "smallest" - this is
+        because any program can be made arbitrarily redundant, and thus arbitrarily large.}
+        program that generates the observed data. And the appropriate unit with
+        which to measure the size of a program - and, as we've now seen, the
+        complexity of a dataset - is bits\footnote{Or the basic unit of memory
+        of the computer where the data generating program would run}. The parallel
+        between these ideas and the question of overfitting is thus easy to make:
+        a program (or a model and its parameter vector)  is useful if it 
+        \emph{compresses} the data, intuitively because to do so it leverages the
+        patterns therein, which are the object of interest in the modelling task.
+\end{itemize}
+
+Both of these lines of reasoning make clear that there is a certain balance
+in complexity that a good model has to achieve: it should be parsimonious enough
+that it won't overfit, but flexible enough that it is able to properly explain the observed
+data.  There are strategies to make this mathematically objective. Some of those
+methods are the Bayesian Information Criterion, the Akaike Information Criterion
+and the Minimum Description Length.
 
 \section{Structure and Latent Variables}
 \label{section:probmodellatvar}
