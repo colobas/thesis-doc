@@ -3,47 +3,107 @@
 
 \section{Introduction}
 \label{section:probmodelintro}
-Probabilistic modelling can be described as the task of finding the probability
-distribution that best explains the generative process by which a given dataset
-$\mathcal{D}$ was created. I.e., a distribution $p(\mathcal{D})$ such that
-$\mathcal{D} \sim p(\mathcal{D})$ is as plausible as possible. Not only that,
-we normally want the distribution to be representative of the real process that
-generated $\mathcal{D}$. That is to say we want $p(\mathcal{D})$ to generalize
-to data we haven't yet observed.
+Probabilistic modelling is a set of techniques that leverage probability
+distributions and random variables to posit, test and refine hypothesis about
+the behaviour of systems. Given observations of a system, the task of probabilistic
+modelling normally boils down to finding a probability distribution which:
+\begin{itemize}
+    \item Is consistent with the observed data;
+    \item Is consistent with \textbf{new}, previously unobserved data, originated\
+        in the same system.
+\end{itemize}
+
+This probability distribution is commonly called the \emph{model}. A good model
+will be a good \emph{emulator} of the true generative process that originated
+the observed data. In loose terms, this can be summarized as:
+\begin{align}
+    \mbox{data} \sim p(\mbox{data}|\mbox{hypothesis}^*),
+\end{align} where $\text{hypothesis}^*$ is the optimal hypothesis.
+
+Via Bayes' Law, we can write:
+\begin{align}
+    p(\mbox{hypothesis}|\mbox{data}) = \frac{p(\mbox{data}|\mbox{hypothesis})p(\mbox{hypothesis})}{p(\mbox{data})}
+\end{align}
+
+In practice, a modeller will search for an hypothesis that maximizes (some form,
+or approximation of) this expression. For simpler problems, this search happens
+in closed-form, i.e., there is an expression to compute the optimal hypothesis,
+given data. However, for most real-world problems there is no closed-form solution,
+and the modeller has to resort to algorithms and approximations, and will only
+be able to find \textbf{local} optima for the above expression, in most cases.
+
+It's also worth noting that there are effectively infinite candidate distributions -
+each one an hypothesis for how the system at hand generates data. It is common
+to make use of domain knowledge and assume the true system has a certain intrinsic
+structure and form, and to use these assumptions to constrain the space of
+candidate hypothesis. Assumptions about structure usually translate to conditional
+independence claims between some or all of the observed variables; assumptions
+about form translate into the use of specific parametric families to govern some
+or all of the observed variables. These assumptions are commonly connected between
+themselves (for example, when conjugate likelihood-prior pairs are used).
+
+When parametric forms are used, an hypothesis is uniquely defined by the set of
+parameters it requires - commonly called $\theta$\footnote{For the type of models
+and problems dealt with in this work, I will assume $\theta$ is finite, but it's
+worth noting that there are models for which the size of $\theta$ \emph{grows}
+with the dataset size. These are called non-parametric models. They come with
+their own advantages and disadvantages, which are out of the scope of this work.}.
 
 \section{Model Complexity}
 \label{section:modelcomplexity}
-There are effectively infinite possible distributions that could have generated
-the data we observe, but won't generalize to unobserved data. Commonly, the first
-way in which we restrict the set of possible distributions is to assume that the
-distribution of interest has a parametric form, and hence is defined by a set of
-parameters $\theta$\footnote{For the type of models and problems dealt with in
-this work, I will assume $\theta$ is finite, but it's worth noting that there are
-models for which the size of $\theta$ \emph{grows} with the dataset size. These
-are called non-parametric models. They come with their own advantages and
-disadvantages, which are out of the scope of this work.}.
-
 Intuitively, the size of $\theta$ is deeply connected with the expressiveness
-of the model. In practice, this translates to the observation that if we make
-the model expressive enough, it can fit the observed data arbitrarily well. Naïvely,
-this would be a desirable characteristic. However, it normally comes at the cost
-of sacrificing generalization capability. This phenomenon is commonly referred
-to as \emph{overfitting}, and there are several angles from which to explain it
-and interpret it, for example:
+of the distribution. In practice, this translates to the observation that if we
+make the model\footnote{Throughout this work I will be using the words \emph{model}
+and \emph{distribution} almost interchangeably, making it clear when context isn't
+enough.} expressive enough, it can fit the observed data arbitrarily well. Naïvely,
+this would be a desirable characteristic to exploit - it's always possible to increase
+the likelihood by adding parameters to the model. However, increasing model
+complexity normally comes at the expense of generalization. This phenomenon is
+commonly referred to as \emph{overfitting}, and there are several
+angles from which to explain it and interpret it. Namely:
 \begin{itemize}
-    \item The classical perspective is that of the bias-variance tradeoff:
-        models with a high number of parameters will easily achieve a low
-        error on observed data (low bias), but will tend to be extremely
-        sensible to small variations in their input (high variance). Conversely,
-        models with a small number of parameters will be more robust to
-        variations in their input (low variance), but won't have the same
-        modelling capacity and will produce larger errors (high bias).
+    \item The classical perspective is that of the bias-variance tradeoff. To
+        understand this, consider the concept of an Hypothesis Class - a set
+        of hypotheses in which, via some procedure, the modeller will search
+        for an hypothesis that is consistent with the observed data, and is
+        expected to generalize to unseen data. Said procedure is what is normally
+        referred to as \emph{fitting} the model to the data. In the case of
+        parametric models, the set of models of a given parametric form, with
+        a parameter-vector of a certain fixed size, is an example of an Hypothesis
+        Class. Intuitively, a more complex Hypothesis Class is more likely to
+        contain the true hypothesis (or a good approximation to it). However,
+        the more complex the Hypothesis Class, the larger the search-space -
+        the higher the number of candidate hypothesis. In this sense, an increase
+        in the size of the search-space often translates into an increase of the
+        sensitivity to the problem variables (in the case of learning and inference,
+        this means sensitivity to initialization and to the data used to fit).
+        Conversely, a simpler model will constitute a smaller search-space, hence
+        the search procedure will be less sensitive to initalization and problem
+        variables. However, the true hypothesis (or a good approximation to it)
+        is less likely to be contained in it - precisely because it is a smaller
+        Hypothesis Class. The bias-variance tradeoff is a summary of these observations:
+        a highly complex model is potentially able to achieve a low error on observed
+        data (low bias), tend to be extremely sensible to small variations on its
+        input (high variance). Conversely, a simpler model will be more robust
+        to variations on its input (low variance), but won't have the same
+        modelling capacity and will produce larger errors (high bias). %\footnote{
+        %The number of parameters is far from being the best measure of complexity
+        %of a model. Nevertheless, it is a good proxy to compare model complexity
+        %between models of the same parametric family. However, recent work by
+        %Belkin et al. \cite{Belkin2018Dec} shows that modern machine learning
+        %contexts, in which the number of parameters is far larger than in classical
+        %settings, have to be understood under a measure of model complexity
+        %different than the traditional ones. This is because it is now common
+        %practice to fit highly overparameterized models to a point of interpolation
+        %(close to zero training error), still being able to achieve good generalization.
+        %To explain this, the authors of \cite{Belkin2018Dec} 
+        %}
     \item Andrey Kolmogorov's and Gregory Chaitin's ideas on Algorithmic Information
         Theory \cite{chaitin-leibniz}, and Kolmogorov complexity  are another
         useful lens through which to regard this question. Consider that data are
         measurements of phenomena. Modelling is concerned with finding the
         laws that explain/govern these phenomena. Intuitively, if the laws are
-        as complex as the data they are to explain, they aren't explaining anything.
+        as complex as the data they intend to explain, they aren't explaining anything.
         AIT formalizes this notion by borrowing the concept of \emph{program} to
         define the generative process by which observed data comes to existence.
         The complexity of a dataset is then easy to define: it is the size of
