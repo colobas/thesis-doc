@@ -82,11 +82,11 @@ angles from which to explain it and interpret it. Namely:
         variables. However, the true hypothesis (or a good approximation to it)
         is less likely to be contained in it - precisely because it is a smaller
         Hypothesis Class. The bias-variance tradeoff is a summary of these observations:
-        a highly complex model is potentially able to achieve a low error on observed
-        data (low bias), tend to be extremely sensible to small variations on its
-        input (high variance). Conversely, a simpler model will be more robust
-        to variations on its input (low variance), but won't have the same
-        modelling capacity and will produce larger errors (high bias). %\footnote{
+        a highly complex model is potentially able to achieve a low expected error
+        on observed data (low bias), but will tend to be extremely sensible to small
+        variations on its input (high variance). Conversely, a simpler model will
+        be more robust to variations on its input (low variance), but won't have the same
+        modelling capacity and will produce a larger expected error (high bias). %\footnote{
         %The number of parameters is far from being the best measure of complexity
         %of a model. Nevertheless, it is a good proxy to compare model complexity
         %between models of the same parametric family. However, recent work by
@@ -121,10 +121,10 @@ angles from which to explain it and interpret it. Namely:
 
 Both of these lines of reasoning make clear that there is a certain balance
 in complexity that a good model has to achieve: it should be parsimonious enough
-that it won't overfit, but flexible enough that it is able to properly explain the observed
-data.  There are strategies to make this mathematically objective. Some of those
-methods are the Bayesian Information Criterion, the Akaike Information Criterion
-and the Minimum Description Length.
+that it won't overfit, but flexible enough that it is able to properly explain
+the observed data.  There are strategies to make this mathematically objective.
+Some of those methods are the Bayesian Information Criterion, the Akaike
+Information Criterion and the Minimum Description Length.
 
 \section{Structure and Latent Variables}
 \label{section:probmodellatvar}
@@ -139,21 +139,62 @@ the parameter vector for the distribution over $\mathcal{X}$, and $\theta_z$ is
 the parameter vector for the distribution over $\mathcal{Z}$.
 
 For structure and latent variables to be useful we normally make the additional
-assumption that we have the ability of factoring that distribution in ways that
-make it tractable. One common factorization is:
+assumption that we have the ability of factorizing that distribution in ways that
+make it tractable. If we have a dataset $\mathbf{X} = {x_1, x_2, x_3, ..., x_N}$, with
+$N$ i.i.d. samples, and $N$ latent variables, $\mathbf{Z} = {z_1, z_2, z_3, ..., z_N}$,
+one common factorization is:
 \begin{align}
-    p(x, z, \theta) = p(x| z, \theta_x) p(z | \theta_z) p(\theta_x) p(\theta_z)
-\end{align},
+    p(\mathbf{X}, \mathbf{Z}, \theta) = \Big(\prod^N_{i=1} p(x_i| z_i, \theta_x) p(z_i | \theta_z)\Big) p(\theta_x) p(\theta_z). \label{eq:latentvariable}
+\end{align}
+
+It's also possible that the samples of $\mathbf{X}$ have some sort of causal
+relation, for instance if they occur ordered in time. In this case, they are not i.i.d.
+One way to encode this assumption is to posit an \emph{autoregressive} model, i.e.,
+a model in which a random variable depends on the variables that come before it.
+If each random variable depends solely on the random variable that precedes it,
+this is called a Markov Model. A common variation of the Markov Model is the
+Hidden Markov Model, where the autoregressive part of the model is present only
+in the latent variables:
+\begin{align}
+    p(\mathbf{X}, \mathbf{Z}, \theta) = p(z_1) \Big(\prod^N_{i=2} p(x_i | z_i, \theta_x) p(z_i| z_{i-1}, \theta_z) \Big) p(\theta_x) p(\theta_z).
+\end{align}
+
+These are merely examples of models with different structure assumptions encoded
+into them. Normally, if the structure has a certain regularity, it's possible
+to exploit it to obtain tractable (approximate) inference and estimation methods.
+
+\section{Mixture Models}
+Mixture Models are a subset of the structure "family" described in \ref{eq:latentvariable},
+and they have a central role in this work.
+
+In a Mixture Model there is a discrete latent variable $z_i$ which selects
+one of $K$ components from which an observation $x_i$ will be sampled. This
+can be summarized as:
+\begin{align}
+    z_i \sim p(z_i | \pi) \\
+    x_i \sim p(x_i | z_i)
+\end{align}
+
+It's common to assume that all of the $K$ components are part of the same
+parametric family. In that case, we can rewrite the above as:
+\begin{align}
+    z_i \sim p(z_i | \pi) \\
+    x_i \sim p(x_i | \theta_{z_i}),
+\end{align} where it is made evident that the discrete variable $z_i$ is selecting
+the \textbf{parameter vector} to be used for sample $x_i$.
+
+The most discussed mixture model is the Gaussian Mixture Model, in which the $K$
+components of the model are Gaussian distributions.
 
 \section{Approximate Inference}
 \label{section:probmodelinf}
-For simplicity, let us consider $\theta$ as part of the latent variables $z$.
-This means that the model is simply written as the joint distribution: $p(x, z)$.
-\emph{Inference}\footnote{If we hadn't collapsed $\theta$ into $z$ and were instead handling
-separately, we would call \textbf{inference} to the task of finding $z$ and
-\textbf{learning} to the task of finding $\theta$} is the task of finding the 
-most probable $z$ after having observed $x$ . Specifically, the goal is
-to find the posterior distribution of $z$, given $x$, i.e.: $p(z|x)$.
+Take the expression $p(x, z, \theta)$. For simplicity, let us consider $\theta$
+as part of the latent variables $z$. This means that the model is simply written
+as the joint distribution: $p(x, z)$. \emph{Inference}\footnote{If we hadn't collapsed
+$\theta$ into $z$ and were instead handling separately, we would call \textbf{inference}
+to the task of finding $z$ and \textbf{learning} to the task of finding $\theta$}
+is the task of finding the most probable $z$ after having observed $x$ . Specifically,
+the goal is to find the posterior distribution of $z$, given $x$, i.e.: $p(z|x)$.
 
 Recall Bayes' Law:
 
@@ -162,7 +203,7 @@ Recall Bayes' Law:
            &= \frac{p(x|z)p(z)}{\int p(x|z')p(z') dz'}
 \end{align}
 
-For the vast majory of cases, the integral on the denominator will be
+For the vast majority of cases, the integral on the denominator will be
 intractable. To overcome this difficulty we normal resort to two families
 of methods: Monte-Carlo methods, and Variational methods.
 
@@ -185,7 +226,7 @@ optimize the parameters so as to minimize the "distance" between the approximate
 (normally called "variational") distribution and the distribution of interest.
 
 There are two ways to derive the most commonly used objective function for
-this problem.
+this problem, which will be detailed in the two following subsections.
 
 \subsubsection{Kullback-Leibler Divergence}
 \label{subsubsection:kldiv}
@@ -208,22 +249,22 @@ the task at hand. Let us expand the KL divergence expression:
     KL(q||p) &= \int q(z) (\log q(x) - \log p(z|x)) dz \\
              &= \int q(z) (\log q(z) - (\log p(x, z) - \log p(x))) dz \\
              &= \mathbb{E}_q [\log q(z)] - \mathbb{E}_q [\log p(x, z)] + \mathbb{E}_q [\log p(x)] \\
-             &= \mathbb{E}_q [\log q(z)] - \mathbb{E}_q [\log p(x, z)] + \log p(x)
+             &= \mathbb{E}_q [\log q(z)] - \mathbb{E}_q [\log p(x, z)] + \log p(x) \\
 \end{align}
 
 The last term is constant w.r.t $q(z)$. In that sense, for a fixed $p(x)$,
 minimizing the KL divergence is equivalent to minimizing
 \begin{align}
-    \mathbb{E}_q [\log q(z)] - \mathbb{E}_q [\log p(x, z)]
-\end{align}, which is equivalent to maximizing
+    \mathbb{E}_q [\log q(z)] - \mathbb{E}_q [\log p(x, z)],
+\end{align} which is equivalent to maximizing
 \begin{align}
-    \mathbb{E}_q [\log p(x, z)] - \mathbb{E}_q [\log q(z)] \label{eq:elbokldiv}
-\end{align}. This quantity is commonly refered to as ELBO - Expectation Lower BOund.
+    \mathbb{E}_q [\log p(x, z)] - \mathbb{E}_q [\log q(z)]. \label{eq:elbokldiv}
+\end{align} This quantity is commonly refered to as ELBO - Expectation Lower BOund.
 It can be rewritten as:
 
 \begin{align}
     ELBO(q) &= \mathbb{E}_q [\log p(x, z)] - \mathbb{E}_q [\log q(z)] \\
-            &= \mathbb{E}_q [\log p(x|z)] + \mathbb{E}_q [\log p(x|z)] - \mathbb{E}_q [\log q(z)]
+            &= \mathbb{E}_q [\log p(x|z)] + \mathbb{E}_q [\log p(z)] - \mathbb{E}_q [\log q(z)]
 \end{align}
 
 In this form, each term of the ELBO has an easily interpretable role:
@@ -231,8 +272,8 @@ In this form, each term of the ELBO has an easily interpretable role:
     \item $\mathbb{E}_q [\log p(x|z)]$ tries to maximize the conditional likelihood of $x$. That
         can be seen as assigning high probability mass to values of $z$ that \emph{explain} $x$
         well.
-    \item $\mathbb{E}_q [\log p(x|z)]$ is the symmetric of the crossentropy between
-        $q(z)$ and $p(x|z)$. Maximizing this quantity is equivalent of maximizing
+    \item $\mathbb{E}_q [\log p(z)]$ is the symmetric of the crossentropy between
+        $q(z)$ and $p(z)$. Maximizing this quantity is equivalent of minimizing
         that crossentropy. This can be regarded as a regularizer that discourages
         $q(z)$ of being too different from the prior $p(z)$.
     \item $ - \mathbb{E}_q [\log q(z)]$ is the entropy of $q(z)$. Maximizing
