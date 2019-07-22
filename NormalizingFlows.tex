@@ -1,0 +1,65 @@
+\chapter{Normalizing Flows}
+\label{chapter:probmodel}
+
+\section{Introduction}
+The best known and studied probability distributions are rarely expressive
+enough for real-world datasets. However, they have properties that make them
+amenable to work with, for instance: tractable parameter estimation and closed-form
+likelihood functions.
+
+As has been described, one way to obtain more expressive models is to assume the
+existence of latent variables, leverage certain factorization structures, and to
+use well-known distributions for the individual factors of the product that
+constitutes the model's joint distribution. By using these structures and choosing
+specific combinations of distributions (namely, conjugate prior-likelihood pairs),
+these models are able to stay tractable - normally via bespoke estimation/inference/learning
+algorithms.
+
+%Structures are easily encoded by Probabilistic Graphical Models, which are a
+%framework to easily express conditional independence assumptions and to specify
+%complex probabilistic models.
+
+Another approach to obtaining expressive probabilistic models is to apply
+transformations to a simple distribution, and use the Change of Variables
+formula to compute probabilities in the transformed space. This is the basis
+of Normalizing Flows, as will be made clear ahead.
+
+\section{Change of Variables}
+Given a probability distribution $p(z)$, with probability density function $f_Z(.)$,
+and a bijective and continuous function $g$, it's possible to write an expression
+for the probability density function $f_Y(.)$ of the random variable $y$ that is
+obtained by applying $g$ to samples of $p(z)$:
+\begin{align}
+    \mbox{if } z &\sim p(z) \\
+    \mbox{and } y &= g(z) \\
+    \mbox{then } f_Y(y) &= f_Z(g^{-1}(y))\Big|\det\Big(\frac{d}{dy}g^{-1}(y)\Big)\Big|
+\end{align}
+
+For this to be useful, some objects have to be easily computable:
+\begin{itemize}
+    \item $f_Z(z)$ - the starting distribution's probability density function.
+        It is assumed that there is a closed-form expression to compute this. In
+        practice, this is normally one of the basic distributions (Gaussian,
+        Uniform, etc.)
+    \item $\det\Big(\frac{d}{dy}g^{-1}(y)\Big)$ - the determinant  of the Jacobian
+        matrix of $g^-1(.)$. For most transformations this is not "cheap" to compute.
+        As will be shown, the main challenge of Normalizing Flows is to find
+        transformations that are expressive and fow which it is "cheap" to compute
+        the determinants of their Jacobian matrices.
+\end{itemize}
+
+\section{Normalizing Flows}
+Assuming we have a tranformation $g$ that fulfils the above two points, consider
+what we obtain if we compose this transformation $L$ times:
+\begin{align}
+    \mbox{if } z &\sim p(z) \\
+    \mbox{and } y &= g(z) \\
+    \mbox{then } f_Y(y) &= f_Z(g^{-1}(y))\Big|\det\Big(\frac{d}{dy}g^{-1}(y)\Big)\Big|
+\end{align}
+
+
+
+
+\section{Real NVP}
+
+
