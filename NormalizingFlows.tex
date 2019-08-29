@@ -22,7 +22,9 @@ algorithms.
 Another approach to obtaining expressive probabilistic models is to apply
 transformations to a simple distribution, and use the Change of Variables
 formula to compute probabilities in the transformed space. This is the basis
-of Normalizing Flows, as will be made clear ahead.
+of Normalizing Flows, an approach proposed by \author{shakir_nf} in \cite{shakir_nf},
+and which has since evolved and developed into the basis of multiple SoA techniques
+for density estimation [TODO: cite examples here].
 
 \section{Change of Variables}
 Given a probability distribution $p(z)$, with probability density function $f_Z(.)$,
@@ -42,23 +44,45 @@ For this to be useful, some objects have to be easily computable:
         practice, this is normally one of the basic distributions (Gaussian,
         Uniform, etc.)
     \item $\det\Big(\frac{d}{dy}g^{-1}(y)\Big)$ - the determinant  of the Jacobian
-        matrix of $g^-1(.)$. For most transformations this is not "cheap" to compute.
+        matrix of $g^{-1}(.)$ . For most transformations this is not "cheap" to compute.
         As will be shown, the main challenge of Normalizing Flows is to find
-        transformations that are expressive and fow which it is "cheap" to compute
-        the determinants of their Jacobian matrices.
+        transformations that are expressive and for which 
+        the determinants of their Jacobian matrices are "cheap" to compute.
 \end{itemize}
 
 \section{Normalizing Flows}
-Assuming we have a tranformation $g$ that fulfils the above two points, consider
-what we obtain if we compose this transformation $L$ times:
+Let us have $L$ transformations $h_\ell$ that fulfill the above two points, and
+let $z_\ell$ be the result of applying transformation $h_{\ell-1}$, with the
+exception of $z_0$, which is obtained by sampling from $p(z_0)$, the base distribution.
+Furthermore, let $g$ be the composition of the $L$ transformations.
+
+Applying the Change of Variables formula:
 \begin{align}
-    \mbox{if } z &\sim p(z) \\
-    \mbox{and } y &= g(z) \\
-    \mbox{then } f_Y(y) &= f_Z(g^{-1}(y))\Big|\det\Big(\frac{d}{dy}g^{-1}(y)\Big)\Big|
+    \mbox{if } z_0 &\sim p(z_0) \\
+    \mbox{and } y &= h_L \circ h_{L-1} \circ ... \circ h_0(z_0) \\
+    \mbox{then } f_Y(y) &= f_Z(g^{-1}(y))\Big|\det\Big(\frac{d}{dy}g^{-1}(y)\Big)\Big| \\
+                        &= f_Z(g^{-1}(y))\prod_{\ell=1}^{L}\Big|\det\Big(\frac{d}{dz_{\ell+1}}h_{\ell}^{-1}(z_{\ell+1})\Big)\Big| \\
+                        &= f_Z(g^{-1}(y))\prod_{\ell=1}^{L}\Big|\det\Big(\frac{d}{dz_{\ell}}h_{\ell}\Big(h_{\ell}^{-1}(z_{\ell+1}\Big)\Big)\Big|^{-1} \label{eq:nflowderivation}
+\end{align}
+
+Replacing $h_{\ell}^{-1}(z_{\ell+1}) = z_\ell$ in \ref{eq:nflowderivation}:
+
+\begin{align}
+         f_Y(y) &= f_Z(g^{-1}(y))\prod_{\ell=1}^{L}\Big|\det\Big(\frac{d}{dz_{\ell}}h_{\ell}\Big(z_\ell)\Big)\Big)\Big|^{-1} \\
+    \log f_Y(y) &= \log f_Z(g^{-1}(y)) - \sum_{\ell=1}^{L} \log \Big|\det\Big(\frac{d}{dz_{\ell}}h_{\ell}(z_\ell)\Big) \Big| \label{eq:nflowsfinal}
+\end{align}
+
+Depending on the task, one might prefer to replace the second term in \ref{eq:nflowsfinal}
+with a sum of log-abs-determinants of the Jacobians of the inverse transformations.
+This switch would imply replacing the minus sign before the sum with a plus sign:
+\begin{align}
+    \log f_Y(y) &= \log f_Z(g^{-1}(y)) + \sum_{\ell=0}^{L-1} \log \Big|\det\Big(\frac{d}{dz_{\ell+1}}h_{\ell}^{-1}(z_{\ell+1})\Big) \Big|
 \end{align}
 
 
-
+\section{Flow examples}
+In the Normalizing Flows literature, a Flow is the name given to each of the
+individual transformations that are composed to form a Normalizing Flow.
 
 \section{Real NVP}
 
