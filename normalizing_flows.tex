@@ -59,17 +59,17 @@ Furthermore, let $g$ be the composition of the $L$ transformations.
 Applying the Change of Variables formula:
 \begin{align}
     \mbox{if } z_0 &\sim p(z_0) \\
-    \mbox{and } y &= h_L \circ h_{L-1} \circ ... \circ h_0(z_0) \\
+    \mbox{and } y &= h_{L-1} \circ h_{L-2} \circ ... \circ h_0(z_0) \\
     \mbox{then } f_Y(y) &= f_Z(g^{-1}(y))\Big|\det\Big(\frac{d}{dy}g^{-1}(y)\Big)\Big| \\
-                        &= f_Z(g^{-1}(y))\prod_{\ell=1}^{L}\Big|\det\Big(\frac{d}{dz_{\ell+1}}h_{\ell}^{-1}(z_{\ell+1})\Big)\Big| \\
-                        &= f_Z(g^{-1}(y))\prod_{\ell=1}^{L}\Big|\det\Big(\frac{d}{dz_{\ell}}h_{\ell}\Big(h_{\ell}^{-1}(z_{\ell+1}\Big)\Big)\Big|^{-1} \label{eq:nflowderivation}
+                        &= f_Z(g^{-1}(y))\prod_{\ell=0}^{L-1}\Big|\det\Big(\frac{d}{dz_{\ell+1}}h_{\ell}^{-1}(z_{\ell+1})\Big)\Big| \\
+                        &= f_Z(g^{-1}(y))\prod_{\ell=0}^{L-1}\Big|\det\Big(\frac{d}{dz_{\ell}}h_{\ell}\Big(h_{\ell}^{-1}(z_{\ell+1}\Big)\Big)\Big|^{-1} \label{eq:nflowderivation}
 \end{align}
 
 Replacing $h_{\ell}^{-1}(z_{\ell+1}) = z_\ell$ in \ref{eq:nflowderivation}:
 
 \begin{align}
-         f_Y(y) &= f_Z(g^{-1}(y))\prod_{\ell=1}^{L}\Big|\det\Big(\frac{d}{dz_{\ell}}h_{\ell}\Big(z_\ell)\Big)\Big)\Big|^{-1} \\
-    \log f_Y(y) &= \log f_Z(g^{-1}(y)) - \sum_{\ell=1}^{L} \log \Big|\det\Big(\frac{d}{dz_{\ell}}h_{\ell}(z_\ell)\Big) \Big| \label{eq:nflowsfinal}
+         f_Y(y) &= f_Z(g^{-1}(y))\prod_{\ell=0}^{L-1}\Big|\det\Big(\frac{d}{dz_{\ell}}h_{\ell}\Big(z_\ell)\Big)\Big)\Big|^{-1} \\
+    \log f_Y(y) &= \log f_Z(g^{-1}(y)) - \sum_{\ell=0}^{L-1} \log \Big|\det\Big(\frac{d}{dz_{\ell}}h_{\ell}(z_\ell)\Big) \Big| \label{eq:nflowsfinal}
 \end{align}
 
 Depending on the task, one might prefer to replace the second term in \ref{eq:nflowsfinal}
@@ -79,11 +79,47 @@ This switch would imply replacing the minus sign before the sum with a plus sign
     \log f_Y(y) &= \log f_Z(g^{-1}(y)) + \sum_{\ell=0}^{L-1} \log \Big|\det\Big(\frac{d}{dz_{\ell+1}}h_{\ell}^{-1}(z_{\ell+1})\Big) \Big|
 \end{align}
 
+With this expression, gradient-based MLE becomes feasible. Moreover, sampling
+from the resulting distribution is simply achieved by sampling from the base
+distribution and applying the chain of transformations. Because of this, Normalizing
+Flows lend themselves to be used as flexible variational posteriors, in Variational
+Inference settings.
 
-\section{Flow examples}
-In the Normalizing Flows literature, a Flow is the name given to each of the
-individual transformations that are composed to form a Normalizing Flow.
+\section{Examples of transformations}
+\subsection{Affine Transformation}
+The simplest transform that can be applied is an Affine Transformation.
+This transformation can stretch, shrink and rotate space. It is simply the 
+multiplication by a matrix $A$ and summation of a bias vector $b$:
+\begin{align}
+    z &\sim p(z) \\
+    y &= Az + b
+\end{align}
 
-\section{Real NVP}
+The Jacobian of this transformation is simply the determinant of the matrix $A$.
 
+However, in general, computing the determinant of a $N \times N$ matrix has a
+complexity of $\mathcal{O}(N^3)$. For that reason, it is common to use matrices
+with a certain structure that makes their determinants easier to compute. For
+instance, if $A$ is triangular, its determinant is simply the product of its
+diagonal's elements. The downside of using matrices that are constrained to
+a certain structure is that they correspond to less flexible transformations.
+
+It is possible, however, to design Affine Transformations whose Jacobians are
+of $\mathcal{O}(N)$ complexity and that are more expressive than simple
+triangular matrices. In \cite{Glow}, one such transformation is proposed. It
+constrains the matrix $A$ to be decomposable as $A = PL\big(U + diag(\mathbf{s})\big)$,
+where $diag(\mathbf{s})$ is a diagonal matrix whose diagonal's elements are
+the values of vector $\mathbf{s}$. The following additional constrains are in place:
+\begin{itemize}
+    \item $P$ is a permutation matrix
+    \item $L$ is a lower triangular matrix, with ones on its diagonal
+    \item $U$ is an upper triangular matrix, with zeros on its diagonal
+\end{itemize}
+
+Given these constraints, the determinant of the matrix $A$ is simply the product
+of the elements of $\mathbf{s}$.
+
+\subsection{PReLU Transformation}
+\subsection{Affine Coupling Transformation}
+\subsection{Batch-Norm Transformation}
 
