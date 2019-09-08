@@ -2,9 +2,67 @@
 \label{chapter:vmonf}
 
 \section{Introduction}
+\label{section:vmonf-intro}
 
-Lorem ipsem Lorem ipsemLorem ipsemLorem ipsemLorem ipsem
-Lorem ipsemLorem ipsemLorem ipsemLorem ipsemLorem ipsemLorem ipsem
-Lorem ipsemLorem ipsemLorem ipsemLorem ipsem
-Lorem ipsemLorem ipsemLorem ipsemLorem ipsemLorem ipsem
-Lorem ipsemLorem ipsemLorem ipsemLorem ipsemLorem ipsem
+As mentioned in sections \ref{section:probmodellatvar} and \ref{section:mmodels},
+the ability of leveraging domain knowledge to endow a probabilistic model with
+structure is often useful. The goal of this work is to devise a model that combines
+the flexibility of Normalizing Flows with the ability to exploit class-membership
+structure. Specifically, such model would be able to learn $K$ Normalizing Flows,
+each responsible for one of $K$ clusters in a dataset.
+
+\section{Model Definition}
+
+Let us define a Mixture Model as in \ref{section:mmodels}, where each of the $K$
+components is a Normalizing Flow. For simplicity, consider that all of the $K$
+Normalizing Flows have the same architecture \footnote{This is not a requirement,
+and in cases where we have classes with different levels of complexity, we can
+have components with different architectures. However, the training procedure
+does not guarantee that that the most flexible Normalizing Flow is "allocated"
+to the most complex cluster. This is definitely an interesting direction for future
+research.}, i.e., they are all composed of the same stack of transformations,
+but they each have their own parameters.
+
+Additionally, let $q(z|x;\gamma)$ be a neural network with a softmax output, with
+parameters $\gamma$. This network will receive as input an instance from the
+data, and produce the probability of that instance belonging to each of the
+$K$ classes.
+
+Recall the Evidence Lower Bound given in \ref{eq:elbokldiv}\footnote{Here the
+dependence of $q$ on $x$ is made explicit}:
+\begin{equation*}
+    \text{ELBO} = \mathbb{E}_q [\log p(x, z)] - \mathbb{E}_q [\log q(z|x)]
+\end{equation*}
+
+Let us rearrange it:
+\begin{align}
+    \text{ELBO} &= \mathbb{E}_q [\log p(x|z)] + \mathbb{E}_q [\log p(z)] - \mathbb{E}_q [\log q(z|x)]
+        \label{eq:threepartelbo} \\
+    \text{ELBO} &= \mathbb{E}_q [\log p(x|z) + \log p(z) - \log q(z|x)] \label{eq:simplerelbo}
+\end{align}
+
+Since $q(z|x)$ is given by the forward-pass of a neural network, and is therefore
+straightforward to obtain, the expectation in \ref{eq:simplerelbo} is given by
+computing the expression inside the expectation for each possible value of $z$,
+and summing the obtained values, weighed by the probabilities given by the encoder.
+Thus, the whole ELBO is easy to compute, provided that each of the terms inside
+the expectation is itself easy to compute. Let us consider each of those terms:
+\begin{itemize}
+    \item $\log p(x|z)$ is the log-likelihood of the Normalizing Flow indexed by $z$.
+        It was shown in the previous chapter that this is easy to compute.
+    \item $\log p(z)$ is the log-prior of the component weights. For simplicity,
+        let us assume this is set by the modeller. When nothing is known about
+        the component weights, the best assumption is that they are uniform.
+        Nevertheless, as will be shown empirically, this too can be optimized.
+    \item $- \log q(z|x)$ is the negative logarithm of the output of the encoder.
+\end{itemize}
+
+For a better intuition about each of these terms, it is useful to review the last
+paragraph of the first subsection of section \ref{subsubsection:kldiv}.
+
+I call this model Variational Mixture of Normalizing Flows (VMoNF). For an overview of
+the model, consider figure \ref{fig:modeloverview}.
+
+In a similar fashion to how the Variational Auto-Encoder, proposed in \cite{vaepaper}
+works, a VMoNF is fitted by jointly optimizing the parameters of the variational
+posterior $q(z|x; \gamma)$ and the parameters of the generative process $p(x|z; \theta)$.

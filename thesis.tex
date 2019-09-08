@@ -77,27 +77,32 @@
 \listoffigures
 \cleardoublepage 
 
+\phantomsection
+\addcontentsline{toc}{section}{\acronymname}
+\input{acronyms}
+\cleardoublepage
+
 % Nomenclature
 %
 % entries of nomenclature list
-\input{nomenclature}
+%\input{nomenclature}
+%%
+%% Add entry in the table of contents as section
+%\phantomsection
+%\addcontentsline{toc}{section}{\nomname}
+%% Insert glossary/nomenclature section produced by MakeIndex
+%\printnomenclature
+%\cleardoublepage
 %
-% Add entry in the table of contents as section
-\phantomsection
-\addcontentsline{toc}{section}{\nomname}
-% Insert glossary/nomenclature section produced by MakeIndex
-\printnomenclature
-\cleardoublepage
-
-% entries of glossary list
-\input{glossary}
-
-% Add entry in the table of contents as section
-\phantomsection
-\addcontentsline{toc}{section}{\glossaryname}
-% Insert glossary section produced by MakeIndex
-\printglossary
-\cleardoublepage
+%% entries of glossary list
+%\input{glossary}
+%
+%% Add entry in the table of contents as section
+%\phantomsection
+%\addcontentsline{toc}{section}{\glossaryname}
+%% Insert glossary section produced by MakeIndex
+%\printglossary
+%\cleardoublepage
 
 % Set arabic numbering (1,2,...) after preface
 %

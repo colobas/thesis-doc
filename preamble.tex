@@ -40,11 +40,11 @@
 %
 \addto\captionsenglish{\renewcommand{\acknowledgments}{Acknowledgments}}
 %\addto\captionsenglish{\renewcommand{\contentsname}{Contents}}
-%\addto\captionsenglish{\renewcommand{\listtablename}{List of Tables}}
-%\addto\captionsenglish{\renewcommand{\listfigurename}{List of figures}}
+\addto\captionsenglish{\renewcommand{\listtablename}{List of Tables}}
+\addto\captionsenglish{\renewcommand{\listfigurename}{List of Figures}}
 %\addto\captionsenglish{\renewcommand{\nomname}{Nomenclature}}
 %\addto\captionsenglish{\renewcommand{\glossaryname}{Glossary}}
-%\addto\captionsenglish{\renewcommand{\acronymname}{List of Acronyms}}
+\addto\captionsenglish{\renewcommand{\acronymname}{List of Acronyms}}
 %\addto\captionsenglish{\renewcommand{\bibname}{References}} % Bibliography
 %\addto\captionsenglish{\renewcommand{\appendixname}{Appendix}}
 
@@ -54,7 +54,7 @@
 %\addto\captionsportuguese{\renewcommand{\contentsname}{Conte\'{u}do}}
 %\addto\captionsportuguese{\renewcommand{\listtablename}{Lista de Figuras}}
 %\addto\captionsportuguese{\renewcommand{\listfigurename}{Lista de Tabelas}}
-\addto\captionsportuguese{\renewcommand{\nomname}{Lista de S\'{i}mbolos}} % Nomenclatura
+%\addto\captionsportuguese{\renewcommand{\nomname}{Lista de S\'{i}mbolos}} % Nomenclatura
 %\addto\captionsportuguese{\renewcommand{\glossary}{Gloss\'{a}rio}}
 %\addto\captionsportuguese{\renewcommand{\acronymname}{Lista de Abrevia\c{c}\~{o}es}}
 %\addto\captionsportuguese{\renewcommand{\bibname}{Refer\^{e}ncias}} % Bibliografia
@@ -323,13 +323,13 @@
 % Create a glossary.
 % http://www.ctan.org/tex-archive/macros/latex/contrib/glossary/
 %
-% Glossary (produces *.glo *.ist files)
-\usepackage[number=none]{glossary}
-% (remove blank line between groups)
-\setglossary{gloskip={}}
-% (redefine glossary style file)
-%\renewcommand{\istfilename}{myGlossaryStyle.ist}
-\makeglossary
+%% Glossary (produces *.glo *.ist files)
+%\usepackage[number=none]{glossary}
+%% (remove blank line between groups)
+%\setglossary{gloskip={}}
+%% (redefine glossary style file)
+%%\renewcommand{\istfilename}{myGlossaryStyle.ist}
+%\makeglossary
 
 
 % 'rotating' package
@@ -482,6 +482,8 @@
 \usepackage{pdfpages}
 
 \usepackage{enumitem}
+\usepackage{arydshln}
+\usepackage{tikz}
 \setlist{nosep}
 
 % ----------------------------------------------------------------------
@@ -525,3 +527,7 @@
 \newcommand{\boldcal}[1]{{\ensuremath{\boldsymbol{\mathcal{#1}}}}}% math bold calygraphy
 \DeclareMathOperator*{\argmin}{\arg\!\min}
 \DeclareMathOperator*{\argmax}{\arg\!\max}
+
+\usepackage{tikz}
+\usetikzlibrary{matrix,decorations.pathreplacing,calc}
+\usepackage{acronym}
