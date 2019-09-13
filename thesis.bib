@@ -234,30 +234,22 @@
 
 
 % cb2Bib 2.0.0
-@incollection{Johnson16p2946,
-title        = {{Composing graphical models with neural networks for structured representations and fast inference}},
-author       = {M. Johnson and D. K. Duvenaud and A. Wiltschko and R. P. Adams and S. R. Datta},
-booktitle    = {{Advances in Neural Information Processing Systems 29}},
-pages        = {2946 - 2954},
-year         = {2016},
-editor       = {D. D. Lee and M. Sugiyama and U. V. Luxburg and I. Guyon and R. Garnett},
-publisher    = {Curran Associates, Inc.},
-url          = {http://papers.nips.cc/paper/6379-composing-graphical-models-with-neural-networks-for-structured-representations-and-fast-inference.pdf}
-}
-
-@inproceedings{lin2018variational,
-title={Variational Message Passing with Structured Inference Networks},
-author={Wu Lin and Mohammad Emtiyaz Khan and Nicolas Hubacher},
-booktitle={International Conference on Learning Representations},
-year={2018},
-url={https://openreview.net/forum?id=HyH9lbZAW},
+@incollection{svae,
+    title        = {{Composing graphical models with neural networks for structured representations and fast inference}},
+    author       = {M. Johnson and D. K. Duvenaud and A. Wiltschko and R. P. Adams and S. R. Datta},
+    booktitle    = {{Advances in Neural Information Processing Systems 29}},
+    pages        = {2946 - 2954},
+    year         = {2016},
+    editor       = {D. D. Lee and M. Sugiyama and U. V. Luxburg and I. Guyon and R. Garnett},
+    publisher    = {Curran Associates, Inc.},
+    url          = {http://papers.nips.cc/paper/6379-composing-graphical-models-with-neural-networks-for-structured-representations-and-fast-inference.pdf}
 }
 
 @misc{1812.03511,
-Author = {Yibo Yang and Paris Perdikaris},
-Title = {Physics-informed deep generative models},
-Year = {2018},
-Eprint = {arXiv:1812.03511},
+    Author = {Yibo Yang and Paris Perdikaris},
+    Title = {Physics-informed deep generative models},
+    Year = {2018},
+    Eprint = {arXiv:1812.03511},
 }
 
 @article{chaitin-leibniz,
@@ -322,3 +314,143 @@ Eprint = {arXiv:1812.03511},
    volume =    {},
    url =       {http://gen.lib.rus.ec/book/index.php?md5=71adde9248ac4054b474a956d826033b}
 }
+
+@inproceedings{
+    lin2018variational,
+    title={Variational Message Passing with Structured Inference Networks},
+    author={Wu Lin and Mohammad Emtiyaz Khan and Nicolas Hubacher},
+    booktitle={International Conference on Learning Representations},
+    year={2018},
+    url={https://openreview.net/forum?id=HyH9lbZAW},
+}
+
+
+
+@InProceedings{pmlr-v37-rezende15,
+  title = 	 {Variational Inference with Normalizing Flows},
+  author = 	 {Danilo Rezende and Shakir Mohamed},
+  booktitle = 	 {Proceedings of the 32nd International Conference on Machine Learning},
+  pages = 	 {1530--1538},
+  year = 	 {2015},
+  editor = 	 {Francis Bach and David Blei},
+  volume = 	 {37},
+  series = 	 {Proceedings of Machine Learning Research},
+  address = 	 {Lille, France},
+  month = 	 {07--09 Jul},
+  publisher = 	 {PMLR},
+  pdf = 	 {http://proceedings.mlr.press/v37/rezende15.pdf},
+  url = 	 {http://proceedings.mlr.press/v37/rezende15.html},
+  abstract = 	 {The choice of the approximate posterior distribution is one of the core problems in variational inference. Most applications of variational inference employ simple families of posterior approximations in order to allow for efficient inference, focusing on mean-field or other simple structured approximations. This restriction has a significant impact on the quality of inferences made using variational methods. We introduce a new approach for specifying flexible, arbitrarily complex and scalable approximate posterior distributions. Our approximations are distributions constructed through a normalizing flow, whereby a simple initial density is transformed into a more complex one by applying a sequence of invertible transformations until a desired level of complexity is attained. We use this view of normalizing flows to develop categories of finite and infinitesimal flows and provide a unified view of approaches for constructing rich posterior approximations. We demonstrate that the theoretical advantages of having posteriors that better match the true posterior, combined with the scalability of amortized variational approaches, provides a clear improvement in performance and applicability of variational inference.}
+}
+
+@InProceedings{pmlr-v97-ho19a,
+  title = 	 {Flow++: Improving Flow-Based Generative Models with Variational Dequantization and Architecture Design},
+  author = 	 {Ho, Jonathan and Chen, Xi and Srinivas, Aravind and Duan, Yan and Abbeel, Pieter},
+  booktitle = 	 {Proceedings of the 36th International Conference on Machine Learning},
+  pages = 	 {2722--2730},
+  year = 	 {2019},
+  editor = 	 {Chaudhuri, Kamalika and Salakhutdinov, Ruslan},
+  volume = 	 {97},
+  series = 	 {Proceedings of Machine Learning Research},
+  address = 	 {Long Beach, California, USA},
+  month = 	 {09--15 Jun},
+  publisher = 	 {PMLR},
+  pdf = 	 {http://proceedings.mlr.press/v97/ho19a/ho19a.pdf},
+  url = 	 {http://proceedings.mlr.press/v97/ho19a.html},
+  abstract = 	 {Flow-based generative models are powerful exact likelihood models with efficient sampling and inference. Despite their computational efficiency, flow-based models generally have much worse density modeling performance compared to state-of-the-art autoregressive models. In this paper, we investigate and improve upon three limiting design choices employed by flow-based models in prior work: the use of uniform noise for dequantization, the use of inexpressive affine flows, and the use of purely convolutional conditioning networks in coupling layers. Based on our findings, we propose Flow++, a new flow-based model that is now the state-of-the-art non-autoregressive model for unconditional density estimation on standard image benchmarks. Our work has begun to close the significant performance gap that has so far existed between autoregressive models and flow-based models.}
+}
+
+@inproceedings{cglow_icml,
+  author    = {You Lu and Bert Huang},
+  title     = {{Structured Output Learning with Conditional Generative Flows}},
+  year      = {2019},
+  maintitle = {International Conference on Machine Learning},
+  booktitle = {Workshop on Invertible Neural Networks and Normalizing Flows},
+}
+
+@inproceedings{semisuplearning_nflows,
+  author    = {Pavel Izmailov and Polina Kirichenko and Marc Finzi and Andrew Gordon Wilson},
+  title     = {{Semi-Supervised Learning with Normalizing Flows}},
+  year      = {2019},
+  maintitle = {International Conference on Machine Learning},
+  booktitle = {Workshop on Invertible Neural Networks and Normalizing Flows},
+}
+
+@inproceedings{real-nvp,
+  author    = {Laurent Dinh and
+               Jascha Sohl{-}Dickstein and
+               Samy Bengio},
+  title     = {Density estimation using Real {NVP}},
+  booktitle = {5th International Conference on Learning Representations, {ICLR} 2017,
+               Toulon, France, April 24-26, 2017, Conference Track Proceedings},
+  year      = {2017},
+  crossref  = {DBLP:conf/iclr/2017},
+  url       = {https://openreview.net/forum?id=HkpbnH9lx},
+  timestamp = {Thu, 25 Jul 2019 14:25:58 +0200},
+  biburl    = {https://dblp.org/rec/bib/conf/iclr/DinhSB17},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@misc{1908.09257,
+    Author = {Ivan Kobyzev and Simon Prince and Marcus A. Brubaker},
+    Title = {Normalizing Flows: Introduction and Ideas},
+    Year = {2019},
+    Eprint = {arXiv:1908.09257},
+}
+
+@incollection{NIPS2018_8224,
+    title = {Glow: Generative Flow with Invertible 1x1 Convolutions},
+    author = {Kingma, Durk P and Dhariwal, Prafulla},
+    booktitle = {Advances in Neural Information Processing Systems 31},
+    editor = {S. Bengio and H. Wallach and H. Larochelle and K. Grauman and N. Cesa-Bianchi and R. Garnett},
+    pages = {10215--10224},
+    year = {2018},
+    publisher = {Curran Associates, Inc.},
+    url = {http://papers.nips.cc/paper/8224-glow-generative-flow-with-invertible-1x1-convolutions.pdf}
+}
+
+@misc{gmVAE,
+    Author = {Nat Dilokthanakul and Pedro A. M. Mediano and Marta Garnelo and Matthew C. H. Lee and Hugh Salimbeni and Kai Arulkumaran and Murray Shanahan},
+    Title = {Deep Unsupervised Clustering with Gaussian Mixture Variational Autoencoders},
+    Year = {2016},
+    Eprint = {arXiv:1611.02648},
+}
+
+@misc{RAD,
+    Author = {Laurent Dinh and Jascha Sohl-Dickstein and Razvan Pascanu and Hugo Larochelle},
+    Title = {A RAD approach to deep mixture models},
+    Year = {2019},
+    Eprint = {arXiv:1903.07714},
+}
+
+@incollection{GAN,
+    title = {Generative Adversarial Nets},
+    author = {Goodfellow, Ian and Pouget-Abadie, Jean and Mirza, Mehdi and Xu, Bing and Warde-Farley, David and Ozair, Sherjil and Courville, Aaron and Bengio, Yoshua},
+    booktitle = {Advances in Neural Information Processing Systems 27},
+    editor = {Z. Ghahramani and M. Welling and C. Cortes and N. D. Lawrence and K. Q. Weinberger},
+    pages = {2672--2680},
+    year = {2014},
+    publisher = {Curran Associates, Inc.},
+    url = {http://papers.nips.cc/paper/5423-generative-adversarial-nets.pdf}
+}
+
+
+
+@InProceedings{DEC,
+  title = 	 {Unsupervised Deep Embedding for Clustering Analysis},
+  author = 	 {Junyuan Xie and Ross Girshick and Ali Farhadi},
+  booktitle = 	 {Proceedings of The 33rd International Conference on Machine Learning},
+  pages = 	 {478--487},
+  year = 	 {2016},
+  editor = 	 {Maria Florina Balcan and Kilian Q. Weinberger},
+  volume = 	 {48},
+  series = 	 {Proceedings of Machine Learning Research},
+  address = 	 {New York, New York, USA},
+  month = 	 {20--22 Jun},
+  publisher = 	 {PMLR},
+  pdf = 	 {http://proceedings.mlr.press/v48/xieb16.pdf},
+  url = 	 {http://proceedings.mlr.press/v48/xieb16.html},
+  abstract = 	 {Clustering is central to many data-driven application domains and has been studied extensively in terms of distance functions and grouping algorithms. Relatively little work has focused on learning representations for clustering. In this paper, we propose Deep Embedded Clustering (DEC), a method that simultaneously learns feature representations and cluster assignments using deep neural networks. DEC learns a mapping from the data space to a lower-dimensional feature space in which it iteratively optimizes a clustering objective. Our experimental evaluations on image and text corpora show significant improvement over state-of-the-art methods.}
+}
+
+

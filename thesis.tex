@@ -10,7 +10,7 @@
 % ----------------------------------------------------------------------
 % Define external packages, language, margins, fonts and new commands
 % ----------------------------------------------------------------------
-\input{preamble} % file "Thesis_Preamble.tex"
+\input{preamble}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %     Begin Document                                                   %
@@ -79,7 +79,7 @@
 
 \phantomsection
 \addcontentsline{toc}{section}{\acronymname}
-\input{acronyms}
+\printglossary[type=\acronymtype,toctitle=\acronymname,title=\acronymname, style=custom_acronyms]
 \cleardoublepage
 
 % Nomenclature

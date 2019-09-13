@@ -32,12 +32,14 @@
 %   \chaptername, \contentsname, \listfigurename, \listtablename, ...)
 % http://www.tex.ac.uk/cgi-bin/texfaq2html?label=fixnam
 %
+\usepackage[acronym]{glossaries}
 % Changing the words babel uses (uncomment and redefine as necessary...)
 %
 \newcommand{\acknowledgments}{@undefined} % new LaTeX variable name
 %
 % > English
-%
+
+%\addto\captionsenglish{\acronymname}
 \addto\captionsenglish{\renewcommand{\acknowledgments}{Acknowledgments}}
 %\addto\captionsenglish{\renewcommand{\contentsname}{Contents}}
 \addto\captionsenglish{\renewcommand{\listtablename}{List of Tables}}
@@ -530,4 +532,4 @@
 
 \usepackage{tikz}
 \usetikzlibrary{matrix,decorations.pathreplacing,calc}
-\usepackage{acronym}
+\input{acronyms}

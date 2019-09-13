@@ -1,30 +1,40 @@
 \chapter{Introduction}
 \label{chapter:introduction}
 
-Insert your chapter material here...
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Motivation}
 \label{section:motivation}
 
-Relevance of the subject...
+\section{Related Work}
+\label{section:related}
+
+The work presented here intersects with several active directions of research.
+In the sense of combining deep neural networks with probabilistic modelling,
+particularly with the goal of endowing simple probabilistic graphical models
+with more expressiveness, \cite{svae} and \cite{lin2018variational} propose a
+framework to use neural network parameterized likelihoods, composed with latent
+probabilistic graphical models. Still in line with this topic, but with an
+approach more focused towards clustering and semi-supervised learning, \cite{gmVAE}
+proposes a VAE-inspired model, where the prior is a Gaussian Mixture. \cite{DEC}
+describes an unsupervised method for clustering using deep neural networks, which
+is a task that can also be fulfilled by the model presented in this work.
+
+\cite{RAD}, similarly to this work, tries to reconcile normalizing flows with
+multimodal/discrete structure. , \cite{RAD} recasts .........;
+
+\cite{semisuplearning_nflows} is the published work which is most related to the
+present work. It too tries to exploit multimodal structure while using normalizing
+flows for expressiveness. However, while this work relies on a variational inference
+approach to learn the distribution of the discrete variables that select the
+component for each sample, leveraging a variational posterior parameterized by
+a neural network, \cite{semisuplearning_nflows} resorts to the use of a latent
+mixture of gaussians as the base distribution for its flow model.
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Topic Overview}
-\label{section:overview}
-
-Provide an overview of the topic to be studied...
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Objectives}
 \label{section:objectives}
 
 Explicitly state the objectives set to be achieved with this thesis...
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Thesis Outline}
 \label{section:outline}
 
