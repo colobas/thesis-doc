@@ -10,7 +10,7 @@ FILE=thesis
 all:
 	pdflatex  ${FILE}
 	makeglossaries ${FILE}
-	bibtex ${FILE}
+	biber ${FILE}
 	pdflatex  ${FILE}
 	pdflatex  ${FILE}
 

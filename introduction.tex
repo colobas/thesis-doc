@@ -4,6 +4,17 @@
 \section{Motivation}
 \label{section:motivation}
 
+Neural network based generative models - Variational Autoencoders, Generative
+Adversarial Networks, Normalizing Flows and their variations - have experienced
+increased interest and progress in their capabilities, in the last few years.
+
+Less (although some) attention has been given to the extension of such
+models with discrete structure, such as the one found in Mixture Models. Exploiting
+such structure, while still being able to benefit from the expressiveness of
+neural generative models - specifically, Normalizing Flows - is the goal of this
+work. Doing so will naturally produce an approach which lends itself to
+clustering, semi-supervised learning, and (multimodal) density estimation.
+
 \section{Related Work}
 \label{section:related}
 
@@ -18,25 +29,59 @@ proposes a VAE-inspired model, where the prior is a Gaussian Mixture. \cite{DEC}
 describes an unsupervised method for clustering using deep neural networks, which
 is a task that can also be fulfilled by the model presented in this work.
 
-\cite{RAD}, similarly to this work, tries to reconcile normalizing flows with
-multimodal/discrete structure. , \cite{RAD} recasts .........;
+The following are brief descriptions of the two works that are most related to
+the present work.
 
-\cite{semisuplearning_nflows} is the published work which is most related to the
-present work. It too tries to exploit multimodal structure while using normalizing
-flows for expressiveness. However, while this work relies on a variational inference
-approach to learn the distribution of the discrete variables that select the
-component for each sample, leveraging a variational posterior parameterized by
-a neural network, \cite{semisuplearning_nflows} resorts to the use of a latent
-mixture of gaussians as the base distribution for its flow model.
+\cite{RAD}, similarly to this work, tries to reconcile Normalizing Flows with
+multimodal/discrete structure. It does so by partitioning the latent space in
+disjoint subsets and using a Mixture Model where each component has non-zero
+weight exclusively within its respective subset. Then, using a set identification
+function and a piecewise invertible function, a variation of the change-of-variable
+formula is devised.
 
+\cite{semisuplearning_nflows} also tries to exploit multimodal structure while
+using Normalizing Flows for expressiveness. However, while the present work relies on
+a variational posterior parameterized by a neural network and learns $K$ flows
+(one for each mixture component), \cite{semisuplearning_nflows} resorts to the use of a
+latent Mixture of Gaussians as the base distribution for its flow model, and it
+learns a single flow.
 
 \section{Objectives}
 \label{section:objectives}
 
-Explicitly state the objectives set to be achieved with this thesis...
+The objectives of the present work are:
+\begin{itemize}
+    \item The design of a Normalizing Flow Mixture Model, with a tractable learning procedure
+    \item The empirical analysis of the capabilities of such model, namely in the tasks of:
+        \begin{itemize}
+        \item Density Estimation
+        \item Clustering
+        \item Semi-supervised learning
+        \end{itemize}
+\end{itemize}
 
 \section{Thesis Outline}
 \label{section:outline}
 
-Briefly explain the contents of the different chapters...
+In Chapter 2, the concepts on Probabilistic Modelling needed for the remainder
+of the work are introduced. In Chapter 3, the framework and theoretical background
+of Normalizing Flows is presented. Chapter 4 describes in detail the model
+proposed by the present work, and Chapter 5 contains empirical results and their
+interpretation.
 
+\section{Notation}
+\label{section:notation}
+The notation used throughout this work is as follows:
+
+\begin{itemize}
+    \item Scalars and vectors are lower-case letters. To differentiate between
+them, vectors will be present in bold. E.g.: $x$ is a scalar $\mathbf{z}$ is
+a vector.
+    \item Upper-case letters are matrices.
+    \item For distributions, subscript notation will only be used when the
+distribution isn't clear from context.
+    \item The operator $\odot$ denotes the element-wise product
+    \item The letter $x$ is preferred for observations
+    \item The letter $z$ is preferred for latent variables
+    \item The letter $\theta$ is preferred for parameter vectors
+\end{itemize}

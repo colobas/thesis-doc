@@ -23,46 +23,63 @@ to the most complex cluster. This is definitely an interesting direction for fut
 research.}, i.e., they are all composed of the same stack of transformations,
 but they each have their own parameters.
 
-Additionally, let $q(z|x;\gamma)$ be a neural network with a softmax output, with
-parameters $\gamma$. This network will receive as input an instance from the
+Additionally, let $q(z|\bm{x};\gamma)$ be a neural network with a softmax output, with
+parameters $\bm\gamma$. This network will receive as input an instance from the
 data, and produce the probability of that instance belonging to each of the
 $K$ classes.
 
 Recall the Evidence Lower Bound given in \ref{eq:elbokldiv}\footnote{Here the
 dependence of $q$ on $x$ is made explicit}:
 \begin{equation*}
-    \text{ELBO} = \mathbb{E}_q [\log p(x, z)] - \mathbb{E}_q [\log q(z|x)]
+    \text{ELBO} = \mathbb{E}_q [\log p(\bm{x}, z)] - \mathbb{E}_q [\log q(z|\bm{x})]
 \end{equation*}
 
 Let us rearrange it:
 \begin{align}
-    \text{ELBO} &= \mathbb{E}_q [\log p(x|z)] + \mathbb{E}_q [\log p(z)] - \mathbb{E}_q [\log q(z|x)]
+    \text{ELBO} &= \mathbb{E}_q [\log p(\bm{x}|z)] + \mathbb{E}_q [\log p(z)] - \mathbb{E}_q [\log q(z|\bm{x})]
         \label{eq:threepartelbo} \\
-    \text{ELBO} &= \mathbb{E}_q [\log p(x|z) + \log p(z) - \log q(z|x)] \label{eq:simplerelbo}
+    \text{ELBO} &= \mathbb{E}_q [\log p(\bm{x}|z) + \log p(z) - \log q(z|\bm{x})] \label{eq:simplerelbo}
 \end{align}
 
-Since $q(z|x)$ is given by the forward-pass of a neural network, and is therefore
+Since $q(z|\bm{x})$ is given by the forward-pass of a neural network, and is therefore
 straightforward to obtain, the expectation in \ref{eq:simplerelbo} is given by
 computing the expression inside the expectation for each possible value of $z$,
-and summing the obtained values, weighed by the probabilities given by the encoder.
+and summing the obtained values, weighed by the probabilities given by the variational posterior.
 Thus, the whole ELBO is easy to compute, provided that each of the terms inside
 the expectation is itself easy to compute. Let us consider each of those terms:
 \begin{itemize}
-    \item $\log p(x|z)$ is the log-likelihood of the Normalizing Flow indexed by $z$.
-        It was shown in the previous chapter that this is easy to compute.
+    \item $\log p(\bm{x}|z)$ is the log-likelihood of $\bm{x}$ under the Normalizing
+        Flow indexed by $z$. It was shown in the previous chapter how to compute
+        this.
     \item $\log p(z)$ is the log-prior of the component weights. For simplicity,
         let us assume this is set by the modeller. When nothing is known about
         the component weights, the best assumption is that they are uniform.
         Nevertheless, as will be shown empirically, this too can be optimized.
-    \item $- \log q(z|x)$ is the negative logarithm of the output of the encoder.
+    \item $- \log q(z|\bm{x})$ is the negative logarithm of the output of the encoder.
 \end{itemize}
 
 For a better intuition about each of these terms, it is useful to review the last
 paragraph of the first subsection of section \ref{subsubsection:kldiv}.
 
 I call this model Variational Mixture of Normalizing Flows (VMoNF). For an overview of
-the model, consider figure \ref{fig:modeloverview}.
+the model, consider figures \ref{fig:plate} and \ref{fig:modeloverview}
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.5\linewidth]{figures/plate_diagram.png}
+  \caption{Plate diagram of a Mixture of $K$ Normalizing Flows. $\bm\theta_k$ is the
+    parameter vector of component $k$.}
+  \label{fig:plate}
+\end{figure}
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.85\linewidth]{figures/train_overview.png}
+  \caption{Overview of the training procedure.}
+  \label{fig:modeloverview}
+\end{figure}
 
 In a similar fashion to how the Variational Auto-Encoder, proposed in \cite{vaepaper}
 works, a VMoNF is fitted by jointly optimizing the parameters of the variational
-posterior $q(z|x; \gamma)$ and the parameters of the generative process $p(x|z; \theta)$.
+posterior $q(z|\bm{x}; \bm\gamma)$ and the parameters of the generative process
+$p(\bm{x}|z; \bm\theta)$.
