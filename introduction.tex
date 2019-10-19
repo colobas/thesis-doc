@@ -9,10 +9,10 @@ generative adversarial networks (GANs), normalizing flows and their variations -
 have experienced increased interest and progress in their capabilities. VAEs
 (\autocite{vaepaper}) work by leveraging the reparameterization trick to optimize
 a variational posterior parameterized by a neural network, jointly with the generative
-model per se - it too a neural network, which takes as input samples from a latent
-space and \emph{decodes} them into the observation space. GANs also work by
-jointly optimizing two neural networks: a generator, which learns to produce
-realistic samples in order to \q{fool} the second network, the discriminator, which
+model per se - it too a neural network, which takes samples from a latent as its
+input space and \emph{decodes} them into the observation space. GANs also work by
+jointly optimizing two neural networks: a \emph{generator}, which learns to produce
+realistic samples in order to \q{fool} the second network - the \emph{discriminator} - which
 learns to distinguish samples produced by the generator from samples taken from data. GANs learn
 by having the generator and discriminator \q{compete}. Both VAEs and GANs learn
 \emph{implicit} distributions of the data, in the sense that - if training is
@@ -104,5 +104,8 @@ distribution isn't clear from context.
     \item The operator $\odot$ denotes the element-wise product.
     \item The letter $x$ is preferred for observations.
     \item The letter $z$ is preferred for latent variables.
-    \item The letter $\theta$ is preferred for parameter vectors.
+    \item The letter $\bm\theta$ is preferred for parameter vectors.
+    \item A function $g$ of $\bm{x} \in \bm{\mathcal{X}}$, which is parameterized
+    by a parameter vector $\bm\theta$ is written as $g(\bm{x};\bm\theta)$, when
+    the dependence on $\bm\theta$ is to be made explicit.
 \end{itemize}

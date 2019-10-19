@@ -16,44 +16,50 @@ specific combinations of distributions (namely, conjugate prior-likelihood pairs
 these models are able to stay tractable - normally via bespoke estimation/inference/learning
 algorithms.
 
-%Structures are easily encoded by Probabilistic Graphical Models, which are a
-%framework to easily express conditional independence assumptions and to specify
-%complex probabilistic models.
-
 Another approach to obtaining expressive probabilistic models is to apply
 transformations to a simple distribution, and use the \emph{change of variables}
 formula to compute probabilities in the transformed space. This is the basis
-of \emph{normalizing flows}, an approach proposed by \citeauthor{shakir_nf} in \cite{shakir_nf},
+of \emph{normalizing flows}, an approach proposed by \citeauthor{shakir_nf} in \autocite{shakir_nf},
 and which has since evolved and developed into the basis of multiple state-of-the-art
 techniques for density modelling and estimation (\autocite{Glow}, \autocite{real-nvp}, \autocite{bnaf19},
 \autocite{NIPS2017_6828}).
 
 \section{Change of Variables}
+\label{cov}
 Given a random variable $\bm{z}$, with probability density function $f_Z$,
 and a bijective and continuous function $g$, the probability density function $f_X$
 of the random variable $\bm{x} = g(\bm{z})$ is given by
 \begin{align}
     f_X(\bm{x}) &= f_Z(g^{-1}(\bm{x}))\Big|\det\Big(\frac{d}{d\bm{x}}g^{-1}(\bm{x})\Big)\Big|.
-\end{align}
-
-For this expression to be useful, some parts of it have to be easily computable:
+\end{align} If $g$ is a transformation parameterized by a parameter vector $\bm\theta$,
+this expression can be optimized w.r.t. $\bm\theta$, with the goal of making it
+approximate some arbitrary distribution. For this to be feasible, the following
+have to be easily computable:
 \begin{itemize}
     \item $f_Z$ - the starting distribution's probability density function
         (also called \emph{base density}). It is assumed that there is a closed-form expression to
         compute this. In practice, this is typically one of the basic distributions
         (Gaussian, Uniform, etc.)
-    \item $\det\Big(\frac{d}{d\bm{x}}g^{-1}(\bm{x})\Big)$ - the determinant  of the Jacobian
-        matrix of $g^{-1}$ . For most transformations this is not \q{cheap} to compute.
-        As will be shown, the main challenge o thef Normalizing Flows framework is
-        to find transformations that are expressive enough, and for which the determinants
-        of their Jacobian matrices are \q{cheap} to compute.
+    \item $\det\Big(\frac{d}{d\bm{x}}g^{-1}(\bm{x};\bm\theta)\Big)$ - the determinant
+        of the Jacobian matrix of $g^{-1}$. For most transformations, this is not
+        \q{cheap} to compute.
+    \item The gradient of $\det\Big(\frac{d}{d\bm{x}}g^{-1}(\bm{x};\bm\theta)\Big)$
+        w.r.t. $\bm\theta$. This is crucial for gradient-based optimization of
+        $\bm\theta$ to be feasible. For most cases, this is not easily computable.
 \end{itemize}
+As will become clear, the crux of the normalizing flows framework is to find
+transformations that are expressive enough, and for which the determinants of their
+Jacobian matrices, as well as the gradients of those determinants are \q{cheap}
+to compute.
 
 \section{Normalizing Flows}
-Let us have $L$ transformations $h_\ell$, for $\ell = 0, 1, ... L$ that fulfill the two requirements listed
-above. Let $\bm{z_\ell} = h_{\ell-1} \circ h_{\ell-2} \circ ... \circ h_0(\bm{z_0})$, where
-$\bm{z_0}$ is sampledfrom $f_Z$, the base density. Furthermore, let $g$ be the composition of
-the $L$ transformations. Applying the change of variables formula to
+Let us have $L$ transformations $h_\ell$, for $\ell = 0, 1, ..., L$ that fulfill the
+three requirements listed above. Let each of those transformations be parameterizable
+by a parameter vector $\bm\theta_\ell$, for $\ell = 0, 1, ..., L$\footnote{The
+dependence on the parameter vectors will be implicit from here on}.
+Let $\bm{z_\ell} = h_{\ell-1} \circ h_{\ell-2} \circ ... \circ h_0(\bm{z_0})$, where
+$\bm{z_0}$ is sampled from $f_Z$, the base density. Furthermore, let $g$ be the
+composition of the $L$ transformations. Applying the change of variables formula to
 \begin{align}
     \bm{z_0} &\sim f_Z \\
     \bm{x} &= h_{L-1} \circ h_{L-2} \circ ... \circ h_0(\bm{z_0})
@@ -64,7 +70,6 @@ then
                         &= f_Z(g^{-1}(\bm{x}))\prod_{\ell=0}^{L-1}\Big|\det\Big(\frac{d}{d\bm{z_{\ell+1}}}h_{\ell}^{-1}(\bm{z_{\ell+1}})\Big)\Big| \\
                         &= f_Z(g^{-1}(\bm{x}))\prod_{\ell=0}^{L-1}\Big|\det\Big(\frac{d}{d\bm{z_{\ell}}}h_{\ell}\Big(h_{\ell}^{-1}(\bm{z_{\ell+1}}\Big)\Big)\Big|^{-1} \label{eq:nflowderivation}
 \end{align}
-
 Replacing $h_{\ell}^{-1}(\bm{z_{\ell+1}}) = \bm{z_\ell}$ in \ref{eq:nflowderivation} leads to
 
 \begin{align}
@@ -73,19 +78,20 @@ Replacing $h_{\ell}^{-1}(\bm{z_{\ell+1}}) = \bm{z_\ell}$ in \ref{eq:nflowderivat
 \begin{align}
     \log f_X(\bm{x}) &= \log f_Z(g^{-1}(\bm{x})) - \sum_{\ell=0}^{L-1} \log \Big|\det\Big(\frac{d}{d\bm{z_{\ell}}}h_{\ell}(\bm{z_\ell})\Big) \Big| \label{eq:nflowsfinal}
 \end{align}
-
 Depending on the task, one might prefer to replace the second term in \ref{eq:nflowsfinal}
 with a sum of log-absolute-determinants of the Jacobians of the inverse transformations.
 This switch would imply replacing the minus sign before the sum with a plus sign:
 \begin{align}
     \log f_X(\bm{x}) &= \log f_Z(g^{-1}(\bm{x})) + \sum_{\ell=0}^{L-1} \log \Big|\det\Big(\frac{d}{d\bm{z_{\ell+1}}}h_{\ell}^{-1}(\bm{z_{\ell+1}})\Big) \Big|
 \end{align}
-
-With this expression, gradient-based MLE becomes feasible. Moreover, sampling
-from the resulting distribution is simply achieved by sampling from the base
-distribution and applying the chain of transformations. Because of this, Normalizing
-Flows lend themselves to be used as flexible variational posteriors, in Variational
-Inference settings.
+We started by assuming that the transformations $h_\ell$ fulfilled the requirements
+listed in section \ref{cov}. For that reason, it is clear that the above expression
+is a feasible objective for gradient-based optimization\footnote{In practice, this is carried
+out by leveraging modern automatic differentiation and optimization frameworks.}.
+Sampling from the resulting distribution is simply achieved by sampling from the base
+distribution and applying the chain of transformations. Because of this, normalizing
+flows lend themselves to be used as flexible variational posteriors, in variational
+inference settings, as well as density estimators.
 
 \section{Examples of transformations}
 \subsection{Affine Transformation}
@@ -193,7 +199,7 @@ Jacobian, which is given by $\sum_{i=0}^d \log \Big| j(z_i) \Big|$
 \end{figure}
 
 \subsection{Batch-Normalization Transformation}
-In \cite{real-nvp}, the authors propose a batch-normalization transformation, similar to
+In \autocite{real-nvp}, the authors propose a batch-normalization transformation, similar to
 the well-known batch-normalization layer normally used in neural networks. This
 transform simply applies a rescaling, given the batch mean $\tilde\mu$ and variance
 ${\tilde\sigma}^2$:
@@ -209,22 +215,20 @@ a division by zero. This transformation's Jacobian is trivial:
 As mentioned previously, one of the active research challenges within the
 normalizing flows framework is the search and design of transformations that
 are expressive and whose Jacobians are not computationally heavy. One brilliant
-example of such transformations was proposed by \citeauthor{real-nvp} in
-\cite{real-nvp}, and is called affine coupling layer.
+example of such transformations was proposed in \autocite{real-nvp}, and is
+called affine coupling layer.
 
 This transformation is characterized by two \textbf{arbitrary} functions $s(.)$ and
 $t(.)$, as well as a mask that splits an input $\bm{z}$ of dimension $D$ into
-two parts, $\bm{z_1}$ and $\bm{z_2}$. In practice, $s(.)$ and $t(.)$ are
-neural networks, whose parameters will be optimized so as to make the transformation
+two parts, $\bm{z_1}$ and $\bm{z_2}$. In practice, $s(.)$ and $t(.)$ are neural
+networks, whose parameters are to be optimized so as to make the transformation
 approximate the desired output distribution. The outputs of $s(.)$ and $t(.)$
 need to have the same dimension as $\bm{z_1}$. This should be taken into account when
 designing the mask and the functions $s(.)$ and $t(.)$. It is defined as:
-
 \begin{align}
     \bm{x_1} &= \bm{z_1} \odot \exp\big(s(\bm{z_2})\big) + t(\bm{z_2}) \\
     \bm{x_2} &= \bm{z_2}
 \end{align}
-
 To see why this transformation is suitable to being used within the framework
 of normalizing flows, let us derive its Jacobian.
 \begin{itemize}
