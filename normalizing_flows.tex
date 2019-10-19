@@ -2,14 +2,15 @@
 \label{chapter:probmodel}
 
 \section{Introduction}
-The best known and studied probability distributions are rarely expressive
-enough for real-world datasets. However, they have properties that make them
-amenable to work with, for instance: tractable parameter estimation, closed-form
-likelihood functions, and simple sampling procedures.
+The best known and studied probability distributions, which are analitically
+manageable, are rarely expressive enough for real-world complex datasets, such
+as images or signals. However, they have properties that make them amenable to
+work with, for instance: tractable parameter estimation, closed-form likelihood
+functions, and simple sampling procedures.
 
-As has been described, one way to obtain more expressive models is to assume the
-existence of latent variables, leverage certain factorization structures, and to
-use well-known distributions for the individual factors of the product that
+As described in the previous chapter, one way to obtain more expressive models is
+to assume the existence of latent variables, leverage certain factorization
+structures, and to use well-known distributions for the individual factors of the product that
 constitutes the model's joint distribution. By using these structures and choosing
 specific combinations of distributions (namely, conjugate prior-likelihood pairs),
 these models are able to stay tractable - normally via bespoke estimation/inference/learning
@@ -20,62 +21,61 @@ algorithms.
 %complex probabilistic models.
 
 Another approach to obtaining expressive probabilistic models is to apply
-transformations to a simple distribution, and use the Change of Variables
+transformations to a simple distribution, and use the \emph{change of variables}
 formula to compute probabilities in the transformed space. This is the basis
-of Normalizing Flows, an approach proposed by \citeauthor{shakir_nf} in \cite{shakir_nf},
-and which has since evolved and developed into the basis of multiple SoA techniques
-for density estimation (\cite{Glow}, \cite{real-nvp}, \cite{bnaf19},
-\cite{NIPS2017_6828}).
+of \emph{normalizing flows}, an approach proposed by \citeauthor{shakir_nf} in \cite{shakir_nf},
+and which has since evolved and developed into the basis of multiple state-of-the-art
+techniques for density modelling and estimation (\autocite{Glow}, \autocite{real-nvp}, \autocite{bnaf19},
+\autocite{NIPS2017_6828}).
 
 \section{Change of Variables}
-Given a probability distribution $p(\bm{z})$, with probability density function $f_Z(.)$,
-and a bijective and continuous function $g$, it's possible to write an expression
-for the probability density function $f_X(.)$ of the random variable $x$ that is
-obtained by applying $g$ to samples of $p(\bm{z})$:
+Given a random variable $\bm{z}$, with probability density function $f_Z$,
+and a bijective and continuous function $g$, the probability density function $f_X$
+of the random variable $\bm{x} = g(\bm{z})$ is given by
 \begin{align}
-    \mbox{if } \bm{z} &\sim p(\bm{z}) \\
-    \mbox{and } \bm{x} &= g(\bm{z}) \\
-    \mbox{then } f_X(\bm{x}) &= f_Z(g^{-1}(\bm{x}))\Big|\det\Big(\frac{d}{d\bm{x}}g^{-1}(\bm{x})\Big)\Big|
+    f_X(\bm{x}) &= f_Z(g^{-1}(\bm{x}))\Big|\det\Big(\frac{d}{d\bm{x}}g^{-1}(\bm{x})\Big)\Big|.
 \end{align}
 
-For this to be useful, some parts of the above expression have to be easily computable:
+For this expression to be useful, some parts of it have to be easily computable:
 \begin{itemize}
-    \item $f_Z(\bm{z})$ - the starting\footnote{From here on the starting distribution
-        will be referred to as \emph{base distribution}} distribution's probability
-        density function. It is assumed that there is a closed-form expression to
-        compute this. In practice, this is normally one of the basic distributions
+    \item $f_Z$ - the starting distribution's probability density function
+        (also called \emph{base density}). It is assumed that there is a closed-form expression to
+        compute this. In practice, this is typically one of the basic distributions
         (Gaussian, Uniform, etc.)
     \item $\det\Big(\frac{d}{d\bm{x}}g^{-1}(\bm{x})\Big)$ - the determinant  of the Jacobian
-        matrix of $g^{-1}(.)$ . For most transformations this is not "cheap" to compute.
+        matrix of $g^{-1}$ . For most transformations this is not \q{cheap} to compute.
         As will be shown, the main challenge o thef Normalizing Flows framework is
-        to find transformations that are expressive and for which the determinants
-        of their Jacobian matrices are "cheap" to compute.
+        to find transformations that are expressive enough, and for which the determinants
+        of their Jacobian matrices are \q{cheap} to compute.
 \end{itemize}
 
 \section{Normalizing Flows}
-Let us have $L$ transformations $h_\ell$ that fulfill the two requirements listed
-above, and let $\bm{z_\ell}$ be the result of applying transformation $h_{\ell-1}$, with the
-exception of $\bm{z_0}$, which is obtained by sampling from $p(\bm{z_0})$, the base distribution.
-Furthermore, let $g$ be the composition of the $L$ transformations.
-
-Applying the Change of Variables formula:
+Let us have $L$ transformations $h_\ell$, for $\ell = 0, 1, ... L$ that fulfill the two requirements listed
+above. Let $\bm{z_\ell} = h_{\ell-1} \circ h_{\ell-2} \circ ... \circ h_0(\bm{z_0})$, where
+$\bm{z_0}$ is sampledfrom $f_Z$, the base density. Furthermore, let $g$ be the composition of
+the $L$ transformations. Applying the change of variables formula to
 \begin{align}
-    \mbox{if } \bm{z_0} &\sim p(\bm{z_0}) \\
-    \mbox{and } \bm{x} &= h_{L-1} \circ h_{L-2} \circ ... \circ h_0(\bm{z_0}) \\
-    \mbox{then } f_X(\bm{x}) &= f_Z(g^{-1}(\bm{x}))\Big|\det\Big(\frac{d}{d\bm{x}}g^{-1}(\bm{x})\Big)\Big| \\
+    \bm{z_0} &\sim f_Z \\
+    \bm{x} &= h_{L-1} \circ h_{L-2} \circ ... \circ h_0(\bm{z_0})
+\end{align}
+then
+\begin{align}
+    f_X(\bm{x}) &= f_Z(g^{-1}(\bm{x}))\Big|\det\Big(\frac{d}{d\bm{x}}g^{-1}(\bm{x})\Big)\Big| \\
                         &= f_Z(g^{-1}(\bm{x}))\prod_{\ell=0}^{L-1}\Big|\det\Big(\frac{d}{d\bm{z_{\ell+1}}}h_{\ell}^{-1}(\bm{z_{\ell+1}})\Big)\Big| \\
                         &= f_Z(g^{-1}(\bm{x}))\prod_{\ell=0}^{L-1}\Big|\det\Big(\frac{d}{d\bm{z_{\ell}}}h_{\ell}\Big(h_{\ell}^{-1}(\bm{z_{\ell+1}}\Big)\Big)\Big|^{-1} \label{eq:nflowderivation}
 \end{align}
 
-Replacing $h_{\ell}^{-1}(\bm{z_{\ell+1}}) = \bm{z_\ell}$ in \ref{eq:nflowderivation}:
+Replacing $h_{\ell}^{-1}(\bm{z_{\ell+1}}) = \bm{z_\ell}$ in \ref{eq:nflowderivation} leads to
 
 \begin{align}
-         f_X(\bm{x}) &= f_Z(g^{-1}(\bm{x}))\prod_{\ell=0}^{L-1}\Big|\det\Big(\frac{d}{d\bm{z_{\ell}}}h_{\ell}\Big(\bm{z_\ell})\Big)\Big)\Big|^{-1} \\
+         f_X(\bm{x}) &= f_Z(g^{-1}(\bm{x}))\prod_{\ell=0}^{L-1}\Big|\det\Big(\frac{d}{d\bm{z_{\ell}}}h_{\ell}\Big(\bm{z_\ell})\Big)\Big)\Big|^{-1};
+\end{align} taking the logarithm,
+\begin{align}
     \log f_X(\bm{x}) &= \log f_Z(g^{-1}(\bm{x})) - \sum_{\ell=0}^{L-1} \log \Big|\det\Big(\frac{d}{d\bm{z_{\ell}}}h_{\ell}(\bm{z_\ell})\Big) \Big| \label{eq:nflowsfinal}
 \end{align}
 
 Depending on the task, one might prefer to replace the second term in \ref{eq:nflowsfinal}
-with a sum of log-abs-determinants of the Jacobians of the inverse transformations.
+with a sum of log-absolute-determinants of the Jacobians of the inverse transformations.
 This switch would imply replacing the minus sign before the sum with a plus sign:
 \begin{align}
     \log f_X(\bm{x}) &= \log f_Z(g^{-1}(\bm{x})) + \sum_{\ell=0}^{L-1} \log \Big|\det\Big(\frac{d}{d\bm{z_{\ell+1}}}h_{\ell}^{-1}(\bm{z_{\ell+1}})\Big) \Big|
@@ -89,35 +89,32 @@ Inference settings.
 
 \section{Examples of transformations}
 \subsection{Affine Transformation}
-The Affine transformation is the simplest transform that can be applied.
-This transformation can stretch, shrink, rotate and translate space. It is simply
-achieved by the multiplication by a matrix $A$ and summation of a bias vector $\bm{b}$:
+An affine transformation is arguably the simplest choice. This transformation can
+stretch, sheer, shrink, rotate, and translate the space. It is simply achieved
+by the multiplication by a matrix $A$ and summation of a bias vector $\bm{b}$:
 \begin{align}
     \bm{z} &\sim p(\bm{z}) \\
     \bm{x} &= A\bm{z} + \bm{b}
 \end{align}
-
-The Jacobian of this transformation is simply the determinant of the matrix $A$.
-
-However, in general, computing the determinant of a $N \times N$ matrix has a
-complexity of $\mathcal{O}(N^3)$. For that reason, it is common to use matrices
-with a certain structure which makes their determinants easier to compute. For
+The determinant of the Jacobian of this transformation is simply the determinant
+of the matrix $A$. However, in general, computing the determinant of a $N \times N$
+matrix has $\mathcal{O}(N^3)$. For that reason, it is common to use matrices with
+a certain structure which makes their determinants easier to compute. For
 instance, if $A$ is triangular, its determinant is simply the product of its
 diagonal's elements. The downside of using matrices that are constrained to
 a certain structure is that they correspond to less flexible transformations.
 
-It is possible, however, to design Affine transformations whose Jacobian determinants
+It is possible, however, to design affine transformations whose Jacobian determinants
 are of $\mathcal{O}(N)$ complexity and that are more expressive than simple
-triangular matrices. In \cite{Glow}, one such transformation is proposed. It
+triangular matrices. In \autocite{Glow}, one such transformation is proposed. It
 constrains the matrix $A$ to be decomposable as $A = PL\big(U + diag(\bm{s})\big)$,
 where $diag(\bm{s})$ is a diagonal matrix whose diagonal's elements are
 the values of vector $\bm{s}$. The following additional constrains are in place:
 \begin{itemize}
     \item $P$ is a permutation matrix
-    \item $L$ is a lower triangular matrix, with ones on its diagonal
-    \item $U$ is an upper triangular matrix, with zeros on its diagonal
+    \item $L$ is a lower triangular matrix, with ones in the diagonal
+    \item $U$ is an upper triangular matrix, with zeros in the diagonal
 \end{itemize}
-
 Given these constraints, the determinant of the matrix $A$ is simply the product
 of the elements of $\bm{s}$.
 
@@ -134,10 +131,10 @@ of the elements of $\bm{s}$.
 \end{figure}
 
 \subsection{PReLU Transformation}
-Intuitively, introducing non-linearity endows Normalizing Flows with more flexibility to 
+Intuitively, introducing non-linearity endows normalizing flows with more flexibility to
 represent complex distributions. This can be done in similar fashion to the
-activation functions of neural networks. One example of that, is the Parameterized
-Rectified Linear Unit transformation. It is defined in the following manner, for
+activation functions of neural networks. One example of that, is the parameterized
+rectified linear unit transformation. It is defined in the following manner, for
 a $d$-dimensional input:
 \begin{align}
 f_i(z_i) =
@@ -145,13 +142,12 @@ f_i(z_i) =
         z_i,              & \text{if } z_i\geq 0\\
         \alpha z_i,       & \text{otherwise}
     \end{cases} \\
-f(\bm{z}) = [f_0(z_0), f_1(\bm{z_1}), ..., f_d(z_d)]
+f(\bm{z}) = [f_0(z_0), f_1(z_1), ..., f_d(z_d)]
 \end{align}
-
 Note that in order for the transformation to be invertible, it is necessary
 that $\alpha > 0$.
 
-Let us define an auxiliary function $j(.)$ s.t.:
+Let us define an auxiliary function $j(.)$ as
 \begin{align}
 j(z_i) =
     \begin{cases}
@@ -159,21 +155,19 @@ j(z_i) =
        \alpha ,       & \text{otherwise}
     \end{cases}
 \end{align}
-
-It's trivial to see that the jacobian of the transformation is a diagonal
+It's trivial to see that the Jacobian of the transformation is a diagonal
 matrix, whose diagonal elements are $j(z_i)$:
 \begin{align}
-  A =
+  J(f(z)) =
   \begin{bmatrix}
       j(z_0) & & & \\
-      & j(\bm{z_1}) & & \\
+      & j(z_1) & & \\
       & & \ddots & \\
       & & & j(z_d)
   \end{bmatrix}
 \end{align}
-
-With that, it is easy to arrive at the log-abs-determinant of this transformantion's
-jacobian, which is given by $\sum_{i=0}^d \log \Big| j(z_i) \Big|$
+With that, it is easy to arrive at the log-absolute-determinant of this transformation's
+Jacobian, which is given by $\sum_{i=0}^d \log \Big| j(z_i) \Big|$
 
 \begin{figure}[!htb]
   \begin{subfigmatrix}{2}
@@ -198,27 +192,25 @@ jacobian, which is given by $\sum_{i=0}^d \log \Big| j(z_i) \Big|$
   \label{fig:prelu}
 \end{figure}
 
-\subsection{Batch-Norm Transformation}
-In \cite{real-nvp}, the authors propose a Batch-Norm transformation, similar to
-the Batch-Norm layer normally used in neural networks. This transform simply
-applies a rescaling, given as a function the batch mean $\tilde\mu$ and variance
+\subsection{Batch-Normalization Transformation}
+In \cite{real-nvp}, the authors propose a batch-normalization transformation, similar to
+the well-known batch-normalization layer normally used in neural networks. This
+transform simply applies a rescaling, given the batch mean $\tilde\mu$ and variance
 ${\tilde\sigma}^2$:
 \begin{align}
     f(z) = \frac{z - \tilde\mu}{\sqrt{{\tilde\sigma}^2 + \epsilon}},
 \end{align} where $\epsilon \ll 1$ is a term used to ensure that there never is
-a division by zero.
-
-This transformation's Jacobian is trivial: 
+a division by zero. This transformation's Jacobian is trivial: 
 \begin{align}
-    \prod \frac{1}{\sqrt{{\tilde\sigma}_i^2 + \epsilon}}
+    \prod_i \frac{1}{\sqrt{{\tilde\sigma}_i^2 + \epsilon}}.
 \end{align}
 
 \subsection{Affine Coupling Transformation}
 As mentioned previously, one of the active research challenges within the
-Normalizing Flows framework is the search and design of transformations that
+normalizing flows framework is the search and design of transformations that
 are expressive and whose Jacobians are not computationally heavy. One brilliant
 example of such transformations was proposed by \citeauthor{real-nvp} in
-\cite{real-nvp}, and is called Affine Coupling Layer.
+\cite{real-nvp}, and is called affine coupling layer.
 
 This transformation is characterized by two \textbf{arbitrary} functions $s(.)$ and
 $t(.)$, as well as a mask that splits an input $\bm{z}$ of dimension $D$ into
@@ -226,9 +218,7 @@ two parts, $\bm{z_1}$ and $\bm{z_2}$. In practice, $s(.)$ and $t(.)$ are
 neural networks, whose parameters will be optimized so as to make the transformation
 approximate the desired output distribution. The outputs of $s(.)$ and $t(.)$
 need to have the same dimension as $\bm{z_1}$. This should be taken into account when
-designing the mask and the functions $s(.)$ and $t(.)$.
-
-It is defined as:
+designing the mask and the functions $s(.)$ and $t(.)$. It is defined as:
 
 \begin{align}
     \bm{x_1} &= \bm{z_1} \odot \exp\big(s(\bm{z_2})\big) + t(\bm{z_2}) \\
@@ -236,15 +226,14 @@ It is defined as:
 \end{align}
 
 To see why this transformation is suitable to being used within the framework
-of Normalizing Flows, let us derive its Jacobian.
+of normalizing flows, let us derive its Jacobian.
 \begin{itemize}
-    \item $\frac{\partial \bm{x_2}}{\partial \bm{z_2}} = \mathbb{I}$ is trivial, because $\bm{x_2} = \bm{z_2}$.
-    \item $\frac{\partial \bm{x_2}}{\partial \bm{z_1}}$ is a matrix of zeros, and it is also
-        trivial, because $\bm{x_2}$ does not depend on $\bm{z_1}$.
+    \item $\frac{\partial \bm{x_2}}{\partial \bm{z_2}} = I$ is trivial, because $\bm{x_2} = \bm{z_2}$.
+    \item $\frac{\partial \bm{x_2}}{\partial \bm{z_1}}$ is a matrix of zeros, because $\bm{x_2}$ does not depend on $\bm{z_1}$.
     \item $\frac{\partial \bm{x_1}}{\partial \bm{z_1}}$ is a diagonal matrix,
         whose diagonal is simply given by $\exp\big(s(\bm{z_2})\big)$, since those values are
         constant w.r.t $\bm{z_1}$ and they are multiplying each element of $\bm{z_1}$.
-    \item $\frac{\partial \bm{x_1}}{\partial \bm{z_2}} = 1$ is not needed for our purposes,
+    \item $\frac{\partial \bm{x_1}}{\partial \bm{z_2}}$ is not needed for our purposes,
         as will become clear ahead.
 \end{itemize}
 
@@ -276,45 +265,39 @@ Writing the above in matrix form:
     &=
         \begin{tikzpicture}[decoration=brace, baseline=-\the\dimexpr\fontdimen22\textfont2\relax ]
             \matrix (m) [matrix of math nodes,left delimiter=[,right delimiter={]}, ampersand replacement=\&] {
-                \exp\big(s(\bm{z_2})\big) \& \mbox{\Large$\frac{\partial \bm{x_1}}{\partial \bm{z_2}}$} \\
-                \mbox{\Large$\bm{0}$} \& \mbox{\Large$\mathbb{I}$} \\
+                diag\Big(\exp\big(s(\bm{z_2})\big)\Big) \& \mbox{\Large$\frac{\partial \bm{x_1}}{\partial \bm{z_2}}$} \\
+                \mbox{\Large$\bm{0}$} \& \mbox{\Large$I$} \\
             };
         \end{tikzpicture}
-\end{align}
-
-The Jacobian matrix is triangular. Its determinant - the only thing we need,
-in fact - is therefore easy to compute: it is simply the product of the diagonal.
-Moreover, part of the diagonal is simply composed of ones. The determinant, and
-the log-abs-determinant become:
-
+\end{align} shows that the Jacobian matrix is triangular. Its determinant - the
+only thing we need, in fact - is therefore easy to compute: it is simply the
+product of the diagonal elements. Moreover, part of the diagonal is simply
+composed of ones. The determinant, and the log-absolute-determinant become
 \begin{align}
     det\big(J_{f(z)}\big) &= \prod_i \exp\big(s(\bm{z_2}^{(i)})\big) \\
     \log \Big|det\big(J_{f(z)}\big)\Big| &= \sum_i s(\bm{z_2}^{(i)}),
-\end{align}
-
-where $\bm{z_2^{(i)}}$ is the $i$-th element of $\bm{z_2}$.
-
-Since a single Affine Coupling Layer doesn't transform all of the elements in
+\end{align} where $\bm{z_2^{(i)}}$ is the $i$-th element of $\bm{z_2}$.
+Since a single affine coupling layer does not transform all of the elements in
 $\bm{z}$, in practice several layers are composed, and each layer's mask is changed
-so as to make all dimensions affect each other. This can be done for instance with
+so as to make all dimensions affect each other. This can be done, for instance, with
 a checkerboard pattern, which alternates for each layer. In the case of image inputs,
 the masks can operate at the channel level.
 
 \section{Fitting Normalizing Flows}
 
-Generally speaking, Normalizing Flows can be used in one of two scenarios:
-(direct) density estimation, where the goal is to optimize the NF's parameters
-so as to make the model approximate the distribution of some observed data;
-in a variational inference scenario, as way to have a flexible variational
+Generally speaking, normalizing flows can be used in one of two scenarios:
+(direct) density estimation, where the goal is to optimize the parameters
+so as to make the model approximate the distribution of some observed set of data;
+in a variational inference scenario, as way of having a flexible variational
 posterior (i.e. $q(\bm{z})$ in the terminology used in the previous chapter). The
 second scenario is out of the scope of this work.
 
-The task of density estimation with Normalizing Flows reduces to finding the
-optimal parameters of a parametric model. As mentioned in \ref{section:map-mle},
+The task of density estimation with normalizing flows reduces to finding the
+optimal parameters of a parametric model. As mentioned in section \ref{section:map-mle},
 there are two ways to go about estimating the parameters of a parametric model,
-given data: MLE and MAP. In the case of Normalizing Flows, MLE is the usual
-approach\footnote{In theory it is possible to place a prior on the NF's parameters
-and do MAP estimation. To accomplish this, similar strategies to those used in
-Bayesian Neural Networks would have to be used.}. To fit a Normalizing Flow via
-MLE, a gradient based optimizer is used to minimize
+given data: MLE and MAP. In the case of normalizing flows, MLE is the usual
+approach\footnote{In theory it is possible to place a prior on the normalizing
+flow's parameters and do MAP estimation. To accomplish this, similar strategies
+to those used in Bayesian Neural Networks would have to be used.}. To fit a normalizing
+flow via MLE, a gradient based optimizer is used to minimize
 $\hat{\mathcal{L}}(\bm\theta) = - \mathbb{E}[\log p(\bm{x}|\bm\theta)]$

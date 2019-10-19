@@ -3,32 +3,32 @@
 
 \section{Introduction}
 \label{section:probmodelintro}
-Probabilistic modelling is a set of techniques that leverage probability
-distributions and random variables to posit, test and refine hypothesis about
-the behaviour of systems. Given observations of a system, the task of probabilistic
-modelling normally boils down to finding a probability distribution which:
+The goal of probabilistic modelling is a to leverage probability distributions
+and random variables to posit, test, and refine hypothesis about the behaviour of
+systems that include stochastic components. Given observations of a system, the
+task of probabilistic modelling normally boils down to finding a probability
+distribution which:
 \begin{itemize}
-    \item Is consistent with the observed data;
-    \item Is consistent with \textbf{new}, previously unobserved data, originated\
+    \item is consistent with the observed data;
+    \item is consistent with \textbf{new}, previously unobserved data, originated\
         in the same system.
 \end{itemize}
 
 This probability distribution is commonly called the \emph{model}. A good model
 will be a good \emph{emulator} of the true generative process that originated
-the observed data. In loose terms, this can be summarized as:
+the observed data. In informal terms, this can be summarized as:
 \begin{align}
     \mbox{data} \sim p(\mbox{data}|\mbox{hypothesis}^*),
-\end{align} where $\text{hypothesis}^*$ is the optimal hypothesis.
-
-Via Bayes' Law, we can write:
+\end{align} where $\text{hypothesis}^*$ is the optimal hypothesis. Via Bayes' Law,
+we can write:
 \begin{align}
-    p(\mbox{hypothesis}|\mbox{data}) = \frac{p(\mbox{data}|\mbox{hypothesis})p(\mbox{hypothesis})}{p(\mbox{data})} \label{eq:bayes}
+    p(\mbox{hypothesis}|\mbox{data}) = \frac{p(\mbox{data}|\mbox{hypothesis})p(\mbox{hypothesis})}{p(\mbox{data})} \label{eq:bayes}.
 \end{align}
 
 In practice, a modeller will search for an hypothesis that maximizes (some form,
 or approximation of) this expression. For simpler problems, this search happens
 in closed-form, i.e., there is an expression to compute the optimal hypothesis,
-given data. However, for most real-world problems there is no closed-form solution,
+given data. However, for most real-world problems, there is no closed-form solution,
 and the modeller has to resort to algorithms and approximations, and will only
 be able to find \textbf{local} optima for the above expression, in most cases.
 
@@ -40,12 +40,11 @@ candidate hypothesis. Assumptions about structure usually translate to condition
 independence claims between some or all of the observed variables; assumptions
 about form translate into the use of specific parametric families to govern some
 or all of the observed variables. These assumptions are commonly connected between
-themselves (for example, when conjugate likelihood-prior pairs are used).
-
-When parametric forms are used, an hypothesis is uniquely defined by the set of
-parameters it requires - commonly called $\bm{\theta}$\footnote{For the type of models
-and problems dealt with in this work, I will assume $\bm{\theta}$ is finite, but it's
-worth noting that there are models for which the dimension of $\bm{\theta}$ \emph{grows}
+themselves (for example, when conjugate likelihood-prior pairs are used). When parametric
+forms are used, an hypothesis is uniquely defined by the set of parameters it
+requires - commonly denoted $\bm{\theta}$\footnote{For the type of models and problems
+dealt with in this work, I will assume $\bm{\theta}$ is finite, but it's worth
+noting that there are models for which the dimension of $\bm{\theta}$ \emph{grows}
 with the dataset size. These are called non-parametric models. They come with
 their own advantages and disadvantages, which are out of the scope of this work.}.
 
@@ -62,26 +61,26 @@ complexity normally comes at the expense of generalization. This phenomenon is
 commonly referred to as \emph{overfitting}, and there are several
 angles from which to explain it and interpret it. Namely:
 \begin{itemize}
-    \item The classical perspective is that of the bias-variance tradeoff. To
-        understand this, consider the concept of an Hypothesis Class - a set
+    \item The classical perspective is that of the \emph{bias-variance tradeoff}. To
+        understand this, consider the concept of an hypothesis class - a set
         of hypotheses in which, via some procedure, the modeller will search
         for an hypothesis that is consistent with the observed data, and is
         expected to generalize to unseen data. Said procedure is what is normally
         referred to as \emph{fitting} the model to the data. In the case of
         parametric models, the set of models of a given parametric form, with
         a parameter-vector of a certain fixed dimension, is an example of an Hypothesis
-        Class. Intuitively, a more complex Hypothesis Class is more likely to
+        Class. Intuitively, a more complex hypothesis class is more likely to
         contain the true hypothesis (or a good approximation to it). However,
-        the more complex the Hypothesis Class, the larger the search-space -
+        the more complex the hypothesis class, the larger the search space -
         the higher the number of candidate hypothesis. In this sense, an increase
-        in the size of the search-space often translates into an increase of the
+        in the size of the search space often translates into an increase of the
         sensitivity to the problem variables (in the case of learning and inference,
         this means sensitivity to initialization and to the data used to fit).
         Conversely, a simpler model will constitute a smaller search-space, hence
         the search procedure will be less sensitive to initalization and problem
         variables. However, the true hypothesis (or a good approximation to it)
         is less likely to be contained in it - precisely because it is a smaller
-        Hypothesis Class. The bias-variance tradeoff is a summary of these observations:
+        hypothesis class. The bias-variance tradeoff is a summary of these observations:
         a highly complex model is potentially able to achieve a low expected error
         on observed data (low bias), but will tend to be extremely sensible to small
         variations on its input (high variance). Conversely, a simpler model will
@@ -90,14 +89,15 @@ angles from which to explain it and interpret it. Namely:
         The number of parameters is far from being the best measure of complexity
         of a model. Nevertheless, it is a good proxy to compare model complexity
         between models of the same parametric family. However, recent work by
-        Belkin et al. \cite{Belkin2018Dec} shows that modern machine learning
+        \citeauthor{Belkin2018Dec} (\cite{Belkin2018Dec}) shows that modern machine learning
         contexts, in which the number of parameters is far larger than in classical
         settings, have to be understood under a measure of model complexity
-        different than the traditional ones. This is because it is now common
+        different from the traditional ones. This is because it is now common
         practice to fit highly overparameterized models to a point of interpolation
-        (close to zero training error), still being able to achieve good generalization.}
-    \item Andrey Kolmogorov's and Gregory Chaitin's ideas on Algorithmic Information
-        Theory \cite{chaitin-leibniz}, and Kolmogorov complexity  are another
+        (close to zero training error), still being able to achieve good generalization -
+        which evidently contradicts the classical view.}
+    \item Andrey Kolmogorov's and Gregory Chaitin's ideas on algorithmic information
+        theory (AIT) \cite{chaitin-leibniz}, and Kolmogorov complexity  are another
         useful lens through which to regard this question. Consider that data are
         measurements of phenomena. Modelling is concerned with finding the
         laws that explain/govern these phenomena. Intuitively, if the laws are
@@ -105,10 +105,10 @@ angles from which to explain it and interpret it. Namely:
         AIT formalizes this notion by borrowing the concept of \emph{program} to
         define the generative process by which observed data comes to existence.
         The complexity of a dataset is then easy to define: it is the size of
-        the \textbf{smallest}\footnote{Note the emphasis on "smallest" - this is
+        the \textbf{smallest}\footnote{Note the emphasis on \q{smallest} - this is
         because any program can be made arbitrarily redundant, and thus arbitrarily large.}
-        program that generates the observed data. And the appropriate unit with
-        which to measure the size of a program - and, as we've now seen, the
+        program that generates the observed data. The appropriate unit with
+        which to measure the size of a program - and, as we have now seen, the
         complexity of a dataset - is bits\footnote{Or the basic unit of memory
         of the computer where the data generating program would run}. The parallel
         between these ideas and the question of overfitting is thus easy to make:
@@ -129,33 +129,31 @@ Information Criterion and the Minimum Description Length.
 
 Once the parametric form of the model is defined, the task at hand becomes the
 discovery of the parameter vector $\bm{\theta}$ that best explains the observed
-data, within the defined parametric family.
-
-The naïve (but often the only possible) approach is to maximize what is called
-the likelihood function, given by:
+data, within the defined parametric family. The naïve (but often the only
+possible) approach is to maximize what is called the likelihood function. That
+is, given observation $x$:
 \begin{align}
-    \mathcal{L}(\bm{\theta}) = p(x | \bm{\theta})
-\end{align}
-
-This approach is called \emph{Maximum Likelihood Estimation}. Note that $\mathcal{L}$
+    \bm{\hat\theta}_{ML} = \argmax_{\bm{\theta}} \mathcal{L}(\bm{\theta}),
+\end{align} where $\mathcal{L}(\bm{\theta}) = p(x | \bm{\theta})$.
+This approach is called \emph{maximum likelihood estimation}. Note that $\mathcal{L}$
 is a function of $\bm{\theta}$. Depending on the model, finding $\bm{\theta}^*$ - the optimum -
 can be as simple as computing an analytical expression, or as difficult as using
 gradient-based methods to optimize a non-convex objective. In the latter case,
 local optima are usually the best one can expect to obtain.
 
-Another approach, called \emph{Maximum a posteriori}, works by retrieving the
-mode of the posterior distribution of the parameter-vector, given by:
+Another approach, called \emph{maximum a posteriori}, works by retrieving the
+mode (or one mode, if there are several) of the posterior distribution of the
+parameter-vector, given by:
 \begin{align}
-    p(\bm{\theta} | x) = \frac{p(x |\bm{\theta})p(\bm{\theta})}{p(x)}
-\end{align}
+    \bm{\hat\theta}_{MAP} = \argmax_{\bm{\theta}} p(\bm{\theta} | x),
+\end{align} where $p(\bm{\theta} | x) = \frac{p(x |\bm{\theta})p(\bm{\theta})}{p(x)}$.
 
 It's easy to see that these two approaches are intimately related. MAP differs
 from ML by the fact that it employs the prior $p(\bm{\theta})$ to give different
 weights to different hypothesis (i.e., different instances of $\bm{\theta}$). This
 is useful if there is domain knowledge available that can be encoded in the
-prior.
-
-It is worth noting that ML is a special case of MAP, when the prior is uniform.
+prior. It is worth noting that ML is a special case of MAP, when the prior is
+uniform.
 
 \section{Structure and Latent Variables}
 \label{section:probmodellatvar}
@@ -166,10 +164,10 @@ the observable variables.
 
 In this scenario, we become interested in the distribution given by
 $p(\bm{x}, \bm{z}, \bm{\theta_x}, \bm{\theta_z})$, where $z$ is the latent variable, $\bm{\theta_x}$ is
-the parameter vector for the distribution over $\bm{\mathcal{X}}$, and $\bm{\theta_z}$ is
-the parameter vector for the distribution over $\bm{\mathcal{Z}}$.
+the parameter vector for the distribution of $\bm{x} \in \bm{\mathcal{X}}$, and $\bm{\theta_z}$ is
+the parameter vector for the distribution of $\bm{z} \in \bm{\mathcal{Z}}$.
 
-For structure and latent variables to be useful, we normally make the additional
+For structure and latent variables to be useful, it is common to make the additional
 assumption that we have the ability of factorizing their joint distribution in ways that
 make it tractable. If we have a dataset $\bm{X}$, with $N$ i.i.d. samples $\bm{x_1}, \bm{x_2}, \bm{x_3}, ..., \bm{x_N}$
 and $N$ latent variables $\bm{z_1}, \bm{z_2}, \bm{z_3}, ..., \bm{z_N}$, one common factorization is:
@@ -185,8 +183,8 @@ relation, for instance if they occur ordered in time. In this case, they are not
 One way to encode this assumption is to posit an \emph{autoregressive} model, i.e.,
 a model in which a random variable depends on the realizations of the variables
 that come before it. If each random variable depends solely on the random variable
-that precedes it, this is called a Markov Model. A common variation of the Markov
-Model is the Hidden Markov Model, where the autoregressive part of the model is
+that precedes it, this is called a Markov model. A common variation of the Markov
+model is the hidden Markov Model, where the autoregressive part of the model is
 present only in the latent variables:
 \begin{align}
     p(\bm{X}, \bm{Z}, \bm{\theta}) = p(\bm{z_1}) \Big(\prod^N_{i=2} p(\bm{x_i} | \bm{z_i}, \bm{\theta_x})
@@ -194,7 +192,7 @@ present only in the latent variables:
                                      p(\bm{\theta_x}) p(\bm{\theta_z}).
 \end{align}
 
-These are merely examples of models with different structure assumptions encoded
+These are merely (classical) examples of models with different structure assumptions encoded
 into them. Normally, if the structure has a certain regularity, it's possible
 to exploit it to obtain tractable (approximate) inference and estimation methods.
 This notion is explored in the following section, for a subset of the family
@@ -202,70 +200,60 @@ of models described by \ref{eq:latentvariable}.
 
 \section{Mixture Models and the EM Algorithm}
 \label{section:mmodels}
-Mixture Models are a subset of the structure "family" described in \ref{eq:latentvariable},
-and they have a central role in this work.
-
-In a Mixture Model there is a discrete latent variable $z_i$ which selects
-one of $K$ components from which an observation $\bm{x_i}$ will be sampled. This
-can be summarized as:
+Mixture models are a subset of the structure \q{family} described in \ref{eq:latentvariable},
+and they have a central role in this work. In a Mixture Model there is a discrete
+latent variable $z_i$ which selects one of $K$ components from which an observation
+$\bm{x_i}$ will be sampled. This can be summarized as:
 \begin{align}
     z_i \sim p(z_i | \bm\pi) \\
     x_i \sim p(\bm{x_i} | z_i)
 \end{align}
-
 The probability of $\bm{x_i}$ being sampled from component $k$ (that is, the proability
 of $z_i = k$) is commonly referred to as the \emph{weight} of component $k$.
-
-It's common to assume that all of the $K$ components are part of the same
+It is common to assume that all of the $K$ components are part of the same
 parametric family. In that case, we can rewrite the above as:
 \begin{align}
     z_i \sim p(z_i | \bm\pi) \\
     x_i \sim p(\bm{x_i} | \bm{\theta}_{z_i}),
 \end{align} where it is made evident that the discrete variable $z_i$ is selecting
-the \textbf{parameter vector} to be used for sample $x_i$.
-
-The most discussed mixture model is the Gaussian Mixture Model, in which the $K$
-components of the model are Gaussian distributions.
+the \textbf{parameter vector} to be used for sample $x_i$. The most discussed mixture
+model is the Gaussian Mixture Model, in which the $K$ components of the model are
+Gaussians.
 
 \subsubsection{The EM Algorithm}
 The Expectation-Maximization algorithm is the most commonly used algorithm to
-fit Mixture Models\footnote{Although it can be used to fit other types of models.}.
-
-The starting point of EM is the realisation that if all variables were observed,
-it would be easy to apply ML or MAP estimation for the parameters. Given that,
-the algorithm can be generally described as an alternation between two steps:
+fit a mixture model\footnote{Although it can be used to fit other types of models.}, i.e.
+to estimate its parameters. The starting point of EM is the realisation that if
+all variables were observed, it would be easy to apply ML or MAP estimation for
+the parameters. Given that, the algorithm can be generally described as an alternation
+between two steps, described next.
 \begin{itemize}
     \item \textbf{E-step}: infer the most probable values of the unobserved variables.
-        (In the case of Mixture Models, this corresponds to inferring the discrete
+        (In the case of mixture models, this corresponds to inferring the discrete
         variables that select the component from which each observed data point
         was sampled. This can be roughly thought of as a cluster assignment).
     \item \textbf{M-step}: given the observed variables and the values inferred
         on the previous step, optimize the model parameters. (In the case of 
-        Mixture Models, this correponds to inferring the parameters of each
+        mixture models, this correponds to inferring the parameters of each
         component, and its weight).
 \end{itemize}
 
-A more rigorous description of the procedure follows. Consider the following
-expression:
+A more rigorous description of the procedure follows. Consider the expression
 \begin{align}
-    \ell_c(\bm{\theta}) = \sum^N_{i=1} \log p(\bm{x_i}, z_i | \bm{\theta})
-\end{align}
-
-This is the complete data log-likelihood. Like the likelihood function, it is a
-function of $\bm{\theta}$, which is easy to compute, given all the $\bm{x_i}$ and $z_i$.
-However, the $z_i$ aren't observed.
-
-To overcome this, let us define the expected complete data log likelihood:
+    \ell_c(\bm{\theta}) = \sum^N_{i=1} \log p(\bm{x_i}, z_i | \bm{\theta}),
+\end{align} which is the so called complete data log-likelihood. Like the likelihood
+function, it is a function of $\bm{\theta}$, which is easy to compute, given all
+the $\bm{x_i}$ and $z_i$.
+However, the $z_i$ aren't observed. To overcome this, let us define the expected
+complete data log likelihood:
 \begin{align}
-    Q(\bm{\theta}, \bm{\theta}^{(t-1)}) = \mathbb{E}_{Z|X, \bm{\theta}^{(t-1)}}[\ell_c(\bm{\theta}) | X, Z, \bm{\theta}^{(t-1)}],
+    Q(\bm{\theta}, \bm{\theta}^{(t-1)}) = \mathbb{E}_{Z|X, \bm{\theta}^{(t-1)}}[\ell_c(\bm{\theta}) | X, \bm{\theta}^{(t-1)}],
 \end{align} where $\bm{\theta}^{(t)}$ represents the value of $\bm{\theta}$ at time step
-$t$ of the fitting procedure.
-
-Note that the expectation is w.r.t. $Z$, given $X$ and $\bm{\theta}^{(t-1)}$. It is the
-expected value of $\ell_c(\bm{\theta})$, given the parameter values obtained at the
-previous step of the the algorithm. Depending on the nature of $Z$, this expectation
-can be obtained either in closed form or approximated, for instance via samples
-of $z_i$ (if a sampling procedure is available).
+$t$ of the fitting procedure. Note that the expectation is w.r.t. $Z$, given $X$
+and $\bm{\theta}^{(t-1)}$. It is the expected value of $\ell_c(\bm{\theta})$, given
+the parameter values obtained at the previous step of the the algorithm. Depending
+on the nature of $Z$, this expectation can be obtained either in closed form or
+approximated, for instance via samples of $z_i$ (if a sampling procedure is available).
 
 In the case of Mixture Models, where the $z_i$ are instances of a categorical
 random variable, the expression for $Q(\bm{\theta}, \bm{\theta}^{(t-1)})$ can be made
@@ -273,8 +261,8 @@ simpler as such:
 \begin{align}
     Q(\bm{\theta}, \bm{\theta}^{(t-1)}) &= \mathbb{E}_{Z|X, \bm{\theta}^{(t-1)}}[\ell_c(\bm{\theta}) | X, Z, \bm{\theta}^{(t-1)}] \\
     &= \mathbb{E}_{Z|X, \bm{\theta}^{(t-1)}}[\sum_{i=1}^N \log p(x_i, z_i | \bm{\theta})] \\
-    &= \mathbb{E}_{Z|X, \bm{\theta}^{(t-1)}}[\sum_{i=1}^N \log \prod_{k=1}^K \pi_k p(x_i | \bm{\theta}_k)^{\mathbb{I}(z_i = k)}] \\
-    &= \mathbb{E}_{Z|X, \bm{\theta}^{(t-1)}}[\sum_{i=1}^N \sum_{k=1}^K \log\Big(\pi_k p(x_i | \bm{\theta}_k)^{\mathbb{I}(z_i = k)}\Big)] \\
+    &= \mathbb{E}_{Z|X, \bm{\theta}^{(t-1)}}[\sum_{i=1}^N \log \prod_{k=1}^K \big(\pi_k p(x_i | \bm{\theta}_k)\big)^{\mathbb{I}(z_i = k)}] \\
+    &= \mathbb{E}_{Z|X, \bm{\theta}^{(t-1)}}[\sum_{i=1}^N \sum_{k=1}^K \log\Big(\big(\pi_k p(x_i | \bm{\theta}_k)\big)^{\mathbb{I}(z_i = k)}\Big)] \\
     &= \mathbb{E}_{Z|X, \bm{\theta}^{(t-1)}}[\sum_{i=1}^N \sum_{k=1}^K \mathbb{I}(z_i = k) \log\Big(\pi_k p(x_i | \bm{\theta}_k)\Big)] \\
     &= \sum_{i=1}^N \sum_{k=1}^K \underbrace{\mathbb{E}_{Z|X, \bm{\theta}^{(t-1)}}[\mathbb{I}(z_i = k)]}_{\text{Let this quantity be represented by $r_{ik}$}} \log\Big(\pi_k p(x_i | \bm{\theta}_k)\Big)\\
     &= \sum_{i=1}^N \sum_{k=1}^K r_{ik} \log\Big(\pi_k p(x_i | \bm{\theta}_k)\Big) \\
@@ -285,15 +273,14 @@ The quantity defined above as $r_{ik}$ is referred to as the \emph{responsabilit
 is trivial to arrive at a closed-form expression for it, given the value of $\bm{\theta}$
 arrived at on the previous iteration, i.e. $\bm{\theta}^{(t-1)}$:
 \begin{align}
-    r_{ik} &= p(z_i = k | x_i\ ; \bm{\theta}^{(t-1)}) \\
-    &= \frac{p(z_i = k , x_i\ ; \bm{\theta}^{(t-1)})}{p(x_i\ ; \bm{\theta}^{(t-1)})} \\
+r_{ik} &= \mathbb{E}_{Z|X, \bm{\theta}^{(t-1)}}[\mathbb{I}(z_i = k)] \\
+    &= p(z_i = k | x_i\ ; \bm{\theta}^{(t-1)}) \\
     &= \frac{p(z_i = k , x_i\ ; \bm{\theta}^{(t-1)})}{p(x_i\ ; \bm{\theta}^{(t-1)})} \\
     &= \frac{p(z_i = k , x_i\ ; \bm{\theta}^{(t-1)})}{\sum_{k'} p(z_i = k' , x_i\ ; \bm{\theta}^{(t-1)})} \\
     &= \frac{\pi_k p(x_i | \bm{\theta}_k^{(t-1)})}{\sum_{k'} \pi_{k'} p(x_i | \bm{\theta}_{k'}^{(t-1)})}
 \end{align}
 
-The EM algorithm for Mixture Models then becomes an alternation between the
-following two steps:
+The EM algorithm for mixture models alternates between the following two steps:
 \begin{itemize}
     \item \textbf{E-step}: Compute the responsabilies $r_{ik}$ for each $x_i$.
     \item \textbf{M-step}: Given $r_{ik}$, solve the following optimization
@@ -301,23 +288,21 @@ following two steps:
         \begin{align}
             \bm{\theta^{(t)}} = \argmax_{\bm{\theta}} Q(\bm{\theta}, \bm{\theta^{(t-1)}})
                 \underbrace{+ \log p(\bm{\theta})}_\text{Optional, if we want to do MAP estimation},
-        \end{align} which can have a closed-form solution in some of the simplest Mixture Models,
-        like Gaussian Mixture Models, but can require a gradient-based optimization procedure for
-        more flexible models.
+        \end{align} which can have a closed-form solution in some of the simplest
+        mixture models, like Gaussian mixture models, but can require a gradient-based
+        optimization procedure for more flexible models.
 \end{itemize}
 
 \section{Approximate Inference}
 \label{section:probmodelinf}
 Take the expression $p(\bm{x}, \bm{z}, \bm{\theta})$. For simplicity, let us consider $\theta$
 as part of the latent variables $\bm{z}$. This means that the model is simply written
-as the joint distribution: $p(\bm{x}, \bm{z})$. \emph{Inference}\footnote{If we hadn't collapsed
-$\bm{\theta}$ into $\bm{z}$ and were instead handling it separately, we would call
-\textbf{inference} to the task of finding $\bm{z}$ and \textbf{learning} to the
-task of finding $\bm{\theta}$} is the task of finding the most probable $\bm{z}$ after
-having observed $\bm{x}$ . Specifically, the goal is to find the posterior distribution of $\bm{z}$,
-given $\bm{x}$, i.e.: $p(\bm{z}|\bm{x})$.
-
-Recall Bayes' Law:
+as the joint distribution: $p(\bm{x}, \bm{z})$. To perform inference\footnote{If we
+hadn't collapsed $\bm{\theta}$ into $\bm{z}$ and were instead handling it separatly,
+we would call \textbf{inference} to the task of finding $\bm{z}$ and \textbf{learning}
+to the task of finding $\bm{\theta}$} about $\bm{z}$, conditioned on $\bm{x}$, it
+is necessary to find the posterior distribution of $\bm{z}$, given $\bm{x}$, i.e.
+$p(\bm{z}|\bm{x})$. Using Bayes' Law:
 
 \begin{align}
     p(\bm{z}|\bm{x}) &= \frac{p(\bm{x}|\bm{z})p(\bm{z})}{p(\bm{x})} \\
@@ -325,9 +310,9 @@ Recall Bayes' Law:
 \end{align}
 
 For the vast majority of cases, the integral on the denominator will be
-intractable. To overcome this difficulty we normal resort to two families
+intractable. To overcome this difficulty, it is common to resort to two families
 of methods: Monte-Carlo methods - which are out of the scope of this work -
-and Variational methods.
+and variational methods.
 %
 %\subsection{Monte-Carlo Methods}
 %\label{subsection:mcmc}
@@ -342,24 +327,22 @@ and Variational methods.
 
 \subsection{Variational Methods}
 \label{subsection:variational}
-Variational methods work by turning the problem of integration into one of
+Variational methods (essentially) work by turning the problem of integration into one of
 optimization. They propose a family of parametric distributions, and then
-optimize the parameters so as to minimize the "distance" between the approximate
-(normally called "variational") distribution and the distribution of interest.
-
+optimize the parameters so as to minimize the \q{distance} between the approximate
+(normally called \q{variational}) distribution and the distribution of interest.
 There are two ways to derive the most commonly used objective function for
 this problem, which will be detailed in the two following subsections.
 
 \subsubsection{Kullback-Leibler Divergence}
 \label{subsubsection:kldiv}
 
-The Kullback-Leibler divergence is a measure\footnote{Note that the KL divergence
-isn't symmetric and as such I haven't called it a \emph{metric}} of the distance
-between two probability distributions $p$, and $q$. It is given by:
+The Kullback-Leibler divergence is a measure of the dissimilarity between two probability
+distributions $p$, and $q$, given by
 
 \begin{align}
-    KL(q||p) = \int q \log\frac{q}{p}
-\end{align}
+    KL(q||p) = \int q \log\frac{q}{p},
+\end{align} in the case of continuous variables.
 
 In the setting of inference, $p$ is the posterior $p(\bm{z}|\bm{x})$ and $q$ is a distribution
 in some parametric family, with parameters $\phi$, i.e., $q(\bm{z}; \phi)$. However,
@@ -374,7 +357,7 @@ precisely the task at hand. Let us expand the KL divergence expression:
              &= \mathbb{E}_q [\log q(\bm{z})] - \mathbb{E}_q [\log p(\bm{x}, \bm{z})] + \log p(\bm{x}) \\
 \end{align}
 
-The last term is constant w.r.t $q(\bm{z})$. In that sense, for a fixed $p(\bm{x})$,
+The last term is constant w.r.t $q(\bm{z})$. Consequently, for a fixed $p(\bm{x})$,
 minimizing the KL divergence is equivalent to minimizing
 \begin{align}
     \mathbb{E}_q [\log q(\bm{z})] - \mathbb{E}_q [\log p(\bm{x}, \bm{z})],
@@ -397,7 +380,7 @@ In this form, each term of the ELBO has an easily interpretable role:
     \item $\mathbb{E}_q [\log p(\bm{z})]$ is the symmetric of the crossentropy between
         $q(\bm{z})$ and $p(\bm{z})$. Maximizing this quantity is equivalent of minimizing
         that crossentropy. This can be regarded as a regularizer that discourages
-        $q(\bm{z})$ of being too different from the prior $p(\bm{z})$.
+        $q(\bm{z})$ from being too different from the prior $p(\bm{z})$.
     \item $ - \mathbb{E}_q [\log q(\bm{z})]$ is the entropy of $q(\bm{z})$. Maximizing
         this term incentivizes the probability mass of $q(\bm{z})$ to be spread out:
         another form of regularization.
@@ -408,7 +391,7 @@ In this form, each term of the ELBO has an easily interpretable role:
 
 Another way of approaching the intractable posterior is to start by stating
 that our inherent goal is to maximize $p(\bm{x})$, or equivalently $\log p(\bm{x})$. Given
-that, consider the following:
+that, consider the following chain of equalities and inequalities,
 \begin{align}
     \log p(\bm{x}) &= \log \int p(\bm{x}, \bm{z}) d\bm{z}\\
     &= \log \int q(\bm{z}) \frac{p(\bm{x}, \bm{z})}{q(\bm{z})} d\bm{z} \\
@@ -417,23 +400,16 @@ that, consider the following:
     &\geq \mathbb{E}_q[\log p(\bm{x}, \bm{z})] - \mathbb{E}_q[q(\bm{z})] \label{eq:elbojensen3}
 \end{align}
 
-To understand this derivation, consider Jensen's inequality, given (in one of
-its forms) by:
+To understand the inequality between (\ref{eq:elbojensen1}) and (\ref{eq:elbojensen2}),
+consider Jensen's inequality, given (in one of its forms) by:
 \begin{align}
     \phi(\mathbb{E}[X]) \leq \mathbb{E}[\phi(X)], \label{eq:jensen}
-\end{align} where $\phi(.)$ is a convex function.
-
-If $\xi(.)$ is a concave function, then $- \xi(.)$ is a convex function, and we
-obtain the reverse inequality (substituting $\phi(.)$ with $-\xi(.)$ in the
-inequality in \ref{eq:jensen}):
-\begin{align}
-    -\xi(\mathbb{E}[X]) &\leq \mathbb{E}[-\xi(X)] \\
-    \xi(\mathbb{E}[X]) &\geq \mathbb{E}[\xi(X)]
-\end{align}
-
-This form is the most useful for us, since $\log$ is a concave function. Using
-this, the step between \ref{eq:elbojensen1} and \ref{eq:elbojensen2} is made
-obvious.
+\end{align} where $\phi(.)$ is a convex function. If $\xi(.)$ is a concave function,
+then $- \xi(.)$ is a convex function, and we obtain the reverse inequality
+(substituting $\phi(.)$ with $-\xi(.)$ in the inequality in (\ref{eq:jensen})):
+$\xi(\mathbb{E}[X]) \geq \mathbb{E}[\xi(X)]$. This form is the most useful for
+us, since $\log$ is a concave function. Using this, the step between (\ref{eq:elbojensen1})
+and (\ref{eq:elbojensen2}) is made obvious.
 
 Note that the right-hand side of \ref{eq:elbojensen3} is the same quantity
 we arrived at in \ref{eq:elbokldiv}, and that it is a lower-bound on the

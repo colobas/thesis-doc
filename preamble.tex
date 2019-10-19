@@ -399,13 +399,26 @@
 
 \usepackage[
     backend=biber,
-    style=numeric,
+    style=authoryear,
     sortlocale=en_EN,
     natbib=true,
     url=false,
     doi=true,
     eprint=false
 ]{biblatex}
+\newrobustcmd*{\parentexttrack}[1]{%
+  \begingroup
+  \blx@blxinit
+  \blx@setsfcodes
+  \blx@bibopenparen#1\blx@bibcloseparen
+  \endgroup}
+
+\AtEveryCite{%
+  \let\parentext=\parentexttrack%
+  \let\bibopenparen=\bibopenbracket%
+  \let\bibcloseparen=\bibclosebracket}
+
+\makeatother
 \addbibresource{thesis.bib}
 % ******************************* SELECT *******************************
 
@@ -511,3 +524,33 @@
 \input{acronyms}
 
 \usepackage{bm}
+%\usepackage[]{algorithm2e}
+
+\usepackage{color}
+\usepackage{listings}
+\usepackage{caption}
+
+\newcounter{nalg}[chapter] % defines algorithm counter for chapter-level
+\renewcommand{\thenalg}{\thechapter .\arabic{nalg}} %defines appearance of the algorithm counter
+\DeclareCaptionLabelFormat{algocaption}{Algorithm \thenalg} % defines a new caption label as Algorithm x.y
+
+\lstnewenvironment{algorithm}[1][] %defines the algorithm listing environment
+{
+    \refstepcounter{nalg} %increments algorithm number
+    \captionsetup{labelformat=algocaption,labelsep=colon} %defines the caption setup for: it ises label format as the declared caption label above and makes label and caption text to be separated by a ':'
+    \lstset{ %this is the stype
+        mathescape=true,
+        frame=single,
+        captionpos=b,
+        aboveskip=25pt,
+        belowskip=25pt,
+        numbers=none,
+        keywordstyle=\color{black}\bfseries,
+        keywords={for, input, output, return, datatype, function, in, if, else, foreach, while, begin, end, } %add the keywords you want, or load a language as Rubens explains in his comment above.
+        xleftmargin=.04\textwidth,
+        #1 % this is to add specific settings to an usage of this environment (for instnce, the caption and referable label)
+    }
+}
+{}
+
+\newcommand{\q}[1]{``#1''} 

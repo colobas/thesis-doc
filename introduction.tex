@@ -4,69 +4,90 @@
 \section{Motivation}
 \label{section:motivation}
 
-Neural network based generative models - Variational Autoencoders, Generative
-Adversarial Networks, Normalizing Flows and their variations - have experienced
-increased interest and progress in their capabilities, in the last few years.
+Generative models based on neural networks - variational autoencoders (VAEs),
+generative adversarial networks (GANs), normalizing flows and their variations -
+have experienced increased interest and progress in their capabilities. VAEs
+(\autocite{vaepaper}) work by leveraging the reparameterization trick to optimize
+a variational posterior parameterized by a neural network, jointly with the generative
+model per se - it too a neural network, which takes as input samples from a latent
+space and \emph{decodes} them into the observation space. GANs also work by
+jointly optimizing two neural networks: a generator, which learns to produce
+realistic samples in order to \q{fool} the second network, the discriminator, which
+learns to distinguish samples produced by the generator from samples taken from data. GANs learn
+by having the generator and discriminator \q{compete}. Both VAEs and GANs learn
+\emph{implicit} distributions of the data, in the sense that - if training is
+successful - one can sample from the learned model, but there's no way to compute
+the likelihood of the learned distribution. Normalizing flows differ from VAEs
+and GANs in that they allow learning \emph{explicit} distributions of the
+data\footnote{In fact, recent work (\autocite{flowgan}) combines the training
+framework of GANs with the use of normalizing flows, so as to obtain a generator
+for which it is possible to compute likelihoods.}. Thus, normalizing flows lend
+themselves to the task of density estimation.
 
-Less (although some) attention has been given to the extension of such
-models with discrete structure, such as the one found in Mixture Models. Exploiting
-such structure, while still being able to benefit from the expressiveness of
-neural generative models - specifically, Normalizing Flows - is the goal of this
-work. Doing so will naturally produce an approach which lends itself to
-clustering, semi-supervised learning, and (multimodal) density estimation.
+Less (although some) attention has been given to the extension of these types
+of models with discrete structure, such as the one found in mixture models.
+Exploiting such structure, while still being able to benefit from the expressiveness
+of neural generative models - specifically, normalizing flows - is the goal of this
+work. Concretely, this works explores a framework to learn a mixture of normalizing
+flows. In practice, a neural network classifier is learned jointly with the mixture
+components. Doing so will naturally produce an approach which lends itself not
+only to density estimation, but also clustering - since the classifier can be used
+to assign points to clusters - and semi-supervised learning, where available
+labels can be used to refine the classifier and selectively train the mixture
+components.
 
 \section{Related Work}
 \label{section:related}
 
-The work presented here intersects with several active directions of research.
+The work presented here intersects several active directions of research.
 In the sense of combining deep neural networks with probabilistic modelling,
 particularly with the goal of endowing simple probabilistic graphical models
-with more expressiveness, \cite{svae} and \cite{lin2018variational} propose a
+with more expressiveness, \autocite{svae} and \autocite{lin2018variational} propose a
 framework to use neural network parameterized likelihoods, composed with latent
 probabilistic graphical models. Still in line with this topic, but with an
-approach more focused towards clustering and semi-supervised learning, \cite{gmVAE}
-proposes a VAE-inspired model, where the prior is a Gaussian Mixture. \cite{DEC}
+approach more focused towards clustering and semi-supervised learning, \autocite{gmVAE}
+proposes a VAE-inspired model, where the prior is a Gaussian mixture. \autocite{DEC}
 describes an unsupervised method for clustering using deep neural networks, which
 is a task that can also be fulfilled by the model presented in this work.
 
 The following are brief descriptions of the two works that are most related to
 the present work.
 
-\cite{RAD}, similarly to this work, tries to reconcile Normalizing Flows with
-multimodal/discrete structure. It does so by partitioning the latent space in
-disjoint subsets and using a Mixture Model where each component has non-zero
+\autocite{RAD}, similarly to this work, tries to reconcile normalizing flows with a
+multimodal/discrete structure. It does so by partitioning the latent space into
+disjoint subsets, using a Mixture Model where each component has non-zero
 weight exclusively within its respective subset. Then, using a set identification
 function and a piecewise invertible function, a variation of the change-of-variable
 formula is devised.
 
-\cite{semisuplearning_nflows} also tries to exploit multimodal structure while
-using Normalizing Flows for expressiveness. However, while the present work relies on
+\autocite{semisuplearning_nflows} also exploits multimodal structure while
+using normalizing flows for expressiveness. However, while the present work relies on
 a variational posterior parameterized by a neural network and learns $K$ flows
-(one for each mixture component), \cite{semisuplearning_nflows} resorts to the use of a
-latent Mixture of Gaussians as the base distribution for its flow model, and it
+(one for each mixture component), \autocite{semisuplearning_nflows} resorts to the use of a
+latent mixture of Gaussians as the base distribution for its flow model, and it
 learns a single flow.
 
 \section{Objectives}
 \label{section:objectives}
 
-The objectives of the present work are:
+The objectives of the present work are
 \begin{itemize}
-    \item The design of a Normalizing Flow Mixture Model, with a tractable learning procedure
-    \item The empirical analysis of the capabilities of such model, namely in the tasks of:
+    \item designing a mixture of normalizing flows, with a tractable learning procedure;
+    \item the empirical analysis of the capabilities of such model, namely in the tasks of:
         \begin{itemize}
-        \item Density Estimation
-        \item Clustering
-        \item Semi-supervised learning
+        \item Density estimation;
+        \item Clustering;
+        \item Semi-supervised learning.
         \end{itemize}
 \end{itemize}
 
 \section{Thesis Outline}
 \label{section:outline}
 
-In Chapter 2, the concepts on Probabilistic Modelling needed for the remainder
+In Chapter 2, the concepts on probabilistic modelling needed for the remainder
 of the work are introduced. In Chapter 3, the framework and theoretical background
-of Normalizing Flows is presented. Chapter 4 describes in detail the model
-proposed by the present work, and Chapter 5 contains empirical results and their
+of normalizing flows is presented. Chapter 4 describes in detail the model
+proposed in the present work, and Chapter 5 contains empirical results and their
 interpretation.
 
 \section{Notation}
@@ -80,8 +101,8 @@ a vector.
     \item Upper-case letters are matrices.
     \item For distributions, subscript notation will only be used when the
 distribution isn't clear from context.
-    \item The operator $\odot$ denotes the element-wise product
-    \item The letter $x$ is preferred for observations
-    \item The letter $z$ is preferred for latent variables
-    \item The letter $\theta$ is preferred for parameter vectors
+    \item The operator $\odot$ denotes the element-wise product.
+    \item The letter $x$ is preferred for observations.
+    \item The letter $z$ is preferred for latent variables.
+    \item The letter $\theta$ is preferred for parameter vectors.
 \end{itemize}
