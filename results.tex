@@ -57,12 +57,12 @@ the two-circles dataset, it was found that the most common space partitioning
 induced by the model consisted simply of splitting space in half. However, in
 a semi-supervised setting, this behaviour can be corrected and the model
 successfully learns to separate the two circles, as is visible in figure
-\ref{figure:twocircles-semisup}. In this setting, the model was pretrained on
+\ref{fig:twocircles-semisup}. In this setting, the model was pretrained on
 the labeled instances for some epochs and then trained with the normal procedure.
 In the semi-supervised setting the model has the chance to refine both the
 variational posterior and each of the components, thus making better use of
 the unlabeled data in the unsupervised phase of the training. As is clearly
-visible in figure \ref{figure:twocircles-semisup}, the model struggles with
+visible in figure \ref{fig:twocircles-semisup}, the model struggles with
 learning full, closed, circles. This is because it is unable to \q{pierce a hole}
 in the base distribution, due to the nature of the transformations that are
 applicable. Thus, to model a circle, the model has to learn to stretch the blob
@@ -106,12 +106,9 @@ affine coupling layers.
     \subfigure[]{\includegraphics[width=0.49\linewidth]{figures/labeled_2_circles.png}}
     \subfigure[]{\includegraphics[width=0.49\linewidth]{figures/trained_2_circles_semisup.png}}
   \end{subfigmatrix}
-    \caption{(a) Labeled points used in semi-supervised scenario. They correspond to
-     x \% of the number of unlabeled points (b) Samples from the model trained
-    in the semi-supervised scenario.}
+    \caption{(a) Labeled points used in semi-supervised scenario. (b) Samples
+    from the model trained in the semi-supervised scenario.}
 \label{fig:twocircles-semisup}
 \end{figure}
-
-
 
 \section{Real-world dataset}

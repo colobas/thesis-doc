@@ -35,11 +35,12 @@ arise:
     loss regularization term. In fact, this idea has been pursued in \autocite{semisuplearning_nflows}.
     \item A weight-sharing strategy between components is also an interesting
     point for future research. It is plausible that, this way, components could
-    share \q{concepts} and latent representations of data, and then use their
-    non-shared weights to q{specialize} in their particular cluster of data. Take
-    for instance the Pinwheel dataset: in principle, the five normalizing flows
-    could learn to model a wing, and then each component only needed to specialize
-    in the particular rotation of its wing.
+    share \q{concepts} and latent representations of data, and use their non-shared
+    weights to \q{specialize} in their particular cluster of data. Take,
+    for instance, the Pinwheel dataset: in principle, the five normalizing flows
+    could share a stack of layers that learned to model the concept of wing,
+    each component then having a non-shared stack of blocks that would only
+    need to model the correct rotation of its respective wing.
     \item The effect of using different architectures for the neural networks used
     was not evaluated. It is likely, for instance, that convolutional architectures
     would produce better results in the real world dataset.
