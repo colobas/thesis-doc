@@ -89,7 +89,7 @@ posterior $q(z|\bm{x}; \bm\gamma)$ and the parameters of the generative process
 $p(\bm{x}|z; \bm\theta)$.
 
 After training, the variational posterior can be directly used as a classifier
-for new data points, as will be shown in the experiments section.
+for new data points.
 
 \section{Implementation}
 
@@ -97,7 +97,7 @@ To implement and test the proposed model, Python was the chosen language. More
 specifically, this work heavily realies on the PyTorch (\autocite{pytorch}) package
 and framework for automatic differentiation. Moreover, the parameter optimization
 is done via stochastic optimization, namely using the optimizer proposed in
-\cite{adam} - Adam.
+\autocite{adam} - Adam.
 
 Figure \ref{fig:modeloverview} gives an overview of the training procedure:
 \begin{enumerate}
