@@ -3,7 +3,26 @@
 % Add entry in the table of contents as section
 \addcontentsline{toc}{section}{Abstract}
 
-
+In the past few years, deep generative models, such as generative adversarial networks
+(\autocite{GAN}) and variational autoencoders (\autocite{vaepaper}), and their variants,
+have seen wide adoption for the task of modelling the distribution of data.
+Despite the outstanding sample qualities achieved with these methods,
+they model the target distributions \emph{implicitly}, since the probability
+density functions induced by them are not accessible. This renders them unfit for
+tasks that require, for example, scoring new instances of data with the learned
+distributions. Normalizing flows overcome this limitation by leveraging the
+change-of-variables formula for probability density functions, and by using
+transformations designed to have tractable and cheaply computable Jacobians. In
+spite of its flexibility, this framework lacks a way to introduce discrete
+structure (such as the one found in mixture models) in the models it allows to
+construct. The present work tackles this obstacle by using normalizing flows as
+components in a mixture model, and devising a training procedure for such a model.
+This procedure is based on variational inference, and uses a variational posterior
+parameterized by a neural network. As will become clear, this model naturally
+lends itself to (multimodal) density estimation, semi-supervised learning, and
+clustering. The proposed model is evaluated on two synthetic datasets, as well
+as a real-world dataset.
 \vfill
 
-\textbf{\Large Keywords:} 
+\textbf{\Large Keywords:} Deep generative models, normalizing flows, variational
+inference, probabilistic modelling, machine learning

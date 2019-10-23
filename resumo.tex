@@ -3,9 +3,28 @@
 % Add entry in the table of contents as section
 \addcontentsline{toc}{section}{Resumo}
 
-Inserir o resumo em Portugu\^{e}s aqui com o máximo de 250 palavras e acompanhado de 4 a 6 palavras-chave...
-
+Nos últimos anos, os modelos generativos profundos, tais como redes generativas
+adversariais (\autocite{GAN}) e auto-codificadores variacionais (\autocite{vae}),
+e as suas variantes, têm vindo a ser amplamente adoptados para a tarefa de modelação
+de distribuições de dados. Apesar da qualidade excepcional das amostras sintécticas
+que são capazes de produzir, estes métodos modelam \emph{implicitamente} as
+distribuições desejadas, uma vez que não é possível aceder às funções de densidade
+de probabilidade induzidas por eles. Isto torna-os inadequados para tarefas que
+requeiram, por exemplo, avaliar novos exemplos de dados com as distribuições
+aprendidas. Os \emph{normalizing flows} ultrapassam esta limitação através da
+fórmula de mudança de variável para distribuições de probabilidade, e da utilização
+de transformações desenhadas para ter Jacobianas tratáveis e computáveis de forma
+viável. Apesar da sua flexibilidade, esta \emph{framework} carece de uma forma
+de introduzir estrutura discreta (como a que se pode encontrar em modelos de mistura)
+nos modelos que permite construir. Este trabalho aborda esse obstáculo utilizando
+\emph{normalizing flows} como components num modelo de mistura, e descrevendo
+um procedimento para o treino desse modelo. Este procedimento é baseado em
+inferência variacional e usa um posterior variacional parameterizado por uma
+rede neuronal. Como se tornará evidente, este modelo adequa-se naturalmente às
+tarefas de estimação de densidades (multimodais), aprendizagem semi-supervisionada,
+e aglomeração de dados. O modelo proposto é avaliado em dois conjuntos de dados
+sintécticos, e um conjunto de dados real.
 \vfill
 
-\textbf{\Large Palavras-chave:} palavra-chave1, palavra-chave2,...
-
+\textbf{\Large Palavras-chave:} Modelos generativos \emph{deep}, normalizing flows,
+inferência variacional, modelação probabilística, aprendizagem automática.

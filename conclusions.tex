@@ -3,20 +3,45 @@
 
 \section{Conclusions}
 \label{section:conclusions}
-Insert conclusions here...
+Deep generative modelling is an active research avenue, and will keep being
+developed and improved, since it lends itself to extremely useful applications,
+like anomaly detection, synthetic data generation, and, generally speaking,
+uncovering patterns in data.
+Overall, the initial idea of the present work stands validated by the experiments:
+it is possible to learn mixtures of normalizing flows via the proposed procedure.
+The proposed method was tested on two synthetic datasets, succeeding with ease
+on one of them, and struggling with the other one. However, when allowed to learn
+from just a few labels, it was able to successfully fit to the data it previously
+failed on. On the real world dataset, the model's clustering capability was tested,
+as well as its ability to generate realistic samples, with some success.
+During the experiments, it became evident that, similarly to what happens with
+the majority of neural network based models, in order to successfully fit the
+proposed model to complex data some fine tuning is required, both in terms of the
+training procedure, as well as in terms of the architecture of the blocks that
+constitute the model. In the following section, some proposals and ideas for
+future work and for tackling some of the observed shortcomings are proposed.
 
 \section{Future Work}
 \label{section:future}
 
-After the work presented here, several future research questions and ideas
+After the work presented here, some future research questions and ideas
 arise:
 \begin{itemize}
-    \item Better initialization strategies. Could we pre-train the variational
-    posterior so as to promote earlier convergence?
-    \item Additional loss terms / regularization: could there be an approach
-    to incentivize the variational posterior to correctly assign regions
-    of the space to individual components? For instance, \autocite{semisuplearning_nflows}
-    use a regularization strategy based on a consistency loss term.
-    \item ...
+    \item The main shortcoming of the proposed model, specially in its fullt
+    unsupervised variant, is that there is no way to incentivize the variational
+    posterior to partition the space in the correct manner. Moreover, the  variational
+    posterior generally performs poorly in regions of space where there are few
+    or no training points. This suggests that the model could benefit from a consistency
+    loss regularization term. In fact, this idea has been pursued in \autocite{semisuplearning_nflows}.
+    \item A weight-sharing strategy between components is also an interesting
+    point for future research. It is plausible that, this way, components could
+    share \q{concepts} and latent representations of data, and then use their
+    non-shared weights to q{specialize} in their particular cluster of data. Take
+    for instance the Pinwheel dataset: in principle, the five normalizing flows
+    could learn to model a wing, and then each component only needed to specialize
+    in the particular rotation of its wing.
+    \item The effect of using different architectures for the neural networks used
+    was not evaluated. It is likely, for instance, that convolutional architectures
+    would produce better results in the real world dataset.
 \end{itemize}
 
