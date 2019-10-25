@@ -21,16 +21,16 @@ training procedure, as well as in terms of the architecture of the blocks that
 constitute the model. In the following section, some proposals and ideas for
 future work and for tackling some of the observed shortcomings are proposed.
 
-\section{Future Work}
+\section{Discussion and Future Work}
 \label{section:future}
 
-After the work presented here, some future research questions and ideas
-arise:
+After the work presented here, some observations and future research questions
+and ideas arise:
 \begin{itemize}
     \item The main shortcoming of the proposed model, specially in its fullt
     unsupervised variant, is that there is no way to incentivize the variational
-    posterior to partition the space in the correct manner. Moreover, the  variational
-    posterior generally performs poorly in regions of space where there are few
+    posterior to partition the space in the intuitively correct manner. Moreover, the
+    variational posterior generally performs poorly in regions of space where there are few
     or no training points. This suggests that the model could benefit from a consistency
     loss regularization term. In fact, this idea has been pursued in \autocite{semisuplearning_nflows}.
     \item A weight-sharing strategy between components is also an interesting
@@ -41,6 +41,18 @@ arise:
     could share a stack of layers that learned to model the concept of wing,
     each component then having a non-shared stack of blocks that would only
     need to model the correct rotation of its respective wing.
+    \item During the experimentation phase it was found that a balance, between
+    the complexity of the variational posterior and that of the components of
+    the mixture, is crucial for the convergence to interesting solutions. This
+    is intuitive: if the components are too complex, the variational posterior
+    tends to ignore most of them and assigns most points to a single or few components.
+    This balance of complexities is well studied in the case of GANs, for instance.
+    \item The fact that in some cases the variational posterior ignores components
+    and \q{chooses} not to use them can hypothetically be exploited in the scenarios
+    where the number of clusters is unknown. If the dynamics of what drives the
+    variational posterior to ignore components can be understood, perhaps they
+    can be actively tweaked (via architectural choices, training procedure and
+    hyperparameters, for example) to benefit the modelling task in such a scenario.
     \item The effect of using different architectures for the neural networks used
     was not evaluated. It is likely, for instance, that convolutional architectures
     would produce better results in the real world dataset.

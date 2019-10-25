@@ -22,7 +22,7 @@ formula to compute probabilities in the transformed space. This is the basis
 of \emph{normalizing flows}, an approach proposed by \citeauthor{shakir_nf} in \autocite{shakir_nf},
 and which has since evolved and developed into the basis of multiple state-of-the-art
 techniques for density modelling and estimation (\autocite{Glow}, \autocite{real-nvp}, \autocite{bnaf19},
-\autocite{NIPS2017_6828}).
+\autocite{maf}).
 
 \section{Change of Variables}
 \label{cov}
@@ -286,6 +286,39 @@ $\bm{z}$, in practice several layers are composed, and each layer's mask is chan
 so as to make all dimensions affect each other. This can be done, for instance, with
 a checkerboard pattern, which alternates for each layer. In the case of image inputs,
 the masks can operate at the channel level.
+
+\subsection{Masked Autoregressive Flows}
+Another ingenious architecture for normalizing flows has been proposed in \autocite{maf}.
+It is called Masked Autoregressive Flow (MAF). Let $\bm{z}$ be a sample from
+some base distribution, with dimension $D$. MAF transforms $\bm{z}$ into an
+observation $\bm{x}$, of the same dimension, in the following manner:
+\begin{align}
+x_i = z_i \exp(\alpha_i) + \mu_i \\
+\mu_i, \alpha_i = g(\bm{x_{1:i-1}})
+\end{align}
+In the above expression $g$ is some arbitrary function. The inverse transform of
+MAF is trivial, because, like the Affine Coupling Layer, MAF uses $g$ to parameterize
+a shift, $mu$, and a log-scale, $alpha$, which translates to the fact that the
+function $g$ itself doesn't need to be inverted:
+\begin{align}
+z_i = (x_i - \mu_i)\exp(-\alpha_i)
+\end{align}
+Moreover, the autoregressive structure of the transformation constrains the
+Jacobian to be triangular, which renders the determinant effortless to compute: 
+\begin{align}
+\det\big( J_{f(\bm{z})} \big) &= \prod_i^{D} \exp(\alpha_i) \\
+\log \Big| \det \big( J_{f(\bm{z})} \big) \Big| &= \sum_i^{D} \alpha_i
+\end{align}
+As stated above, the function $g$ used to obtain $\mu_i$ and $\alpha_i$ can be
+arbitrary. However, in the original paper, the function proposed to that end
+is a Masked Autoencoder for Distribution Estimation (MADE), as described in
+\autocite{MADE}.
+
+Much like the partitioning in the Affine Coupling Layer, the assumption of
+autoregressiveness (and the ordering of the elements of $\bm{x}$ in which
+for which that assumption is held) carries an inductive bias with it. Again,
+like with the Affine Coupling Layer, this effect is minimized in practice by
+stacking layers with different element orderings.
 
 \section{Fitting Normalizing Flows}
 
