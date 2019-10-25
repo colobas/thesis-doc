@@ -136,4 +136,24 @@ semantic meaning.
   \label{fig:mnist_samples}
 \end{figure}
 
+\begin{table}[h]
+\centering
+\begin{tabular}{lrrrrr}
+\toprule
+ cluster index&         0 &         1 &         2 &         3 &         4 \\
+true label &           &           &           &           &           \\
+\midrule
+0    &  0.028702 &  0.002533 &  0.947662 &  0.019754 &  0.001351 \\
+1    &  0.000000 &  0.015426 &  0.001187 &  0.003263 &  0.980125 \\
+2    &  0.019470 &  0.854481 &  0.045821 &  0.019637 &  0.060591 \\
+3    &  0.001631 &  0.114011 &  0.046648 &  0.820910 &  0.016800 \\
+4    &  0.000685 &  0.005649 &  0.648237 &  0.000856 &  0.344574 \\
+\bottomrule
+\end{tabular}
+\caption{Normalized contingency table for the clustering induced by the model}
+\label{table:contingency}
+\end{table}
 
+From table \ref{table:contingency} and figure \ref{fig:mnist_samples} it's possible
+to see that although there is some confusion, the model successfully clusters
+the MNIST digits.
