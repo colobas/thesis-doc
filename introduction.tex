@@ -1,7 +1,7 @@
 \chapter{Introduction}
 \label{chapter:introduction}
 
-\section{Motivation}
+\section{Motivation and Related Work}
 \label{section:motivation}
 
 Generative models based on neural networks - variational autoencoders (VAEs),
@@ -35,9 +35,6 @@ only to density estimation, but also clustering - since the classifier can be us
 to assign points to clusters - and semi-supervised learning, where available
 labels can be used to refine the classifier and selectively train the mixture
 components.
-
-\section{Related Work}
-\label{section:related}
 
 The work presented here intersects several active directions of research.
 In the sense of combining deep neural networks with probabilistic modelling,
@@ -73,7 +70,7 @@ learns a single flow.
 The objectives of the present work are
 \begin{itemize}
     \item designing a mixture of normalizing flows, with a tractable learning procedure;
-    \item the empirical analysis of the capabilities of such model, namely in the tasks of:
+    \item a proof-of-concept implementation to demonstrate the capabilities of such model, namely in the tasks of:
         \begin{itemize}
         \item Density estimation;
         \item Clustering;
