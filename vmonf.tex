@@ -4,7 +4,7 @@
 \section{Introduction}
 \label{section:vmonf-intro}
 
-As mentioned in sections \ref{section:probmodellatvar} and \ref{section:mmodels},
+As mentioned in Sections \ref{section:probmodellatvar} and \ref{section:mmodels},
 the ability of leveraging domain knowledge to endow a probabilistic model with
 structure is often useful. The goal of this work is to devise a model that combines
 the flexibility of normalizing flows with the ability to exploit class-membership
@@ -17,25 +17,26 @@ to a cluster of data.
 
 \section{Model Definition}
 
-Let us define a mixture model as in section \ref{section:mmodels}, where each of
-the $K$ components is a normalizing flow. For simplicity, consider that all of
-the $K$ normalizing flows have the same architecture\footnote{This is not a requirement,
+Let us define a mixture model as in Section \ref{section:mmodels}, where each of
+the $K$ components is a density parameterized by a normalizing flow. For simplicity,
+consider that all of the $K$ normalizing flows have the same
+architecture\footnote{This is not a requirement,
 and in cases where we have classes with different levels of complexity, we can
 have components with different architectures. However, the training procedure
-does not guarantee that that the most flexible normalizing flow is "allocated"
-to the most complex cluster. This is definitely an interesting direction for future
+does not guarantee that the most flexible normalizing flow is "allocated"
+to the most complex cluster. This is an interesting direction for future
 research.}, i.e., they are all composed of the same stack of transformations,
 but they each have their own parameters.
 
-Additionally, let $q(z|\bm{x};\gamma)$ be a neural network with a softmax output, with
-parameters $\bm\gamma$. This network will receive as input an instance from the
+Additionally, let $q(z|\bm{x};\gamma)$ be a neural network with a $K$-class softmax
+output, with parameters $\bm\gamma$. This network will receive as input an instance from the
 data, and produce the probability of that instance belonging to each of the
 $K$ classes.
 
 Recall the evidence lower bound given in \ref{eq:elbokldiv}\footnote{Here the
-dependence of $q$ on $x$ is made explicit}:
+dependence of $q$ on $x$ is made explicit.}:
 \begin{equation*}
-    \text{ELBO} = \mathbb{E}_q [\log p(\bm{x}, z)] - \mathbb{E}_q [\log q(z|\bm{x})]
+    \text{ELBO} = \mathbb{E}_q [\log p(\bm{x}, z)] - \mathbb{E}_q [\log q(z|\bm{x})].
 \end{equation*}
 
 Let us rearrange it:
@@ -49,6 +50,9 @@ Since $q(z|\bm{x})$ is given by the forward-pass of a neural network, and is the
 straightforward to obtain, the expectation in \ref{eq:simplerelbo} is given by
 computing the expression inside the expectation for each possible value of $z$,
 and summing the obtained values, weighed by the probabilities given by the variational posterior.
+\begin{align}
+    \text{ELBO} = \sum_{z=1}^K q(z|\bm{x})\big(\log p(\bm{x}|z) + \log p(z) - \log q(z|\bm{x})\big).
+\end{align}
 Thus, the whole ELBO is easy to compute, provided that each of the terms inside
 the expectation is itself easy to compute. Let us consider each of those terms:
 \begin{itemize}
@@ -65,13 +69,13 @@ the expectation is itself easy to compute. Let us consider each of those terms:
 For a better intuition about each of these terms, it is useful to review the last
 paragraph of the first subsection of Section \ref{subsubsection:kldiv}.
 
-Let us call this model Variational Mixture of Normalizing Flows (VMoNF). For an overview of
-the model, consider figures \ref{fig:plate} and \ref{fig:modeloverview}
+Let us call this model \emph{variational mixture of normalizing flows} (VMoNF). For an overview of
+the model, consider Figures \ref{fig:plate} and \ref{fig:modeloverview}
 
 \begin{figure}[!htb]
   \centering
   \includegraphics[width=0.5\linewidth]{figures/plate_diagram.png}
-  \caption{Plate diagram of a Mixture of $K$ Normalizing Flows. $\bm\theta_k$ is the
+  \caption{Plate diagram of a mixture of $K$ normalizing flows. $\bm\theta_k$ is the
     parameter vector of component $k$.}
   \label{fig:plate}
 \end{figure}
@@ -83,21 +87,22 @@ the model, consider figures \ref{fig:plate} and \ref{fig:modeloverview}
   \label{fig:modeloverview}
 \end{figure}
 
-In a similar fashion to the Variational Auto-Encoder, proposed in \autocite{vaepaper},
+In a similar fashion to the variational auto-encoder, proposed by \textcite{vaepaper},
 a VMoNF is fitted by jointly optimizing the parameters of the variational
 posterior $q(z|\bm{x}; \bm\gamma)$ and the parameters of the generative process
 $p(\bm{x}|z; \bm\theta)$.
-
-After training, the variational posterior can be directly used as a classifier
-for new data points.
+After training, the variational posterior naturally induces a clustering on
+the data, and can be directly used to assign new data points to discoverd clusters.
+Moreover, each of the fitted components can be used to generate samples from the
+cluster it \q{specialized} in.
 
 \section{Implementation}
 
 To implement and test the proposed model, Python was the chosen language. More
-specifically, this work heavily realies on the PyTorch (\autocite{pytorch}) package
+specifically, this work heavily relies on the PyTorch \autocite{pytorch} package
 and framework for automatic differentiation. Moreover, the parameter optimization
-is done via stochastic optimization, namely using the optimizer proposed in
-\autocite{adam} - Adam.
+is done via stochastic optimization, namely using the Adam optimizer, proposed by
+\textcite{adam}.
 
 Figure \ref{fig:modeloverview} gives an overview of the training procedure:
 \begin{enumerate}
