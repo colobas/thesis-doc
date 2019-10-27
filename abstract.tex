@@ -4,11 +4,11 @@
 \addcontentsline{toc}{section}{Abstract}
 
 In the past few years, deep generative models, such as generative adversarial networks
-(\autocite{GAN}) and variational autoencoders (\autocite{vaepaper}), and their variants,
-have seen wide adoption for the task of modelling the distribution of data.
-In spite of the outstanding sample qualities achieved with these methods,
-they model the target distributions \emph{implicitly}, since the probability
-density functions induced by them are not accessible. This renders them unfit for
+\autocite{GAN} and variational autoencoders \autocite{vaepaper}, and their variants,
+have seen wide adoption for the task of modelling complex data distributions.
+In spite of the outstanding sample quality achieved by these methods,
+they model the target distributions \emph{implicitly}, in the sense that the probability
+density functions induced by them are not explicitly accessible. This renders these methods unfit for
 tasks that require, for example, scoring new instances of data with the learned
 distributions. Normalizing flows overcome this limitation by leveraging the
 change-of-variables formula for probability density functions, and by using
@@ -16,14 +16,13 @@ transformations designed to have tractable and cheaply computable Jacobians. Alt
 flexible, this framework lacked (until the publication of recent work -
 \autocite{semisuplearning_nflows}, \autocite{RAD}), a way to introduce discrete
 structure (such as the one found in mixture models) in the models it allows to
-construct, in an unsupervised scenario. The present work attempts to take a step
-in this direction by using normalizing flows as components in a mixture model,
+construct, in an unsupervised scenario. The present work overcomes this by using normalizing flows as components in a mixture model,
 and devising a training procedure for such a model.
 This procedure is based on variational inference, and uses a variational posterior
 parameterized by a neural network. As will become clear, this model naturally
 lends itself to (multimodal) density estimation, semi-supervised learning, and
 clustering. The proposed model is evaluated on two synthetic datasets, as well
-as a real-world dataset.
+as on a real-world dataset.
 \vfill
 
 \textbf{\Large Keywords:} Deep generative models, normalizing flows, variational
