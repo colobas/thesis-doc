@@ -7,7 +7,7 @@
 Generative models based on neural networks - variational autoencoders (VAEs),
 generative adversarial networks (GANs), normalizing flows and their variations -
 have experienced increased interest and progress in their capabilities. VAEs
-\autocite{vaepaper} work by leveraging the reparameterization trick to optimize
+\autocite{vaepaper} work by leveraging the so-called reparameterization trick to optimize
 a variational posterior parameterized by a neural network, jointly with the generative
 model per se - it too a neural network, which takes samples from a latent distribution at its
 input space and \emph{decodes} them into the observation space. GANs also work by
@@ -28,7 +28,7 @@ Less (although some) attention has been given to the extension of these types
 of models with discrete structure, such as the one found in finite mixture models.
 Exploiting such structure, while still being able to benefit from the expressiveness
 of neural generative models - specifically, normalizing flows - is the goal of this
-work. Concretely, this works explores a framework to learn a mixture of normalizing
+work. Concretely, this works proposes a framework to learn a mixture of normalizing
 flows. In practice, a neural network classifier is learned jointly with the mixture
 components. Doing so will naturally produce an approach which lends itself not
 only to density estimation, but also to clustering - since the classifier can be used
@@ -72,9 +72,9 @@ The objectives of the present work can be summarizd as follows:
     \item designing a mixture of normalizing flows, with a tractable learning procedure;
     \item a proof-of-concept implementation to demonstrate the capabilities of such model, namely in the tasks of:
         \begin{itemize}
-        \item Density estimation;
-        \item Clustering;
-        \item Semi-supervised learning.
+        \item density estimation;
+        \item clustering;
+        \item semi-supervised learning.
         \end{itemize}
 \end{itemize}
 
@@ -87,23 +87,23 @@ the mixture components.
 \section{Thesis Outline}
 \label{section:outline}
 
-In Chapter 2, the concepts on probabilistic modelling needed for the remainder
-of the work are introduced. In Chapter 3, the framework and theoretical background
-of normalizing flows is presented. Chapter 4 describes in detail the model
-proposed in the present work, and Chapter 5 contains empirical results and their
-interpretation.
+In Chapter 2, basic concepts of probabilistic modelling needed for the remainder
+of the work are introduced. Chapter 3 presents the framework and theoretical background
+of normalizing flows. Chapter 4 describes in detail the model
+proposed in the present work. Chapter 5 contains empirical results and their
+interpretation. Finally, Chapter 6 contains conclusions and points out potential
+directions for future work.
 
 \section{Notation}
 \label{section:notation}
 The main notation used throughout this work is as follows:
 
 \begin{itemize}
-    \item Scalars and vectors are lower-case letters. To differentiate between
-them, vectors will be present in bold. E.g.: $x$ is a scalar $\mathbf{z}$ is
-a vector.
-    \item Upper-case letters are matrices.
-    \item For vectors, $\bm{x}_{a:b}$ denotes the $a$-th to the $b$-th elements
-    of $\bm{x}$.
+    \item Scalars and vectors are lower-case letters. With vectors in bold. E.g.:
+    $x$ is a scalar, $\mathbf{z}$ is a vector.
+    \item Upper-case letters represent matrices.
+    \item Vector $\bm{x}_{a:b}$ denotes the $a$-th to the $b$-th elements
+    of vector $\bm{x}$.
     \item For distributions, subscript notation will only be used when the
 distribution isn't clear from context.
     \item The operator $\odot$ denotes the element-wise product.
