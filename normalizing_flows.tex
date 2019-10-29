@@ -31,7 +31,7 @@ and a bijective and continuous function $g(\: . \: ;\bm\theta)\ : \ \mathbb{R}^D
 the probability density function $f_X$ of the random variable $\bm{x} = g(\bm{z})$ is given by
 \begin{align}
     f_X(\bm{x}) &= f_Z(g^{-1}(\bm{x};\bm\theta))\Big|\det\Big(\frac{d}{d\bm{x}}g^{-1}(\bm{x};\bm\theta)\Big)\Big| \\
-    &= f_Z(g^{-1}(\bm{x};\bm\theta))\Big|\det\Big(\frac{d}{d\bm{x}}g(\bm{z};\bm\theta) \bigg{|}_{\bm{z} = g^{-1}(\bm{x};\bm\theta)}\Big)\Big|^{-1},
+    &= f_Z(g^{-1}(\bm{x};\bm\theta))\Big|\det\Big(\frac{d}{d\bm{z}}g(\bm{z};\bm\theta) \bigg{|}_{\bm{z} = g^{-1}(\bm{x};\bm\theta)}\Big)\Big|^{-1},
 \end{align} where $\det\Big(\frac{d}{d\bm{x}}g^{-1}(\bm{x};\bm\theta)\Big)$
 is the determinant of the Jacobian matrix of $g^{-1}(\: . \: ;\bm\theta)$,
 computed at $\bm{x}$.
@@ -40,9 +40,9 @@ vector $\bm\theta$, this expression can be optimized w.r.t. $\bm\theta$, with th
 goal of making it approximate some arbitrary distribution. For this to be feasible,
 the following have to be easily computable:
 \begin{itemize}
-    \item $f_Z$ - the starting distribution's probability density function
-        (also called \emph{base density}). It is assumed that there is a closed-form expression to
-        compute this. In practice, this is typically one of the basic distributions
+    \item $f_Z$ - the starting probability density function
+        (also called \emph{base density}). It is assumed that it has a closed-form
+        expression. In practice, this is typically one of the basic distributions
         (Gaussian, Uniform, etc.)
     \item $\det\Big(\frac{d}{d\bm{x}}g^{-1}(\bm{x};\bm\theta)\Big)$ - the determinant
         of the Jacobian matrix of $g^{-1}$; for most transformations, this is not
@@ -63,7 +63,7 @@ by a parameter vector $\bm\theta_\ell$, for $\ell = 0, 1, ..., L-1$. The
 dependence on the parameter vectors will be implicit from here on.
 Let $\bm{z_\ell} = h_{\ell-1} \circ h_{\ell-2} \circ ... \circ h_0(\bm{z_0})$, where
 $\bm{z_0}$ is sampled from $f_Z$, the base density. Notice that, with this notation,
-$\bm{z_\ell} = \bm{x}$. Furthermore, let $g$ be the composition of the $L$ transformations.
+$\bm{z_L} = \bm{x}$. Furthermore, let $g$ be the composition of the $L$ transformations.
 Applying the change of variables formula to
 \begin{align}
     \bm{z_0} &\sim f_Z \\
@@ -74,16 +74,16 @@ using the chain rule for derivatives, leads to
 \begin{align}
     f_X(\bm{x}) &= f_Z(g^{-1}(\bm{x}))\Big|\det\Big(\frac{d}{d\bm{x}}g^{-1}(\bm{x})\Big)\Big| \\
                         &= f_Z(g^{-1}(\bm{x}))\prod_{\ell=0}^{L-1}\Big|\det\Big(\frac{d}{d\bm{z_{\ell+1}}}h_{\ell}^{-1}(\bm{z_{\ell+1}})\Big)\Big| \\
-                        &= f_Z(g^{-1}(\bm{x}))\prod_{\ell=0}^{L-1}\Big|\det\Big(\frac{d}{d\bm{z_{\ell}}}h_{\ell}(\bm{x_\ell})\bigg{|}_{\bm{x_\ell} = h_{\ell}^{-1}(\bm{z_{\ell+1}})}   \Big)\Big|^{-1} \label{eq:nflowderivation}
+                        &= f_Z(g^{-1}(\bm{x}))\prod_{\ell=0}^{L-1}\Big|\det\Big(\frac{d}{d\bm{x_{\ell}}}h_{\ell}(\bm{x_\ell})\bigg{|}_{\bm{x_\ell} = h_{\ell}^{-1}(\bm{z_{\ell+1}})}   \Big)\Big|^{-1} \label{eq:nflowderivation}
 \end{align}
 Replacing $h_{\ell}^{-1}(\bm{z_{\ell+1}}) = \bm{z_\ell}$ in (\ref{eq:nflowderivation}) leads to
 \begin{align}
-         f_X(\bm{x}) &= f_Z(g^{-1}(\bm{x}))\prod_{\ell=0}^{L-1}\Big|\det\Big(\frac{d}{d\bm{z_{\ell}}}h_{\ell}\Big(\bm{z_\ell})\Big)\Big)\Big|^{-1};
+         f_X(\bm{x}) = f_Z(g^{-1}(\bm{x}))\prod_{\ell=0}^{L-1}\Big|\det\Big(\frac{d}{d\bm{z_{\ell}}}h_{\ell}(\bm{z_\ell})\Big)\Big|^{-1};
 \end{align} taking the logarithm,
 \begin{align}
-    \log f_X(\bm{x}) &= \log f_Z(g^{-1}(\bm{x})) - \sum_{\ell=0}^{L-1} \log \Big|\det\Big(\frac{d}{d\bm{z_{\ell}}}h_{\ell}(\bm{z_\ell})\Big) \Big|. \label{eq:nflowsfinal}
+    \log f_X(\bm{x}) = \log f_Z(g^{-1}(\bm{x})) - \sum_{\ell=0}^{L-1} \log \Big|\det\Big(\frac{d}{d\bm{z_{\ell}}}h_{\ell}(\bm{z_\ell})\Big) \Big|. \label{eq:nflowsfinal}
 \end{align}
-Depending on the task, one might prefer to replace the second term in \ref{eq:nflowsfinal}
+Depending on the task, one might prefer to replace the second term in (\ref{eq:nflowsfinal})
 with a sum of log-absolute-determinants of the Jacobians of the inverse transformations.
 This choice would imply replacing the minus sign before the sum with a plus sign:
 \begin{align}
@@ -92,15 +92,15 @@ This choice would imply replacing the minus sign before the sum with a plus sign
 We started by assuming that the transformations $h_\ell$ fulfill the requirements
 listed in Section \ref{cov}. For that reason, it is clear that the above expression
 is a feasible objective for gradient-based optimization. In practice, this is carried
-out by leveraging modern automatic differentiation and optimization frameworks.
+out by leveraging modern automatic differentiation and optimization frameworks \autocites{flowpp, Glow, real-nvp}.
 Sampling from the resulting distribution is simply achieved by sampling from the base
 distribution and applying the chain of transformations. Because of this, normalizing
-flows lend themselves to be used as flexible variational posteriors, in variational
+flows can be used as flexible variational posteriors, in variational
 inference settings, as well as density estimators.
 
 \section{Examples of transformations}
 \subsection{Affine Transformation}
-An affine transformation is arguably the simplest choice. This transformation can
+An affine transformation is arguably the simplest choice; it can
 stretch, sheer, shrink, rotate, and translate the space. It is simply achieved
 by the multiplication by a matrix $A$ and summation of a bias vector $\bm{b}$:
 \begin{align}
@@ -108,19 +108,19 @@ by the multiplication by a matrix $A$ and summation of a bias vector $\bm{b}$:
     \bm{x} &= A\bm{z} + \bm{b}.
 \end{align}
 The determinant of the Jacobian of this transformation is simply the determinant
-of matrix $A$. However, in general, computing the determinant of a $N \times N$
-matrix has $\mathcal{O}(N^3)$ computational complexity. For that reason, it is
+of $A$. However, in general, computing the determinant of a $D \times D$
+matrix has $\mathcal{O}(D^3)$ computational complexity. For that reason, it is
 common to use matrices with a certain structure that makes their determinants
-easier to compute. For instance, if $A$ is triangular, its determinant is simply
+easier to compute. For instance, if $A$ is triangular, its determinant is
 the product of its diagonal's elements. The downside of using matrices that are
 constrained to a certain structure is that they correspond to less flexible transformations.
 
 It is possible, however, to design affine transformations whose Jacobian determinants
-are of $\mathcal{O}(N)$ complexity and that are more expressive than simple
+are of $\mathcal{O}(D)$ complexity and that are more expressive than simple
 triangular matrices. \textcite{Glow} propose one such transformation. It
 constrains the matrix $A$ to be decomposable as ${A = PL\big(U + \mbox{diag}(\bm{s})\big)}$,
 where $\mbox{diag}(\bm{s})$ is a diagonal matrix whose diagonal's elements are
-the values of vector $\bm{s}$. The following additional constrains are in place:
+the components of vector $\bm{s}$. The following additional constrains are in place:
 \begin{itemize}
     \item $P$ is a permutation matrix
     \item $L$ is a lower triangular matrix, with ones in the diagonal
@@ -144,9 +144,9 @@ of the elements of $\bm{s}$.
 \subsection{PReLU Transformation}
 Intuitively, introducing non-linearities endows normalizing flows with more flexibility to
 represent complex distributions. This can be done in a similar fashion to the
-activation functions used in neural networks. One example of that, is the parameterized
+activation functions used in neural networks. One example of that is the parameterized
 rectified linear unit (PReLU) transformation. It is defined in the following manner, for
-a $d$-dimensional input:
+a $D$-dimensional input:
 \begin{align}
 f(\bm{z}) = [f_1(z_1), f_2(z_2), ..., f_D(z_D)],
 \end{align} where
@@ -157,9 +157,9 @@ f_i(z_i) =
         \alpha z_i,       & \text{otherwise}.
     \end{cases} \\
 \end{align}
-Note that in order for the transformation to be invertible, it is necessary
+In order for the transformation to be invertible, it is necessary
 that $\alpha > 0$.
-Let us define an auxiliary function $j(.)$ as
+Let us define a function $j(.)$ as
 \begin{align}
 j(z_i) =
     \begin{cases}
@@ -221,7 +221,7 @@ a division by zero. This transformation's Jacobian is trivial:
 As mentioned previously, one of the active research challenges within the
 normalizing flows framework is the search and design of transformations that
 are sufficiently expressive and whose Jacobians are not computationally heavy. One brilliant
-example of such transformations was proposed by \textcite{real-nvp}, which is
+example of such transformations, proposed by \textcite{real-nvp}, is
 called affine coupling layer.
 
 This transformation is characterized by two arbitrary functions $s(.)$ and
@@ -245,7 +245,7 @@ of normalizing flows, let us derive its Jacobian.
     \item $\frac{\partial \bm{x_1}}{\partial \bm{z_1}}$ is a diagonal matrix,
         whose diagonal is simply given by $\exp\big(s(\bm{z_2})\big)$, since those values are
         constant w.r.t $\bm{z_1}$ and they are multiplying each element of $\bm{z_1}$.
-    \item $\frac{\partial \bm{x_1}}{\partial \bm{z_2}}$ is not needed for our purposes,
+    \item $\frac{\partial \bm{x_1}}{\partial \bm{z_2}}$ is not needed,
         as will become clear ahead.
 \end{itemize}
 
@@ -302,7 +302,7 @@ some base distribution, with dimension $D$. MAF transforms $\bm{z}$ into an
 observation $\bm{x}$, of the same dimension, in the following manner:
 \begin{align}
 x_i = z_i \exp(\alpha_i) + \mu_i \\
-(\mu_i, \alpha_i) = g(\bm{x_{1:i-1}})
+(\mu_i, \alpha_i) = g(\bm{x_{1:i-1}}).
 \end{align}
 In the above expression $g$ is some arbitrary function. The inverse transform of
 MAF is trivial, because, like the affine coupling layer, MAF uses $g$ to parameterize
