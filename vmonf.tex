@@ -49,7 +49,7 @@ Let us rearrange it:
 Since $q(z|\bm{x})$ is given by the forward-pass of a neural network, and is therefore
 straightforward to obtain, the expectation in \ref{eq:simplerelbo} is given by
 computing the expression inside the expectation for each possible value of $z$,
-and summing the obtained values, weighed by the probabilities given by the variational posterior.
+and summing the obtained values, weighed by the probabilities given by the variational posterior:
 \begin{align}
     \text{ELBO} = \sum_{z=1}^K q(z|\bm{x})\big(\log p(\bm{x}|z) + \log p(z) - \log q(z|\bm{x})\big).
 \end{align}
@@ -83,7 +83,7 @@ the model, consider Figures \ref{fig:plate} and \ref{fig:modeloverview}
 \begin{figure}[!htb]
   \centering
   \includegraphics[width=0.85\linewidth]{figures/train_overview.png}
-  \caption{Overview of the training procedure.}
+  \caption{Overview of the training procedure of the VMoNF.}
   \label{fig:modeloverview}
 \end{figure}
 
