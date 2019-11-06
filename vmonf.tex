@@ -33,7 +33,7 @@ output, with parameters $\bm\gamma$. This network will receive as input an insta
 data, and produce the probability of that instance belonging to each of the
 $K$ classes.
 
-Recall the evidence lower bound given in \ref{eq:elbokldiv}\footnote{Here the
+Recall the evidence lower bound given in (\ref{eq:elbokldiv})\footnote{Here the
 dependence of $q$ on $x$ is made explicit.}:
 \begin{equation*}
     \text{ELBO} = \mathbb{E}_q [\log p(\bm{x}, z)] - \mathbb{E}_q [\log q(z|\bm{x})].
@@ -47,7 +47,7 @@ Let us rearrange it:
 \end{align}
 
 Since $q(z|\bm{x})$ is given by the forward-pass of a neural network, and is therefore
-straightforward to obtain, the expectation in \ref{eq:simplerelbo} is given by
+straightforward to obtain, the expectation in (\ref{eq:simplerelbo}) is given by
 computing the expression inside the expectation for each possible value of $z$,
 and summing the obtained values, weighed by the probabilities given by the variational posterior:
 \begin{align}
