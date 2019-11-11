@@ -53,6 +53,9 @@ and ideas arise:
     variational posterior to ignore components can be understood, perhaps they
     can be actively tweaked (via architectural choices, training procedure and
     hyperparameters, for example) to benefit the modelling task in such a scenario.
+    \item Related to the previous point, one first experiment could be to update
+    the prior ($p(z)$) (for example, every epoch), based on the responsabilities
+    given by the variational posterior.
     \item The effect of using different architectures for the neural networks used
     was not evaluated. It is likely, for instance, that convolutional architectures
     would produce better results in the real world dataset.
