@@ -6,15 +6,14 @@ and Two-circles) and one real-world dataset (MNIST). On one of the synthetic
 datasets, one shortcoming of the model is brought to attention, but is overcome
 in a semi-supervised setting. On the real-world dataset, the model's clustering
 capabilities are evaluted, as well as its capacity to model complex distributions.
-
 A technique inspired in \autocite{mixae} was employed to improve training
 speed and quality of results. This consists in dividing the inputs of the softmax layer in
 the variational posterior by a \q{temperature} value, $T$, which follows
-an exponential decay schedule during training. Intuitively, this makes the
+an exponential decay schedule during training. This makes the
 variational posterior \q{more certain} as training proceeds, while allowing all
-components to be generally exposed to the whole data, during the initial epochs.
-This discourages components from being \q{subtrained} during the initial epochs
-and, subsequently, from being prematurely discarded by the variational posterior.
+components to be exposed to the whole data, during the initial epochs.
+Moreover, it discourages components from being \q{subtrained} during the initial epochs
+and, subsequently, from being prematurely discarded.
 
 \subsection{Toy datasets}
 \subsubsection{Pinwheel dataset}
@@ -22,9 +21,7 @@ and, subsequently, from being prematurely discarded by the variational posterior
 This dataset is constituted by five non-linear \q{wings}. See Figure \ref{fig:pinwheel}
 for the results of running the model on this dataset. As expected, the variational
 posterior has learned to partition the space so as to attribute each \q{wing} to
-a component of the mixture. This partitioning is imperfect in regions of space
-that have low probability for every component.
-
+a component of the mixture. 
 \begin{figure}
 \centering
   \begin{subfigure}[t]{.5\textwidth}
@@ -45,32 +42,29 @@ so as to not match the dot colors, otherwise it dots wouldn't be visible)}
 
 \subsubsection{Two-circles dataset}
 This dataset consists of two concentric circles. The experiment on this dataset,
-shown on Figure \ref{fig:twocircles}, makes evident one shortcoming of this
-model: the way in which the variational posterior partitions the space is
-not necessarily guided by the intrisic structure in the data. In the case of
-the two-circles dataset, it was found that the most common space partitioning
-induced by the model consisted simply of splitting into two half-spaces. However, in
-a semi-supervised setting, this behaviour can be corrected and the model
-successfully learns to separate the two circles, as shown in Figure
-\ref{fig:twocircles}-d). In this setting, the model was pretrained on
-the labeled instances for some epochs and then trained with the normal procedure.
+makes evident one shortcoming of the proposed model: the way in which the variational
+posterior partitions the space is not necessarily guided by the intrisic structure
+in the data (see Figure \ref{fig:twocircles}-b). In the case of the two-circles
+dataset, it was found that the most common partitioning arrived at consisted
+simply of a split into two half-spaces. However, in a semi-supervised setting,
+this behaviour can be corrected and the model successfully learns to separate the
+two circles, as shown in Figure \ref{fig:twocircles}-d). In this setting, the
+model was pretrained on the labeled instances and then trained with the normal procedure.
 There were 1024 labeled instances, and 64 unlabeled instances.
-In the semi-supervised setting, the model has the chance to refine both the
-variational posterior and each of the components, thus making better use of
-the unlabeled data in the unsupervised phase of the training. As is clearly
-visible in Figure \ref{fig:twocircles}, the model struggles with
-learning full, closed, circles; this is because it is unable to \q{pierce a hole}
-in the base distribution, due to the nature of the transformations that are
-applicable. Thus, to model a circle, the model has to learn to stretch the blob
-formed by the base distribution, and \q{bend it over itself}. This difficulty
-is also what keeps the model from learning a structurally interesting solution
-in the fully unsupervised case: it is easier to learn to distort space so as to
-learn a multimodal distribution that models half of the two circles. Moreover,
-the points in diametrically opposed regions of the same circle are more dissimilar
-(in the geometrical sense) than points in the same region of the two circles.
-Therefore, when completely uninformed by labels, the variational posterior's
-layers will tend to have similar activations for points in the latter case, and
-thus tend to place them in the same class.
+In this case, the model has the chance to selectively refine both the variational
+posterior and each of the components. As is clearly visible in Figure
+\ref{fig:twocircles}, the model struggles with learning full, closed, circles;
+this is because it is unable to \q{pierce a hole} in the base distribution, due
+to the nature of the transformations that are applicable. Thus, to model a circle,
+the model has to learn to stretch the blob formed by the base distribution, and
+\q{bend it over itself}. This difficulty is also what keeps the model from learning
+a structurally interesting solution in the fully unsupervised case: it is easier
+for each component to learn to distort space so as to model half of the two circles.
+Moreover, the points in diametrically opposed regions of the same circle are
+more dissimilar (in the geometrical sense) than points in the same region of the
+two circles. Therefore, when completely uninformed by labels, the variational
+posterior's layers will tend to have similar activations for points in the latter
+case, and thus tend to have similar outputs for them.
 
 \begin{figure}
 \centering
@@ -106,14 +100,14 @@ as a clustering function can be assessed. Note that the cluster indices induced
 by the model have no semantic meaning.
 \begin{figure}
 \begin{floatrow}
-\floatbox{figure}[.49\textwidth][\FBheight][t]{%
+\floatbox{figure}[.48\textwidth][\FBheight][t]{%
   \includegraphics[width=0.90\linewidth]{figures/trained_mnist.png}%
 }{%
-  \caption{Samples from the fitted mixture components. Each row is sampled from the same component}%
+  \caption{\scriptsize Samples from the fitted mixture components. Each row is sampled from the same component}%
   \label{fig:mnist_samples}%
 }
-\floatbox{table}[.49\textwidth][\FBheight][t]{%
-\setlength\tabcolsep{1.5pt}
+\floatbox{table}[.48\textwidth][\FBheight][t]{%
+\setlength\tabcolsep{1.3pt}
 \begin{tabular}{c| *{5}{S[table-auto-round, table-format=-1.2]}}
  &         0 &         1 &         2 &         3 &         4 \\
 \midrule
@@ -125,7 +119,7 @@ by the model have no semantic meaning.
 \bottomrule
 \end{tabular}
 }{%
-\caption{Normalized contingency table for the clustering induced by the model.
+\caption{\scriptsize Normalized contingency table for the clustering induced by the model.
 Rounded to two decimal places. Rows: true label. Columns: cluster index.}%
 \label{table:contingency}%
 }
