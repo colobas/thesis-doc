@@ -1,7 +1,7 @@
-\chapter{Experiments}
-\label{chapter:experiments}
+\section{Experiments}
+\label{section:experiments}
 
-In this chapter, the proposed model is applied to two benchmark synthetic datasets (Pinwheel
+In this section, the proposed model is applied to two benchmark synthetic datasets (Pinwheel
 and Two-circles) and one real-world dataset (MNIST). On one of the synthetic
 datasets, one shortcoming of the model is brought to attention, but is overcome
 in a semi-supervised setting. On the real-world dataset, the model's clustering
@@ -16,8 +16,8 @@ components to be generally exposed to the whole data, during the initial epochs.
 This discourages components from being \q{subtrained} during the initial epochs
 and, subsequently, from being prematurely discarded by the variational posterior.
 
-\section{Toy datasets}
-\subsection{Pinwheel dataset}
+\subsection{Toy datasets}
+\subsubsection{Pinwheel dataset}
 
 This dataset is constituted by five non-linear \q{wings}. See Figure \ref{fig:pinwheel}
 for the results of running the model on this dataset. As expected, the variational
@@ -46,7 +46,7 @@ softmax output. Each component of the mixture was a RealNVP with 8 blocks, each
 block with multi-layer perceptrons, with 1 hidden layer of dimension 8 as the
 $s(.)$ and $t(.)$ functions of the affine coupling layers.
 
-\subsection{Two-circles dataset}
+\subsubsection{Two-circles dataset}
 This dataset consists of two concentric circles. The experiment on this dataset,
 shown on Figure \ref{fig:twocircles}, makes evident one shortcoming of this
 model: the way in which the variational posterior partitions the space is
@@ -79,7 +79,7 @@ The unsupervised learning experiment consisted of training on 1024 datapoints,
 of 0.001, a mini-batch size of 128, during 500 epochs.
 The semi-supervised learning experiment consisted of training on 1024 unlabeled
 datapoints, 512 per class and 64 labeled data points, 32 per class. The model
-was first pretrained during 300 epochs solely on the 64 labeled data points, using
+was first pretrained during 300 epochs solely on the 32 labeled data points, using
 the labels to selectively optimize each component of the mixture, as well as
 to optimize the variational posterior by minimizing a binary cross-entropy loss.
 After pretraining, the model was trained by interweaving supervised epochs - like
@@ -112,8 +112,8 @@ affine coupling layers.
 \label{fig:twocircles-semisup}
 \end{figure}
 
-\section{Real-world dataset}
-In this section, the proposed model is evaluated on the well-known MNIST
+\subsection{Real-world dataset}
+In this subsection, the proposed model is evaluated on the well-known MNIST
 dataset \autocite{MNIST}. This dataset consists of images of handwritten digits.
 The grids are of dimension 28 x 28 and were flattened to vectors of dimension 784
 for training. For this experiment, only the images corresponding to the digits

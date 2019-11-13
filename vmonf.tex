@@ -1,11 +1,10 @@
-\chapter{Variational Mixture of Normalizing Flows}
-\label{chapter:vmonf}
+\section{Variational Mixture of Normalizing Flows}
+\label{section:vmonf}
 
-\section{Introduction}
-\label{section:vmonf-intro}
+\subsection{Introduction}
+\label{subsection:vmonf-intro}
 
-As mentioned in Sections \ref{section:probmodellatvar} and \ref{section:mmodels},
-the ability of leveraging domain knowledge to endow a probabilistic model with
+The ability of leveraging domain knowledge to endow a probabilistic model with
 structure is often useful. The goal of this work is to devise a model that combines
 the flexibility of normalizing flows with the ability to exploit class-membership
 structure. This is achieved by learning a mixture of normalizing flows, via
@@ -15,9 +14,9 @@ Intuitively, this neural network should learn to place similar instances of
 data in the same class, allowing each component of the mixture to be fitted
 to a cluster of data.
 
-\section{Model Definition}
+\subsection{Model Definition}
 
-Let us define a mixture model as in Section \ref{section:mmodels}, where each of
+Let us define a mixture model, where each of
 the $K$ components is a density parameterized by a normalizing flow. For simplicity,
 consider that all of the $K$ normalizing flows have the same
 architecture\footnote{This is not a requirement,
@@ -33,8 +32,7 @@ output, with parameters $\bm\gamma$. This network will receive as input an insta
 data, and produce the probability of that instance belonging to each of the
 $K$ classes.
 
-Recall the evidence lower bound given in (\ref{eq:elbokldiv})\footnote{Here the
-dependence of $q$ on $x$ is made explicit.}:
+Recall the evidence lower bound (the dependence of $q$ on $x$ is made explicit):
 \begin{equation*}
     \text{ELBO} = \mathbb{E}_q [\log p(\bm{x}, z)] - \mathbb{E}_q [\log q(z|\bm{x})].
 \end{equation*}
@@ -57,16 +55,13 @@ Thus, the whole ELBO is easy to compute, provided that each of the terms inside
 the expectation is itself easy to compute. Let us consider each of those terms:
 \begin{itemize}
     \item $\log p(\bm{x}|z)$ is the log-likelihood of $\bm{x}$ under the normalizing
-        flow indexed by $z$. It was shown in the previous chapter how to compute
+        flow indexed by $z$. It was shown in the previous section how to compute
         this.
     \item $\log p(z)$ is the log-prior of the component weights. For simplicity,
         let us assume this is set by the modeller. When nothing is known about
         the component weights, the best assumption is that they are uniform.
     \item $- \log q(z|\bm{x})$ is the negative logarithm of the output of the encoder.
 \end{itemize}
-
-For a better intuition about each of these terms, it is useful to review the last
-paragraph of the first subsection of Section \ref{subsubsection:kldiv}.
 
 Let us call this model \emph{variational mixture of normalizing flows} (VMoNF). For an overview of
 the model, consider Figures \ref{fig:plate} and \ref{fig:modeloverview}
@@ -95,7 +90,7 @@ the data, and can be directly used to assign new data points to the discovered c
 Moreover, each of the fitted components can be used to generate samples from the
 cluster it \q{specialized} in.
 
-\section{Implementation}
+\subsection{Implementation}
 
 To implement and test the proposed model, Python was the chosen language. More
 specifically, this work heavily relies on the PyTorch \autocite{pytorch} package

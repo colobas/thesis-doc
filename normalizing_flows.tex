@@ -1,15 +1,14 @@
-\chapter{Normalizing Flows}
-\label{chapter:probmodel}
+\section{Normalizing Flows}
+\label{section:probmodel}
 
-\section{Introduction}
+\subsection{Introduction}
 The best-known and most studied probability distributions, which are analitically
 manageable, are rarely expressive enough for real-world complex datasets, such
 as images or signals. However, they have properties that make them amenable to
 work with, for instance, they allow for tractable parameter estimation,
 they have closed-form likelihood functions, and sampling from them is simple.
 
-As described in the previous chapter, one way to obtain more expressive models is
-to assume the existence of latent variables, leverage certain factorization
+One way to obtain more expressive models is to assume the existence of latent variables, leverage certain factorization
 structures, and use well-known distributions for the individual factors of the product that
 constitutes the model's joint distribution. By using these structures and
 specific, well-chosen combinations of distributions (namely, conjugate prior-likelihood pairs),
@@ -24,7 +23,7 @@ and which has since evolved and developed into the basis of multiple state-of-th
 techniques for density modelling and estimation \autocite{Glow}, \autocite{real-nvp}, \autocite{bnaf19},
 \autocite{maf}.
 
-\section{Change of Variables}
+\subsection{Change of Variables}
 \label{cov}
 Given a random variable $\bm{z} \in \mathbb{R}^D$, with probability density function $f_Z$,
 and a bijective and continuous function $g(\: . \: ;\bm\theta)\ : \ \mathbb{R}^D\rightarrow \mathbb{R}^D$,
@@ -56,7 +55,7 @@ transformations that are expressive enough, and for which the determinants of th
 Jacobian matrices, as well as the gradients of those determinants are both \q{cheap}
 to compute.
 
-\section{Normalizing Flows}
+\subsection{Normalizing Flows}
 Consider $L$ transformations $h_\ell$, for $\ell = 0, 1, ..., L-1$ that fulfill the
 three requirements listed above. Let each of those transformations be parameterizable
 by a parameter vector $\bm\theta_\ell$, for $\ell = 0, 1, ..., L-1$. The
@@ -87,7 +86,8 @@ Depending on the task, one might prefer to replace the second term in (\ref{eq:n
 with a sum of log-absolute-determinants of the Jacobians of the inverse transformations.
 This choice would imply replacing the minus sign before the sum with a plus sign:
 \begin{align}
-    \log f_X(\bm{x}) &= \log f_Z(g^{-1}(\bm{x})) + \sum_{\ell=0}^{L-1} \log \Big|\det\Big(\frac{d}{d\bm{z_{\ell+1}}}h_{\ell}^{-1}(\bm{z_{\ell+1}})\Big) \Big|.
+    &\log f_X(\bm{x}) = \nonumber \\
+    &= \log f_Z(g^{-1}(\bm{x})) + \sum_{\ell=0}^{L-1} \log \Big|\det\Big(\frac{d}{d\bm{z_{\ell+1}}}h_{\ell}^{-1}(\bm{z_{\ell+1}})\Big) \Big|.
 \end{align}
 We started by assuming that the transformations $h_\ell$ fulfill the requirements
 listed in Section \ref{cov}. For that reason, it is clear that the above expression
@@ -98,8 +98,8 @@ distribution and applying the chain of transformations. Because of this, normali
 flows can be used as flexible variational posteriors, in variational
 inference settings, as well as density estimators.
 
-\section{Examples of transformations}
-\subsection{Affine Transformation}
+\subsection{Examples of transformations}
+\subsubsection{Affine Transformation}
 An affine transformation is arguably the simplest choice; it can
 stretch, sheer, shrink, rotate, and translate the space. It is simply achieved
 by the multiplication by a matrix $A$ and summation of a bias vector $\bm{b}$:
@@ -141,7 +141,7 @@ of the elements of $\bm{s}$.
   \label{fig:affine}
 \end{figure}
 
-\subsection{PReLU Transformation}
+\subsubsection{PReLU Transformation}
 Intuitively, introducing non-linearities endows normalizing flows with more flexibility to
 represent complex distributions. This can be done in a similar fashion to the
 activation functions used in neural networks. One example of that is the parameterized
@@ -204,7 +204,7 @@ Jacobian, which is given by $\sum_{i=1}^D \log \big| j(z_i) \big|$
   \label{fig:prelu}
 \end{figure}
 
-\subsection{Batch-Normalization Transformation}
+\subsubsection{Batch-Normalization Transformation}
 \textcite{real-nvp} propose a batch-normalization transformation, similar to
 the well-known batch-normalization layer normally used in neural networks. This
 transform simply applies a rescaling, given the batch mean $\tilde\mu$ and variance
@@ -217,7 +217,7 @@ a division by zero. This transformation's Jacobian is trivial:
     \prod_{i=1}^D \frac{1}{\sqrt{{\tilde\sigma}_i^2 + \epsilon}}.
 \end{align}
 
-\subsection{Affine Coupling Transformation}
+\subsubsection{Affine Coupling Transformation}
 As mentioned previously, one of the active research challenges within the
 normalizing flows framework is the search and design of transformations that
 are sufficiently expressive and whose Jacobians are not computationally heavy. One brilliant
@@ -295,7 +295,7 @@ so as to make all dimensions affect each other. This can be done, for instance, 
 a checkerboard pattern, which alternates for each layer. In the case of image inputs,
 the masks can operate at the channel level.
 
-\subsection{Masked Autoregressive Flows}
+\subsubsection{Masked Autoregressive Flows}
 Another ingenious architecture for normalizing flows has been proposed by \textcite{maf}.
 It is called masked autoregressive flow (MAF). Let $\bm{z}$ be a sample from
 some base distribution, with dimension $D$. MAF transforms $\bm{z}$ into an
@@ -327,18 +327,17 @@ for which that assumption is held) carries an inductive bias with it. Again,
 like with the affine coupling layer, this effect is minimized in practice by
 stacking layers with different element orderings.
 
-\section{Fitting Normalizing Flows}
+\subsection{Fitting Normalizing Flows}
 
 Generally speaking, normalizing flows can be used in one of two scenarios:
 (direct) density estimation, where the goal is to optimize the parameters
 so as to make the model approximate the distribution of some observed set of data;
 in a variational inference scenario, as way of having a flexible variational
-posterior (i.e. $q(\bm{z})$ in the terminology used in the previous chapter). The
-second scenario is out of the scope of this work.
+posterior. The second scenario is out of the scope of this work.
 
 The task of density estimation with normalizing flows reduces to finding the
-optimal parameters of a parametric model. As mentioned in Section \ref{section:map-mle},
-there are two ways to go about estimating the parameters of a parametric model,
+optimal parameters of a parametric model. In general, there are two ways to go about estimating
+the parameters of a parametric model,
 given data: MLE and MAP. In the case of normalizing flows, MLE is the usual
 approach\footnote{In theory it is possible to place a prior on the normalizing
 flow's parameters and do MAP estimation. To accomplish this, similar strategies
