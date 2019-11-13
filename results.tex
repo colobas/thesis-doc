@@ -78,8 +78,8 @@ The unsupervised learning experiment consisted of training on 1024 datapoints,
 512 per class; using the Adam optimizer, with a learning rate
 of 0.001, a mini-batch size of 128, during 500 epochs.
 The semi-supervised learning experiment consisted of training on 1024 unlabeled
-datapoints, 512 per class and 32 labeled data points, 16 per class. The model
-was first pretrained during 300 epochs solely on the 32 labeled data points, using
+datapoints, 512 per class and 64 labeled data points, 32 per class. The model
+was first pretrained during 300 epochs solely on the 64 labeled data points, using
 the labels to selectively optimize each component of the mixture, as well as
 to optimize the variational posterior by minimizing a binary cross-entropy loss.
 After pretraining, the model was trained by interweaving supervised epochs - like
