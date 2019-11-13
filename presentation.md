@@ -8,7 +8,7 @@ toc: true
 
 This work in one sentence:
 \begin{itemize}
-    \item The development of a mixture of \emph{normalizing flows}
+    \item The development of a mixture of \textbf{normalizing flows}
     and a (variational) training procedure for it.
 \end{itemize}
 
