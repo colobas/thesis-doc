@@ -1,63 +1,15 @@
-\chapter{Conclusions}
-\label{chapter:conclusions}
+\section{Discussion}
 
-\section{Conclusions}
-\label{section:conclusions}
-Deep generative modelling is an active research avenue that will keep being
-developed and improved, since it lends itself to extremely useful applications,
-like anomaly detection, synthetic data generation, and, generally speaking,
-uncovering patterns in data.
-Overall, the initial idea of the present work stands validated by the experiments - 
-it is possible to learn mixtures of normalizing flows via the proposed procedure - as well
-as by recently published similar work \autocites{RAD}{semisuplearning_nflows}.
-The proposed method was tested on two synthetic datasets, succeeding with ease
-on one of them, and struggling with the other one. However, when allowed to learn
-from just a few labels, it was able to successfully fit the data it previously
-failed on. On the real-world dataset, the model's clustering capability was tested,
-as well as its ability to generate realistic samples, with some success.
-During the experiments, it became evident that, similarly to what happens with
-the majority of neural-network-based models, in order to successfully fit the
-proposed model to complex data, some fine tuning is required, both in terms of the
-training procedure, as well as in terms of the architecture of the blocks that
-constitute the model. In the following section, some proposals and ideas for
-future work and for tackling some of the observed shortcomings are proposed.
-
-\section{Discussion and Future Work}
-\label{section:future}
-
-After the work presented here, some observations and future research questions
-and ideas arise:
-\begin{itemize}
-    \item The main shortcoming of the proposed model, specially in its fully
-    unsupervised variant, is that there is no way to incentivize the variational
-    posterior to partition the space in the intuitively correct manner. Moreover, the
-    variational posterior generally performs poorly in regions of space where there are few
-    or no training points. This suggests that the model could benefit from a consistency
-    loss regularization term. In fact, this idea has been pursued by \textcite{semisuplearning_nflows}.
-    \item Some form of weight-sharing strategy between components is also an interesting
-    point for future research. It is plausible that, this way, components could
-    share \q{concepts} and latent representations of data, and use their non-shared
-    weights to \q{specialize} in their particular cluster of data. Take,
-    for instance, the Pinwheel dataset: in principle, the five normalizing flows
-    could share a stack of layers that learned to model the concept of wing,
-    each component then having a non-shared stack of blocks that would only
-    need to model the correct rotation of its respective wing.
-    \item During the experimentation phase, it was found that a balance between
-    the complexity of the variational posterior and that of the components of
-    the mixture, is crucial for the convergence to interesting solutions. This
-    is intuitive: if the components are too complex, the variational posterior
-    tends to ignore most of them and assigns most points to a single or few components.
-    \item The fact that in some cases the variational posterior ignores components
-    and \q{chooses} not to use them can hypothetically be exploited in the scenarios
-    where the number of clusters is unknown. If the dynamics of what drives the
-    variational posterior to ignore components can be understood, perhaps they
-    can be actively tweaked (via architectural choices, training procedure and
-    hyperparameters, for example) to benefit the modelling task in such a scenario.
-    \item Related to the previous point, one first experiment could be to update
-    the prior ($p(z)$) (for example, every epoch), based on the responsabilities
-    given by the variational posterior.
-    \item The effect of using different architectures for the neural networks used
-    was not evaluated. It is likely, for instance, that convolutional architectures
-    would produce better results in the real world dataset.
-\end{itemize}
-
+The main shortcoming of the proposed model is that the variational posterior does
+not always partition the space in the intuitively correct manner. Potentially,
+this could be improved by using a consistency loss regularization term. In fact,
+this idea has been pursued in \autocite{semisuplearning_nflows}.
+During the experimentation phase, it was found that a balance between the complexity of the variational
+posterior and that of the components of the mixture, is crucial for the
+convergence to interesting solutions. This is intuitive: if the components are
+too complex, the variational posterior tends to ignore most of them and assigns
+most points to a single or few components. In principle, the model should be
+able to ignore unneeded components, if the complexities of the posterior and
+the flows are well calibrated. This needs to be evaluated empirically.
+The effect of using different architectures for the neural networks used
+was also not evaluated.

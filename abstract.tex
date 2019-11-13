@@ -1,14 +1,9 @@
-\section*{Abstract}
-
-% Add entry in the table of contents as section
-\addcontentsline{toc}{section}{Abstract}
-
 In the past few years, deep generative models, such as generative adversarial networks
 \autocite{GAN}, variational autoencoders \autocite{vaepaper}, and their variants,
 have seen wide adoption for the task of modelling complex data distributions.
 In spite of the outstanding sample quality achieved by those methods,
 they model the target distributions \emph{implicitly}, in the sense that the probability
-density functions induced by them are not explicitly accessible. This fact renders those methods unfit for
+density functions approximated by them are not explicitly accessible. This fact renders those methods unfit for
 tasks that require, for example, scoring new instances of data with the learned
 distributions. Normalizing flows overcome this limitation by leveraging the
 change-of-variables formula for probability density functions, and by using
@@ -23,7 +18,3 @@ parameterized by a neural network. As will become clear, this model naturally
 lends itself to (multimodal) density estimation, semi-supervised learning, and
 clustering. The proposed model is evaluated on two synthetic datasets, as well
 as on a real-world dataset.
-\vfill
-
-\textbf{\Large Keywords:} Deep generative models, normalizing flows, variational
-inference, probabilistic modelling, machine learning.
