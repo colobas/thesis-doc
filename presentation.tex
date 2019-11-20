@@ -301,8 +301,14 @@ an arbitrary distribution}
 \begin{frame}{Normalizing Flows: Change of Variables}
 \protect\hypertarget{normalizing-flows-change-of-variables-2}{}
 
-The framework of Normalizing Flows consists of composing several
-transformations that fulfill the three listed conditions.
+\onslide<1->{The framework of Normalizing Flows consists of composing several transformations
+that fulfill the three listed conditions.}
+
+\onslide<2->{I.e., the function $g$ is a composition of $L$ functions $h_\ell$, $\ell = 0, 1, ..., L-1$.}
+\onslide<3->{Applying the formula to $g$, and taking the logarithm, yields:
+\begin{align*}
+    \log f_X(\bm{x}) = \log f_Z(g^{-1}(\bm{x})) - \sum_{\ell=0}^{L-1} \log \Big|\det\Big(\frac{d}{d\bm{x_{\ell}}}h_{\ell}(\bm{x_\ell})\Big) \Big|. \label{eq:nflowsfinal}
+\end{align*}}
 
 \end{frame}
 
@@ -310,7 +316,7 @@ transformations that fulfill the three listed conditions.
 \protect\hypertarget{normalizing-flows-affine-coupling-layer}{}
 
 An example of such a transformation is the Affine Coupling Layer
-\autocites{real-nvp}.
+\{\scriptsize \color{black!50} \autocites{real-nvp}\}.
 
 \onslide<1->{Splitting $\bm{z}$ into $(\bm{z_1}, \bm{z_2})$,}
 \onslide<2->{\begin{align*}
@@ -366,9 +372,9 @@ inference framework, that can be used to overcome this intractability. \end{item
 \begin{frame}{Variational Inference: Goal}
 \protect\hypertarget{variational-inference-goal}{}
 
-Given a \emph{variational} family \(q(\bm{z} ; \bm\lambda)\), find the
-parameters \(\bm\lambda\) that minimize the Kullback-Leibler divergence
-between \(q(\bm{z} ; \bm\lambda)\) and \(p(\bm{z}|\bm{x})\)
+Given a parametric family of distributions \(q(\bm{z} ; \bm\lambda)\),
+find the parameters \(\bm\lambda\) that minimize the Kullback-Leibler
+divergence between \(q(\bm{z} ; \bm\lambda)\) and \(p(\bm{z}|\bm{x})\)
 
 \end{frame}
 
@@ -395,15 +401,11 @@ Which yields the lower bound (ELBO): \begin{align*}
 \section{Variational Mixture of Normalizing
 Flows}\label{variational-mixture-of-normalizing-flows}}
 
-\begin{frame}{VMoNF: Motivation}
-\protect\hypertarget{vmonf-motivation}{}
+\begin{frame}{VMoNF: Introduction}
+\protect\hypertarget{vmonf-introduction}{}
 
-\onslide<1->{How can we leverage the flexibility of normalizing flows, and endow it with
-multimodal, discrete structure, like in a mixture model?}
-
-\onslide<2->{Mixture of normalizing flows.}
-\onslide<3->{
-$\to$ Approximate inference is required.}
+\onslide<1->{Is it possible to combine the ideas from the previous sections,
+to obtain a mixture of flexible models?}
 
 \end{frame}
 
@@ -417,8 +419,12 @@ Recall the ELBO: \begin{align*}
 \pause
 
 Let the variational posterior \(q(z|x)\) be parameterized by a neural
-network. We jointly optimize this objective, hence we learn the
-variational posterior and the generative components simultaneously.
+network.
+
+\pause
+
+We optimize this objective, by \textbf{jointly} learning the variational
+posterior and the generative components.
 
 \end{frame}
 
@@ -435,10 +441,9 @@ variational posterior and the generative components simultaneously.
 \protect\hypertarget{vmonf-experiments---pinwheel-5-wings}{}
 
 \centering
-
-\includegraphics[width=0.475\textwidth]{figures/original_pinwheel.png}
+\onslide<1->{\includegraphics[width=0.475\textwidth]{figures/original_pinwheel.png}}
 \hfill
-\includegraphics[width=0.475\textwidth]{figures/trained_pinwheel.png}
+\onslide<2->{\includegraphics[width=0.475\textwidth]{figures/trained_pinwheel.png}}
 
 \end{frame}
 
@@ -453,10 +458,9 @@ Trainining Animation
 \protect\hypertarget{vmonf-experiments---2-circles}{}
 
 \centering
-
-\includegraphics[width=0.475\textwidth]{figures/original_2_circles.png}
+\onslide<1->{\includegraphics[width=0.475\textwidth]{figures/original_2_circles.png}}
 \hfill
-\includegraphics[width=0.475\textwidth]{figures/trained_2_circles_2.png}
+\onslide<2->{\includegraphics[width=0.475\textwidth]{figures/trained_2_circles_2.png}}
 
 \end{frame}
 
@@ -464,12 +468,10 @@ Trainining Animation
 \protect\hypertarget{vmonf-experiments---2-circles-semi-supervised}{}
 
 \centering
-
-\includegraphics[width=0.475\textwidth]{figures/labeled_2_circles.png}
+\onslide<1->{\includegraphics[width=0.475\textwidth]{figures/labeled_2_circles.png}}
 \hfill
-\includegraphics[width=0.475\textwidth]{figures/trained_2_circles_semisup.png}
-
-Note: 32 labeled points, 1024 unlabeled points
+\onslide<2->{\includegraphics[width=0.475\textwidth]{figures/trained_2_circles_semisup.png}
+{\scriptsize Note: 32 labeled points, 1024 unlabeled points}}
 
 \end{frame}
 

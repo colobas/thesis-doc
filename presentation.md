@@ -105,18 +105,19 @@ an arbitrary distribution}
 
 ## Normalizing Flows: Change of Variables
 
-The framework of Normalizing Flows consists of composing several transformations
-that fulfill the three listed conditions.
+\onslide<1->{The framework of Normalizing Flows consists of composing several transformations
+that fulfill the three listed conditions.}
 
-I.e., the function $g$ is a composition of $L$ functions $h_\ell$, $\ell = 0, 1, ..., L-1$.
-This yields:
+\onslide<2->{I.e., the function $g$ is a composition of $L$ functions $h_\ell$, $\ell = 0, 1, ..., L-1$.}
+\onslide<3->{Applying the formula to $g$, and taking the logarithm, yields:
 \begin{align*}
-
-\end{align*}
+    \log f_X(\bm{x}) = \log f_Z(g^{-1}(\bm{x})) - \sum_{\ell=0}^{L-1} \log \Big|\det\Big(\frac{d}{d\bm{x_{\ell}}}h_{\ell}(\bm{x_\ell})\Big) \Big|. \label{eq:nflowsfinal}
+\end{align*}}
 
 ## Normalizing Flows: Affine Coupling Layer
 
-An example of such a transformation is the Affine Coupling Layer \autocites{real-nvp}.
+An example of such a transformation is the Affine Coupling Layer
+{\scriptsize \autocites{real-nvp}}.
 
 \onslide<1->{Splitting $\bm{z}$ into $(\bm{z_1}, \bm{z_2})$,}
 \onslide<2->{\begin{align*}
@@ -165,7 +166,7 @@ inference framework, that can be used to overcome this intractability. \end{item
 
 ## Variational Inference: Goal
 
-Given a *variational* family $q(\bm{z} ; \bm\lambda)$,  find the parameters $\bm\lambda$
+Given a parametric family of distributions $q(\bm{z} ; \bm\lambda)$,  find the parameters $\bm\lambda$
 that minimize the Kullback-Leibler divergence between $q(\bm{z} ; \bm\lambda)$ and
 $p(\bm{z}|\bm{x})$
 
@@ -185,17 +186,11 @@ Which yields the lower bound (ELBO):
             &= \mathbb{E}_q [\log p(\bm{x}|\bm{z})] + \mathbb{E}_q [\log p(\bm{z})] - \mathbb{E}_q [\log q(\bm{z})]
 \end{align*}
 
-
-
 # Variational Mixture of Normalizing Flows
 
-## VMoNF: Motivation
-\onslide<1->{How can we leverage the flexibility of normalizing flows, and endow it with
-multimodal, discrete structure, like in a mixture model?}
-
-\onslide<2->{Mixture of normalizing flows.}
-\onslide<3->{
-$\to$ Approximate inference is required.}
+## VMoNF: Introduction
+\onslide<1->{Is it possible to combine the ideas from the previous sections,
+to obtain a mixture of flexible models?}
 
 ## VMoNF: Definition
 
@@ -206,9 +201,12 @@ Recall the ELBO:
 
 . . .
 
-Let the variational posterior $q(z|x)$ be parameterized by a neural network. We
-jointly optimize this objective, hence we learn the variational posterior and
-the generative components simultaneously.
+Let the variational posterior $q(z|x)$ be parameterized by a neural network.
+
+. . .
+
+We optimize this objective, by \textbf{jointly} learning the variational posterior and
+the generative components.
 
 ## VMoNF: Overview
 
@@ -218,9 +216,9 @@ the generative components simultaneously.
 ## VMoNF: Experiments - Pinwheel (5 wings)
 
 \centering
-\includegraphics[width=0.475\textwidth]{figures/original_pinwheel.png}
+\onslide<1->{\includegraphics[width=0.475\textwidth]{figures/original_pinwheel.png}}
 \hfill
-\includegraphics[width=0.475\textwidth]{figures/trained_pinwheel.png}
+\onslide<2->{\includegraphics[width=0.475\textwidth]{figures/trained_pinwheel.png}}
 
 ## VMoNF: Experiments - Pinwheel (3 wings)
 
@@ -229,18 +227,17 @@ Trainining Animation
 ## VMoNF: Experiments - 2 Circles
 
 \centering
-\includegraphics[width=0.475\textwidth]{figures/original_2_circles.png}
+\onslide<1->{\includegraphics[width=0.475\textwidth]{figures/original_2_circles.png}}
 \hfill
-\includegraphics[width=0.475\textwidth]{figures/trained_2_circles_2.png}
+\onslide<2->{\includegraphics[width=0.475\textwidth]{figures/trained_2_circles_2.png}}
 
 ## VMoNF: Experiments - 2 Circles (semi supervised)
 
 \centering
-\includegraphics[width=0.475\textwidth]{figures/labeled_2_circles.png}
+\onslide<1->{\includegraphics[width=0.475\textwidth]{figures/labeled_2_circles.png}}
 \hfill
-\includegraphics[width=0.475\textwidth]{figures/trained_2_circles_semisup.png}
-
-Note: 32 labeled points, 1024 unlabeled points
+\onslide<2->{\includegraphics[width=0.475\textwidth]{figures/trained_2_circles_semisup.png}
+{\scriptsize Note: 32 labeled points, 1024 unlabeled points}}
 
 ## VMoNF: Experiments - MNIST
 
