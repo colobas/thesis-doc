@@ -8,62 +8,59 @@ toc: true
 
 ## Introduction and Motivation
 
-\begin{fitemize}{0pt}{20pt}
+\begin{itemize}
 \onslide<1->{\item Deep generative models: an active area of research}
-    \begin{fitemize}{15pt}{15pt}
-        \onslide<2->{\item \bluebold{Implicit distributions}: Generative adversarial networks
-            \mycite{GAN}, Variational Autoencoder \mycite{vaepaper}
-            \begin{fitemize}{10pt}{15pt}
-                \item No explicit access to the density function \end{fitemize}}
-        \onslide<3->{\item \bluebold{Explicit distributions}: Normalizing flows \mycite{shakir_nf}
-            \begin{fitemize}{20pt}{15pt}
+    \begin{itemize}
+        \onslide<2->{\item \textbf{Implicit distributions}: Generative adversarial networks
+            {\scriptsize \color{black!50} \autocites{GAN}}, Variational Autoencoder {\scriptsize \color{black!50} \autocites{vaepaper}}
+            \begin{itemize} \item No explicit access to the density function \end{itemize}}
+        \onslide<3->{\item \textbf{Explicit distributions}: Normalizing flows {\scriptsize \color{black!50} \autocites{shakir_nf}}
+            \begin{itemize}
                 \item Explicit access to the density function
                 \item No approach to introduce discrete structure (multi-modality)
-            \end{fitemize}}
-    \end{fitemize}
-\end{fitemize}
+            \end{itemize}}
+    \end{itemize}
+\end{itemize}
 
 ## Introduction and Motivation: Goal
 
-\begin{fitemize}{0pt}{25pt}
-\onslide<1->{\item Goal of this work: \bluebold{mixture of flexible distributions}.}
+\begin{itemize}
+\onslide<1->{\item Goal of this work: mixture of flexible distributions.}
 \onslide<2->{\item Two questions:}
-    \begin{fitemize}{15pt}{25pt}
-        \onslide<3->{\item What should the \bluebold{mixture components} be?}
-        \onslide<4->{\item How should their \bluebold{parameters} be \bluebold{estimated}?}
-    \end{fitemize}
-\end{fitemize}
+    \begin{itemize}
+        \onslide<3->{\item What should the mixture components be?}
+        \onslide<4->{\item How should their parameters be estimated?}
+    \end{itemize}
+\end{itemize}
 
 ## Outline
 
-\begin{fitemize}{0pt}{12pt}
+\begin{itemize}
 \onslide<1->{\item Mixture Models}
 \onslide<2->{\item Variational Inference}
-    \onslide<3->{\begin{fitemize}{12pt}{12pt}
-        \item The chosen framework for estimating the parameters of the proposed model\end{fitemize}}
+    \onslide<3->{\begin{itemize} \item The chosen framework for estimating the parameters of the proposed model\end{itemize}}
 \onslide<4->{\item Normalizing Flows}
-    \onslide<5->{\begin{fitemize}{12pt}{12pt}
-        \item The chosen family for the mixture model components \end{fitemize}}
+    \onslide<5->{\begin{itemize} \item The chosen family for the mixture model components \end{itemize}}
 \onslide<6->{\item Variational Mixture of Normalizing Flows}
 \onslide<7->{\item Experiments and results}
 \onslide<8->{\item Conclusions and future work}
-\end{fitemize}
+\end{itemize}
 
 # Mixture Models
 
 ## Mixture Models: Definition
 
-\begin{fitemize}{10pt}{10pt}
-    \onslide<1->{\item Mixture model: used to model data that contains \bluebold{subgroups}.}
+\begin{itemize}
+    \onslide<1->{\item Mixture model: used to model data that contains subgroups.}
     \onslide<2->{\item \q{Subgroup-conditional} distributions (typically) in the same family}
-\end{fitemize}
-\onslide<3->{\centering \includegraphics[width=0.3\textwidth]{figures/selector-mixture.png}}
+\end{itemize}
+\onslide<3->{\centering \includegraphics[width=0.6\textwidth]{figures/selector-mixture.png}}
 
 
 ## Mixture Models: Plate diagram
 
 \centering
-\includegraphics[width=0.5\textwidth]{figures/plate_diagram3.pdf}
+\includegraphics[width=0.7\textwidth]{figures/plate_diagram2.png}
 
 ## Mixture Models: Mixture of Gaussians
 
@@ -94,12 +91,12 @@ toc: true
 ## Normalizing Flows: Change of Variables
 
 \onslide<1->{Requirements for feasibility}
-\begin{fenumerate}
-    \renewcommand{\theenumi}{\alph{enumi}}
-    \onslide<2->{\item Base density: \bluebold{closed form} and \bluebold{easy to sample} from}
-    \onslide<3->{\item \bluebold{Determinant} of the \bluebold{Jacobian} of $g$: computationally cheap}
-    \onslide<4->{\item \bluebold{Gradient} of \emph{b} w.r.t $\bm\theta$: computationally cheap}
-\end{fenumerate}
+\begin{enumerate}
+\renewcommand{\theenumi}{\Alph{enumi}}
+    \onslide<2->{\item Base density: closed form and easy to sample from}
+    \onslide<3->{\item Determinant of the Jacobian of $g$: computationally cheap}
+    \onslide<4->{\item Gradient of \emph{B} w.r.t $\bm\theta$: computationally cheap}
+\end{enumerate}
 
 ## Normalizing Flows: Change of Variables
 
