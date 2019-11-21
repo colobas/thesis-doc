@@ -89,40 +89,41 @@ toc: true
     &= f_Z(g^{-1}(\bm{x};\bm\theta))\Big|\det\Big(\frac{d}{d\bm{z}}g(\bm{z};\bm\theta) \bigg{|}_{\bm{z} = g^{-1}(\bm{x};\bm\theta)}\Big)\Big|^{-1}
 \end{align*}}
 
-\onslide<3->{This can be optimized w.r.t. $\bm\theta$, to approximate an arbitrary distribution}
+\onslide<3->{This can be \bluebold{optimized w.r.t. $\bm\theta$}, to approximate an \bluebold{arbitrary distribution}}
 
 ## Normalizing Flows: Change of Variables
-
+\vspace{-20pt}
 \onslide<1->{Requirements for feasibility}
-\begin{fenumerate}
+\begin{fenumerate}{10pt}{30pt}
     \renewcommand{\theenumi}{\alph{enumi}}
-    \onslide<2->{\item Base density: \bluebold{closed form} and \bluebold{easy to sample} from}
-    \onslide<3->{\item \bluebold{Determinant} of the \bluebold{Jacobian} of $g$: computationally cheap}
-    \onslide<4->{\item \bluebold{Gradient} of \emph{b} w.r.t $\bm\theta$: computationally cheap}
+    \onslide<2->{\item Base density - \bluebold{closed form} and \bluebold{easy to sample} from}
+    \onslide<3->{\item \bluebold{Determinant} of the \bluebold{Jacobian} of $g$ - computationally cheap}
+    \onslide<4->{\item \bluebold{Gradient} of $\det\Big(\frac{d}{d\bm{z}}g(\bm{z};\bm\theta)\Big)$ w.r.t $\bm\theta$ - computationally cheap}
 \end{fenumerate}
 
 ## Normalizing Flows: Change of Variables
 
-\onslide<1->{Normalizing Flows: composition of several \q{good} transformations}
-\onslide<2->{I.e., $g = h_{L-1} \odot h_{L-2} \odot ... \odot h_1 \odot h_0$}
-\onslide<3->{Applying the formula to $g$, and taking the logarithm:
+\begin{fitemize}{0pt}{30pt}
+\onslide<1->{\item Normalizing Flows: \bluebold{composition} of several \q{good} transformations}
+\onslide<2->{\item I.e., \bluebold{$g = h_{L-1} \circ h_{L-2} \circ ... \circ h_1 \circ h_0$}}
+\onslide<3->{\item Applying the formula to $g$, and taking the logarithm:
 \begin{align*}
     \log f_X(\bm{x}) = \log f_Z(g^{-1}(\bm{x})) - \sum_{\ell=0}^{L-1} \log \Big|\det\Big(\frac{d}{d\bm{x_{\ell}}}h_{\ell}(\bm{x_\ell})\Big) \Big|. \label{eq:nflowsfinal}
 \end{align*}}
+\end{fitemize}
 
 ## Normalizing Flows: Affine Coupling Layer
 
-An example: Affine Coupling Layer
-{\scriptsize \autocites{real-nvp}}.
-
-\onslide<1->{Splitting $\bm{z}$ into $(\bm{z_1}, \bm{z_2})$,}
-\onslide<2->{\begin{align*}
+\begin{fitemize}{0pt}{10pt}
+\onslide<1->{\item An example: Affine Coupling Layer \mycite{real-nvp}}
+\onslide<2->{\item Splitting $\bm{z}$ into $(\bm{z_1}, \bm{z_2})$,}
+\onslide<3->{\begin{align*}
     \begin{cases}
     \bm{x_1} &= \bm{z_1} \odot \exp\big(s(\bm{z_2})\big) + t(\bm{z_2}) \\
     \bm{x_2} &= \bm{z_2}.
     \end{cases}
 \end{align*}}
-\onslide<3->{The respective Jacobian matrix:
+\onslide<4->{\item The respective Jacobian matrix:
 \begin{align*}
     J_{f(z)} =
         \begin{tikzpicture}[decoration=brace, baseline=-\the\dimexpr\fontdimen22\textfont2\relax ]
@@ -140,76 +141,76 @@ An example: Affine Coupling Layer
         \end{tikzpicture}
 \end{align*}
 }
+\end{fitemize}
 
 # Variational Inference
 
 ## Variational Inference: Preamble
 
-\onslide<1->{Joint probability distribution $p(\bm{x}, \bm{c})$.}
-\onslide<2->{$\bm{x}$ is observed and $\bm{c}$ is latent.}
-\onslide<3->{%
-Inference about $\bm{z}$, given $\bm{x}$, by Bayes' Law:
+\begin{fitemize}{0pt}{10pt}
+\onslide<1->{\item Joint probability distribution $p(\bm{x}, \bm{c})$.}
+\onslide<2->{\item $\bm{x}$ is observed and $\bm{c}$ is latent.}
+\onslide<3->{\item Inference about $\bm{c}$, given $\bm{x}$, by \bluebold{Bayes' Law}:
 \begin{align*}
-    p(\bm{z}|\bm{x}) &= \frac{p(\bm{x}|\bm{z})p(\bm{z})}{p(\bm{x})} \\
-                     &= \frac{p(\bm{x}|\bm{z})p(\bm{z})}{\int p(\bm{x}|\bm{z}')p(\bm{z'}) d\bm{z'}}
+    p(\bm{z}|\bm{x}) &= \frac{p(\bm{x}|\bm{c})p(\bm{c})}{p(\bm{x})} \\
+                     &= \frac{p(\bm{x}|\bm{c})p(\bm{c})}{\int p(\bm{x}|\bm{c}')p(\bm{c'}) d\bm{c'}}
 \end{align*}
 }
-\onslide<4->{\textbf{Problem}: The integral is normally intractable}
-\onslide<5->{\begin{itemize} \item Variational inference: an approximate
-inference framework to overcome this intractability. \end{itemize}}
+\onslide<4->{\item Problem: The integral is normally \bluebold{intractable}}
+\onslide<5->{\begin{fitemize}{10pt}{0pt} \item \bluebold{Variational inference}:
+an \bluebold{approximate inference} framework to overcome this intractability. \end{fitemize}}
+\end{fitemize}
 
 ## Variational Inference: Goal
 
-Given a family $q(\bm{z} ; \bm\lambda)$, find the parameters $\bm\lambda$
-that minimize the Kullback-Leibler divergence between $q(\bm{z} ; \bm\lambda)$ and
-$p(\bm{z}|\bm{x})$
-
+\centering
+Given a family $q(\bm{c} ; \bm\lambda)$, find the parameters $\bm{\lambda^{*}}$ such that:
 \begin{align*}
-    \bm{\lambda^{*}} = \argmin_{\bm\lambda} KL(q(\bm{z}; \bm\lambda) || p(\bm{z} | \bm{x}))
+    \bm{\lambda^{*}} = \argmin_{\bm\lambda} KL(q(\bm{c}; \bm\lambda) || p(\bm{c} | \bm{x}))
 \end{align*}
+
+## Variational Inference: Goal
+
+\centering
+\includegraphics[width=0.7\textwidth]{figures/vi.pdf}
 
 ## Variational Inference: ELBO
-
+\vspace{-20pt}
 \begin{align*}
-\onslide<1->{KL(q(\bm{z}) || p(\bm{z}|\bm{x})) &= \int q(\bm{z}) \log\frac{q(\bm{z})}{p(\bm{z}|\bm{x})} d\bm{z} \\}
-\onslide<2->{&= \int q(\bm{z}) (\log q(\bm{z}) - \log p(\bm{z}|\bm{x})) d\bm{z} \\}
-\onslide<3->{&= \int q(\bm{z}) (\log q(\bm{z}) - (\log p(\bm{x}, \bm{z}) - \log p(\bm{x}))) d\bm{z} \\}
-\onslide<4->{&= \mathbb{E}_q [\log q(\bm{z})] - \mathbb{E}_q [\log p(\bm{x}, \bm{z})] + \log p(\bm{x})}
+\onslide<1->{KL(q(\bm{c}) || p(\bm{z}|\bm{x})) &= \int q(\bm{c}) \log\frac{q(\bm{c})}{p(\bm{c}|\bm{x})} d\bm{c} \\}
+\onslide<2->{&= \int q(\bm{c}) (\log q(\bm{c}) - \log p(\bm{c}|\bm{x})) d\bm{c} \\}
+\onslide<3->{&= \int q(\bm{c}) (\log q(\bm{c}) - (\log p(\bm{x}, \bm{c}) - \log p(\bm{x}))) d\bm{c} \\}
+\onslide<4->{&= \mathbb{E}_q [\log q(\bm{c})] - \mathbb{E}_q [\log p(\bm{x}, \bm{c})] + \log p(\bm{x})}
 \end{align*}
-
 \onslide<5->
 Which yields the lower bound (ELBO):
 \begin{align*}
-    \mbox{ELBO}(q) &= \mathbb{E}_q [\log p(\bm{x}, \bm{z})] - \mathbb{E}_q [\log q(\bm{z})] \\
-            &= \mathbb{E}_q [\log p(\bm{x}|\bm{z})] + \mathbb{E}_q [\log p(\bm{z})] - \mathbb{E}_q [\log q(\bm{z})]
+    \mbox{ELBO}(q) &= \mathbb{E}_q [\log p(\bm{x}, \bm{c})] - \mathbb{E}_q [\log q(\bm{c})] \\
+            &= \mathbb{E}_q [\log p(\bm{x}|\bm{c})] + \mathbb{E}_q [\log p(\bm{c})] - \mathbb{E}_q [\log q(\bm{c})]
 \end{align*}
 
 # Variational Mixture of Normalizing Flows
 
 ## VMoNF: Introduction
-\onslide<1->{Is it possible to combine the ideas from the previous sections,
+\onslide<1->{Is it possible to \bluebold{combine} the ideas from the previous sections,
 to obtain a mixture of flexible models?}
 
 ## VMoNF: Definition
 
-Recall the ELBO:
+\begin{fitemize}{0pt}{20pt}
+\onslide<1->{\item Recall the ELBO:
 \begin{align*}
-    ELBO(q) &= \mathbb{E}_q [\log p(\bm{x}|\bm{z})] + \mathbb{E}_q [\log p(\bm{z})] - \mathbb{E}_q [\log q(\bm{z})]
-\end{align*}
-
-. . .
-
-$q(z|x)$ is parameterized by a neural network.
-
-. . .
-
-Optimize the ELBO, by \textbf{jointly} learning the variational posterior and
-the generative components.
+    ELBO(q) &= \mathbb{E}_q [\log p(\bm{x}|\bm{c})] + \mathbb{E}_q [\log p(\bm{c})] - \mathbb{E}_q [\log q(\bm{c})]
+\end{align*}}
+\onslide<2->{\item Parameterize $q(z|x)$ with a \bluebold{neural network}}
+\onslide<3->{\item Optimize the ELBO, by \bluebold{jointly} learning the variational posterior and
+the generative components.}
+\end{fitemize}
 
 ## VMoNF: Overview
 
 \centering
-\includegraphics[width=0.7\textwidth]{figures/train_overview.png}
+\includegraphics[width=0.7\textwidth]{figures/overview.pdf}
 
 ## VMoNF: Experiments - Pinwheel (5 wings)
 
@@ -220,6 +221,7 @@ the generative components.
 
 ## VMoNF: Experiments - Pinwheel (3 wings)
 
+\centering
 Trainining Animation
 
 ## VMoNF: Experiments - 2 Circles
@@ -246,15 +248,15 @@ Trainining Animation
 
 ## Conclusions and Future Work
 
-\begin{itemize}
-    \onslide<1->{\item Similar work is being pursued and published in prominent venues: \autocites{RAD}{semisuplearning_nflows}}
-    \onslide<2->{\item Formally describe the reasons why the model fails in cases like the 2 circles $\to$ Topology}
-        \onslide<3->{\begin{itemize} \item Investigate the effect of a consistency loss regularization term \end{itemize}}
-    \onslide<4->{\item Weight-sharing between components}
-    \onslide<5->{\item Balance between complexities}
-    \onslide<6->{\item (Controlled) component anihilation}
-\end{itemize}
+\begin{fitemize}{0pt}{20pt}
+    \onslide<1->{\item Similar work is being pursued and published in prominent venues: \mycite{RAD}, \mycite{semisuplearning_nflows}}
+    \onslide<2->{\item Investigate the effect of a consistency loss regularization term}
+    \onslide<3->{\item Weight-sharing between components}
+    \onslide<4->{\item Balance between complexities}
+    \onslide<5->{\item (Controlled) component anihilation}
+\end{fitemize}
 
 ##
 
+\centering
 Thank you!
