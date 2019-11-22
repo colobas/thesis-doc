@@ -1,11 +1,11 @@
-pandoc:
-	pandoc -t beamer presentation.md -o presentation.tex --template ./colobas.beamer
+all:
 	pdflatex presentation
 	biber presentation
 	pdflatex presentation
 	pdflatex presentation
 
-all:
+pandoc:
+	pandoc -t beamer presentation.md -o presentation.tex --template ./colobas.beamer
 	pdflatex presentation
 	biber presentation
 	pdflatex presentation
