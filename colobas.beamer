@@ -32,6 +32,16 @@
 }%
 {\end{enumerate}}
 
+\newcommand<>{\uncoverubrace}[2]{%
+  \onslide#3 \underbrace{ \onslide<1->%
+  #1%
+  \onslide#3 }_{#2} \onslide<1->%
+}
+\newcommand<>{\uncoverobrace}[2]{%
+  \onslide#3 \overbrace{ \onslide<1->%
+  #1%
+  \onslide#3 }^{#2} \onslide<1->%
+}
 
 \usecolortheme{whale}
 

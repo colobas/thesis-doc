@@ -8,6 +8,17 @@ toc: true
 
 ## Introduction and Motivation
 
+\begin{fitemize}{0pt}{25pt}
+\onslide<1->{\item Goal of this work: \bluebold{mixture of flexible distributions}.}
+\onslide<2->{\item Two questions:}
+    \begin{fitemize}{15pt}{25pt}
+        \onslide<3->{\item What should the \bluebold{mixture components} be?}
+        \onslide<4->{\item How should their \bluebold{parameters} be \bluebold{estimated}?}
+    \end{fitemize}
+\end{fitemize}
+
+## Introduction and Motivation
+
 \begin{fitemize}{0pt}{20pt}
 \onslide<1->{\item Deep generative models: an active area of research}
     \begin{fitemize}{15pt}{15pt}
@@ -23,27 +34,16 @@ toc: true
     \end{fitemize}
 \end{fitemize}
 
-## Introduction and Motivation: Goal
-
-\begin{fitemize}{0pt}{25pt}
-\onslide<1->{\item Goal of this work: \bluebold{mixture of flexible distributions}.}
-\onslide<2->{\item Two questions:}
-    \begin{fitemize}{15pt}{25pt}
-        \onslide<3->{\item What should the \bluebold{mixture components} be?}
-        \onslide<4->{\item How should their \bluebold{parameters} be \bluebold{estimated}?}
-    \end{fitemize}
-\end{fitemize}
-
 ## Outline
 
 \begin{fitemize}{0pt}{12pt}
 \onslide<1->{\item Mixture Models}
-\onslide<2->{\item Variational Inference}
+\onslide<2->{\item Normalizing Flows}
     \onslide<3->{\begin{fitemize}{12pt}{12pt}
-        \item The chosen framework for estimating the parameters of the proposed model\end{fitemize}}
-\onslide<4->{\item Normalizing Flows}
-    \onslide<5->{\begin{fitemize}{12pt}{12pt}
         \item The chosen family for the mixture model components \end{fitemize}}
+\onslide<4->{\item Variational Inference}
+    \onslide<5->{\begin{fitemize}{12pt}{12pt}
+        \item The chosen framework for estimating the parameters of the proposed model\end{fitemize}}
 \onslide<6->{\item Variational Mixture of Normalizing Flows}
 \onslide<7->{\item Experiments and results}
 \onslide<8->{\item Conclusions and future work}
@@ -51,26 +51,43 @@ toc: true
 
 # Mixture Models
 
+## Mixture Models: Mixture of Gaussians
+
+\centering
+\onslide<1->{\includegraphics[width=0.475\textwidth]{figures/mog_observed.png}}
+\hfill
+\onslide<2->{\includegraphics[width=0.475\textwidth]{figures/mog.png}}
+
 ## Mixture Models: Definition
 
 \begin{fitemize}{10pt}{10pt}
     \onslide<1->{\item Mixture model: used to model data that contains \bluebold{subgroups}.}
     \onslide<2->{\item \q{Subgroup-conditional} distributions (typically) in the same family}
 \end{fitemize}
-\onslide<3->{\centering \includegraphics[width=0.3\textwidth]{figures/selector-mixture.png}}
+\centering 
+\onslide<3->{\includegraphics[width=0.3\textwidth]{figures/selector-mixture.png}}
 
+## Mixture Models: Joint
 
-## Mixture Models: Plate diagram
+For $N$ data points, $X = \{ \bm{x_i} : i = 1, 2, ..., N \}$, and hidden
+variables $C = \{ c_i : i = 1, 2, ..., N \}$
+
+\begin{minipage}[t]{0.4\textwidth}
+  \centering
+  \fbox{\includegraphics[width=0.8\textwidth]{figures/plate_diagram3.pdf}}
+\end{minipage}
+\begin{minipage}[t]{0.4\textwidth}
+  \begin{align*}
+  & p(\bm{x}, \bm{c}) = \\
+  &= \prod_{i=1}^N \sum_{k=1}^K p_c(c_i = k) p_{\bm{x}|c}(\bm{x_i} | c_i = k, \theta_k) \\
+  &= \prod_{i=1}^N \sum_{k=1}^K \pi_k p_{\bm{x}|c}(\bm{x_i} | c_i = k, \theta_k)
+  \end{align*}
+\end{minipage}
+
+## Mixture Models: Difficult case
 
 \centering
-\includegraphics[width=0.5\textwidth]{figures/plate_diagram3.pdf}
-
-## Mixture Models: Mixture of Gaussians
-
-\centering
-\onslide<1->{\includegraphics[width=0.475\textwidth]{figures/mog.png}}
-\hfill
-\onslide<2->{\includegraphics[width=0.475\textwidth]{figures/mog_observed.png}}
+\includegraphics[width=0.5\textwidth]{figures/pinwheel_bw.png}
 
 # Normalizing Flows
 
@@ -152,7 +169,7 @@ toc: true
 \onslide<2->{\item $\bm{x}$ is observed and $\bm{c}$ is latent.}
 \onslide<3->{\item Inference about $\bm{c}$, given $\bm{x}$, by \bluebold{Bayes' Law}:
 \begin{align*}
-    p(\bm{z}|\bm{x}) &= \frac{p(\bm{x}|\bm{c})p(\bm{c})}{p(\bm{x})} \\
+    p(\bm{c}|\bm{x}) &= \frac{p(\bm{x}|\bm{c})p(\bm{c})}{p(\bm{x})} \\
                      &= \frac{p(\bm{x}|\bm{c})p(\bm{c})}{\int p(\bm{x}|\bm{c}')p(\bm{c'}) d\bm{c'}}
 \end{align*}
 }
@@ -177,17 +194,27 @@ Given a family $q(\bm{c} ; \bm\lambda)$, find the parameters $\bm{\lambda^{*}}$ 
 ## Variational Inference: ELBO
 \vspace{-20pt}
 \begin{align*}
-\onslide<1->{KL(q(\bm{c}) || p(\bm{z}|\bm{x})) &= \int q(\bm{c}) \log\frac{q(\bm{c})}{p(\bm{c}|\bm{x})} d\bm{c} \\}
+\onslide<1->{KL(q(\bm{c}) || p(\bm{c}|\bm{x})) &= \int q(\bm{c}) \log\frac{q(\bm{c})}{p(\bm{c}|\bm{x})} d\bm{c} \\}
 \onslide<2->{&= \int q(\bm{c}) (\log q(\bm{c}) - \log p(\bm{c}|\bm{x})) d\bm{c} \\}
 \onslide<3->{&= \int q(\bm{c}) (\log q(\bm{c}) - (\log p(\bm{x}, \bm{c}) - \log p(\bm{x}))) d\bm{c} \\}
-\onslide<4->{&= \mathbb{E}_q [\log q(\bm{c})] - \mathbb{E}_q [\log p(\bm{x}, \bm{c})] + \log p(\bm{x})}
+\onslide<4->{&= {\color{blue} \mathbb{E}_q [\log q(\bm{c})] - \mathbb{E}_q [\log p(\bm{x}, \bm{c})]} + {\color{green} \log p(\bm{x})} \\}
 \end{align*}
-\onslide<5->
-Which yields the lower bound (ELBO):
+
+## Variational Inference: ELBO
+\vspace{-20pt}
 \begin{align*}
-    \mbox{ELBO}(q) &= \mathbb{E}_q [\log p(\bm{x}, \bm{c})] - \mathbb{E}_q [\log q(\bm{c})] \\
-            &= \mathbb{E}_q [\log p(\bm{x}|\bm{c})] + \mathbb{E}_q [\log p(\bm{c})] - \mathbb{E}_q [\log q(\bm{c})]
+\onslide<2-> \overbrace{ \onslide<1->
+KL(q(\bm{c}) || p(\bm{c}|\bm{x}))
+\onslide<2-> }^{\geqslant 0} \onslide<1->
+ + {\color{blue} \mathbb{E}_q [\log p(\bm{x}, \bm{c})] - \mathbb{E}_q [\log q(\bm{c})]}
+&= {\color{green} \log p(\bm{x})} \\
+\onslide<3->{{\color{blue} \mathbb{E}_q [\log p(\bm{x}, \bm{c})] - \mathbb{E}_q [\log q(\bm{c})]} &\leqslant {\color{green} \log p(\bm{x})}}
 \end{align*}
+\onslide<4->{
+\begin{align*}
+    \mbox{ELBO}(q) &= {\color{blue} \mathbb{E}_q [\log p(\bm{x}, \bm{c})] - \mathbb{E}_q [\log q(\bm{c})]} \\
+            &= \mathbb{E}_q [\log p(\bm{x}|\bm{c})] + \mathbb{E}_q [\log p(\bm{c})] - \mathbb{E}_q [\log q(\bm{c})]
+\end{align*}}
 
 # Variational Mixture of Normalizing Flows
 
@@ -198,12 +225,15 @@ to obtain a mixture of flexible models?}
 ## VMoNF: Definition
 
 \begin{fitemize}{0pt}{20pt}
-\onslide<1->{\item Recall the ELBO:
-\begin{align*}
-    ELBO(q) &= \mathbb{E}_q [\log p(\bm{x}|\bm{c})] + \mathbb{E}_q [\log p(\bm{c})] - \mathbb{E}_q [\log q(\bm{c})]
-\end{align*}}
-\onslide<2->{\item Parameterize $q(z|x)$ with a \bluebold{neural network}}
-\onslide<3->{\item Optimize the ELBO, by \bluebold{jointly} learning the variational posterior and
+    \onslide<1->{\item Mixture of K normalizing flows}
+    \onslide<2->{\item Variable $c_i$ selects the component for sample $\bm{x}_i$}
+    \onslide<3->{\item $p(c|\bm{x})$ is unknown.}
+    \begin{fitemize}{10pt}{10pt}
+        \onslide<4->{\item Approximate it with $q(c|\bm{x})$: \bluebold{neural network}}
+    \end{fitemize}
+    \onslide<5->{\item Recall $ELBO(q) = \mathbb{E}_q [\log p(\bm{x}|c)] + \mathbb{E}_q [\log p(c)] - \mathbb{E}_q [\log q(\c)]$}
+    \onslide<6->{\item The components $p(\bm{x}|c)$ are \bluebold{normalizing flows}}
+    \onslide<7->{\item Optimize the ELBO, by \bluebold{jointly} learning the variational posterior and
 the generative components.}
 \end{fitemize}
 
