@@ -32,7 +32,7 @@ given observed data. However, for most real-world problems, there is no closed-f
 and the modeller has to resort to algorithms and approximations, and will only
 be able to find \textbf{local} optima for the above expression, in most cases.
 
-It's also worth noting that there are effectively infinite candidate distributions -
+It is also worth noting that there are effectively infinite candidate distributions -
 each one an hypothesis for how the system at hand generates data. It is common
 to make use of domain knowledge and assume the true system has a certain intrinsic
 structure and form, and to use these assumptions to constrain the space of
@@ -43,7 +43,7 @@ or all of the observed variables. These assumptions are commonly connected betwe
 themselves (for example, when conjugate likelihood-prior pairs are used). When parametric
 forms are used, an hypothesis is uniquely defined by the set of parameters it
 requires - commonly denoted $\bm{\theta}$. For the type of models and problems
-dealt with in this work, we will assume $\bm{\theta}$ is finite dimensional, but it's worth
+dealt with in this work, we will assume $\bm{\theta}$ is finite dimensional, but it is worth
 noting that there are models for which the dimension of $\bm{\theta}$ \emph{grows}
 with the dataset size. These are called non-parametric models. They come with
 their own advantages and disadvantages, which are out of the scope of this work..
@@ -55,7 +55,7 @@ of the distribution. In practice, this translates to the observation that if we
 make the model\footnote{Throughout this work, the words \emph{model}
 and \emph{distribution} will be used almost interchangeably, making it clear when context isn't
 enough.} expressive enough, it can fit the observed data arbitrarily well. Naïvely,
-this would be a desirable characteristic to exploit - it's always possible to increase
+this would be a desirable characteristic to exploit - it is always possible to increase
 the likelihood by adding parameters to the model. However, increasing model
 complexity normally comes at the expense of generalization. This phenomenon is
 commonly referred to as \emph{overfitting}, and there are several
@@ -194,7 +194,7 @@ autoregressive part of the model is present only in the latent variables:
 \end{align}
 
 These are merely (classical) examples of models with different structure assumptions encoded
-into them. Normally, if the structure has a certain regularity, it's possible
+into them. Normally, if the structure has a certain regularity, it is possible
 to exploit it to obtain tractable (approximate) inference and estimation methods.
 This notion is exploited in the following section, for a subset of the family
 of models described by (\ref{eq:latentvariable}.)
