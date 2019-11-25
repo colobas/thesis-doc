@@ -293,7 +293,7 @@ Finally, the EM algorithm for mixture models alternates between the following tw
         \begin{align}
             \bm{\theta^{(t)}} = \argmax_{\bm{\theta}} Q(\bm{\theta}, \bm{\theta^{(t-1)}})
                 \underbrace{+ \log p(\bm{\theta})}_\text{Optional, in the case of MAP estimation},
-        \end{align} where $Q(\bm{\theta}, \bm{\theta^{(t-1)}}$ is as given in \ref{eq:qthetatheta}
+        \end{align} where $Q(\bm{\theta}, \bm{\theta^{(t-1)}}$) is as given in (\ref{eq:qthetatheta}).
         This maximization may have a closed-form solution in some of the simplest
         mixture models, like Gaussian mixture models, but it may require a gradient-based
         optimization procedure for more flexible models.
@@ -393,9 +393,9 @@ that, consider the following chain of equalities and inequalities,
 \begin{align}
     \log p(\bm{x}) &= \log \int p(\bm{x}, \bm{z}) d\bm{z}\\
     &= \log \int q(\bm{z}) \frac{p(\bm{x}, \bm{z})}{q(\bm{z})} d\bm{z} \\
-    &= \log \mathbb{E}_q[\frac{p(\bm{x}, \bm{z})}{q(\bm{z})}] \label{eq:elbojensen1} \\
-    &\geq \mathbb{E}_q[\log \frac{p(\bm{x}, \bm{z})}{q(\bm{z})}] \label{eq:elbojensen2} \\
-    &\geq \mathbb{E}_q[\log p(\bm{x}, \bm{z})] - \mathbb{E}_q[\log q(\bm{z})] \label{eq:elbojensen3},
+    &= \log \mathbb{E}_q\Big[\frac{p(\bm{x}, \bm{z})}{q(\bm{z})}\Big] \label{eq:elbojensen1} \\
+    &\geq \mathbb{E}_q\Big[\log \frac{p(\bm{x}, \bm{z})}{q(\bm{z})}\Big] \label{eq:elbojensen2} \\
+    &\geq \mathbb{E}_q\Big[\log p(\bm{x}, \bm{z})\Big] - \mathbb{E}_q\Big[\log q(\bm{z})\Big] \label{eq:elbojensen3},
 \end{align}
 where the inequality between (\ref{eq:elbojensen1}) and (\ref{eq:elbojensen2})
 results from Jensen's inequality, given (in one of its forms) by:
