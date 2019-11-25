@@ -9,7 +9,7 @@ posterior and that of the components of the mixture, is crucial for the
 convergence to interesting solutions. This is intuitive: if the components are
 too complex, the variational posterior tends to ignore most of them and assigns
 most points to a single or few components. In principle, the model should be
-able to ignore unneeded components, if the complexities of the posterior and
-the flows are well calibrated. This needs to be evaluated empirically.
-The effect of using different architectures for the neural networks used
-was also not evaluated.
+able to ignore redundant components, if the complexities of the posterior and the flows
+are well calibrated. This needs to be evaluated empirically. The effect of using
+different architectures for the neural networks also requires further study and
+evaluation.

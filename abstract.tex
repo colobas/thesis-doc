@@ -1,15 +1,14 @@
-In the past few years, deep generative models, such as generative adversarial networks
-\autocite{GAN}, variational autoencoders \autocite{vaepaper}, and their variants,
-have seen wide adoption for the task of modelling complex data distributions.
-In spite of the outstanding sample quality achieved by those methods,
-they model the target distributions \emph{implicitly}, in the sense that the probability
-density functions approximated by them are not explicitly accessible. This fact renders those methods unfit for
+In the past few years, deep generative models, such as generative adversarial networks,
+variational autoencoders, and their variants, have seen wide adoption for the task
+of modelling complex data distributions. In spite of the outstanding sample quality
+achieved by those methods, they model the target distributions \emph{implicitly},
+in the sense that the probability density functions approximated by them are not
+explicitly accessible. This fact renders those methods unfit for
 tasks that require, for example, scoring new instances of data with the learned
 distributions. Normalizing flows overcome this limitation by leveraging the
 change-of-variables formula for probability density functions, and by using
 transformations designed to have tractable and cheaply computable Jacobians. Although
-flexible, this framework lacked (until the publication of recent work -
-\autocites{semisuplearning_nflows, RAD}) a way to introduce discrete
+flexible, this framework lacked (until the publication of recent work) a way to introduce discrete
 structure (such as the one found in mixtures) in the models it allows to
 construct, in an unsupervised scenario. The present work overcomes this by using normalizing flows as components in a mixture model,
 and devising a training procedure for such a model.

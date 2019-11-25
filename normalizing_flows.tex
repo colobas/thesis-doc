@@ -1,12 +1,12 @@
 \section{Normalizing Flows}
 \label{cov}
 Given a random variable $\bm{z} \in \mathbb{R}^D$, with probability density function $f_Z$,
-and a bijective and continuous function $g(.)\: : \: \mathbb{R}^D\rightarrow \mathbb{R}^D$,
+and a bijective and continuous function $g\: : \: \mathbb{R}^D\rightarrow \mathbb{R}^D$,
 the probability density function $f_X$ of the random variable $\bm{x} = g(\bm{z})$ is given by
 \begin{align}
     f_X(\bm{x}) &= f_Z(g^{-1}(\bm{x}))\Big|\det\Big(\frac{d}{d\bm{x}}g^{-1}(\bm{x})\Big)\Big|,
 \end{align} where $\det\Big(\frac{d}{d\bm{x}}g^{-1}(\bm{x})\Big)$
-is the determinant of the Jacobian matrix of $g^{-1}(.)$, computed at $\bm{x}$.
+is the determinant of the Jacobian matrix of $g^{-1}$, computed at $\bm{x}$.
 If $g$ is parameterized by some $\bm\theta$,
 this expression can be optimized, so that it approximates some arbitrary distribution.
 For that to be feasible, the \emph{base density}, $f_Z$, has to be computationally \q{cheap} to evaluate,

@@ -21,7 +21,7 @@ clustering - since the classifier can be used to assign points to clusters - and
 semi-supervised learning, where available labels can be used to refine the classifier
 and selectively train the mixture components.
 
-\textcite{RAD}, similarly to this work, try to reconcile normalizing flows with a
+\textcite{RAD}, similarly to this work, reconcile normalizing flows with a
 multimodal/discrete structure, by partitioning the latent space into disjoint
 subsets, using a mixture model where each component has non-zero weight
 exclusively within its respective subset. Then, using a set identification
@@ -29,8 +29,8 @@ function and a piecewise invertible function, a variation of the change-of-varia
 formula is devised.
 \textcite{semisuplearning_nflows} also exploit multimodal structure while
 using normalizing flows for expressiveness. However, while the present work relies on
-a variational posterior parameterized by a neural network and learns $K$ flows
-(one for each mixture component), \textcite{semisuplearning_nflows} resort to a
+a variational posterior parameterized by a neural network and learns a mixture of $K$ flows,
+\textcite{semisuplearning_nflows} resort to a
 latent mixture of Gaussians as the base distribution for its flow model, and
 learn a single flow.
 %\subsection{Notation}
