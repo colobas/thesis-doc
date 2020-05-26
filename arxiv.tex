@@ -1,0 +1,44 @@
+\documentclass{article}
+\PassOptionsToPackage{numbers, compress}{natbib}
+\usepackage[final,nonatbib]{neurips_2019}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+%\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\input{preamble}
+\title{Variational Mixture of Normalizing Flows}
+
+\author{%
+  Guilherme G. P. Freitas~Pires\\
+  Instituto Superior Técnico\\
+  Lisboa, Portugal\\
+  \texttt{mail@gpir.es}\\
+  \And
+  Mário A. T. Figueiredo\\
+  Instituto de Telecomunicações, IST\\
+  Lisboa, Portugal\\
+  \texttt{mtf@lx.it.pt}\\
+}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\input{abstract}
+\end{abstract}
+
+\input{introduction}
+\input{normalizing_flows}
+\input{vmonf}
+\input{results}
+\input{conclusions}
+
+\printbibliography
+\end{document}
